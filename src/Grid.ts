@@ -1,8 +1,8 @@
 import Canvas from './Canvas';
-import Vec2 from './Vec2';
 import Color from './Color';
 import Rect from './Rect';
 import { clamp } from './Utils';
+import Vec2 from './Vec2';
 
 export type GridPosition = {
   row: number;
@@ -42,7 +42,7 @@ export default class Grid {
     style: 'solid',
   };
 
-  constructor() { }
+  constructor() {}
 
   get totalSize(): Vec2 {
     const { lineWidth } = this.border;
