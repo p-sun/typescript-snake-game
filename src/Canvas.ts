@@ -19,7 +19,7 @@ export default class Canvas {
   constructor(canvasElement: HTMLCanvasElement, size: Vec2) {
     this.#canvasElement = canvasElement;
     this.#context = canvasElement.getContext('2d') as CanvasRenderingContext2D;
-    this.size = size;
+    this.#size = size;
   }
 
   get size(): Vec2 {
@@ -188,22 +188,23 @@ export default class Canvas {
 
   setKeyDownListener(fn: (key: KeyboardEvent) => void) {
     this.#keyboardListener = fn;
-
     window.addEventListener('keydown', this.#keyboardListener);
   }
 
   unsetKeyDownListener() {
-    window.removeEventListener('keydown', this.#keyboardListener);
-    this.#keyboardListener = undefined;
+    if (this.#keyboardListener) {
+      window.removeEventListener('keydown', this.#keyboardListener);
+      this.#keyboardListener = undefined;
+    }
   }
 
   unsetMouseListener() {
-    this.#canvasElement.oncontextmenu = undefined;
-    this.#canvasElement.onmousedown = undefined;
-    this.#canvasElement.onmouseup = undefined;
-    this.#canvasElement.onmouseenter = undefined;
-    this.#canvasElement.onmouseleave = undefined;
-    this.#canvasElement.onmousemove = undefined;
+    this.#canvasElement.oncontextmenu = null;
+    this.#canvasElement.onmousedown = null;
+    this.#canvasElement.onmouseup = null;
+    this.#canvasElement.onmouseenter = null;
+    this.#canvasElement.onmouseleave = null;
+    this.#canvasElement.onmousemove = null;
   }
 
   setMouseListener(fn: (event: CanvasMouseEvent, pos: Vec2) => void): void {

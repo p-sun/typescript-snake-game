@@ -38,7 +38,7 @@ export default class SnakeGame extends Game {
       eyeColor: Color.blue,
     });
 
-    this.#generateFruitLocation();
+    this.#fruitLocation = this.#generateFruitLocation();
   }
 
   update(canvas: Canvas) {
@@ -54,7 +54,7 @@ export default class SnakeGame extends Game {
 
       if (GridPositionEqual(this.#snake.headPosition, this.#fruitLocation)) {
         this.#snake = this.#snake.extend();
-        this.#generateFruitLocation();
+        this.#fruitLocation = this.#generateFruitLocation();
       }
     }
 
@@ -99,7 +99,7 @@ export default class SnakeGame extends Game {
     }
   }
 
-  #generateFruitLocation() {
+  #generateFruitLocation(): GridPosition {
     let pos = {
       row: randomIntInRange(0, this.#grid.rowCount),
       column: randomIntInRange(0, this.#grid.columnCount),
@@ -113,7 +113,7 @@ export default class SnakeGame extends Game {
       };
     }
 
-    this.#fruitLocation = pos;
+    return pos;
   }
 
   onKeyDown(event: KeyboardEvent) {

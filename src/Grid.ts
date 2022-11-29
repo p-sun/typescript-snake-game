@@ -31,12 +31,12 @@ export default class Grid {
   public rowCount: number = 5;
   public columnCount: number = 5;
 
-  public background?: GridBackground = {
+  public background: GridBackground = {
     mode: 'checker',
     aColor: Color.white,
     bColor: Color.black,
   };
-  public border?: GridBorder = {
+  public border: GridBorder = {
     lineColor: Color.grey(),
     lineWidth: 0,
     style: 'solid',
