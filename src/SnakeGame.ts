@@ -1,8 +1,8 @@
 import Canvas, { CanvasMouseEvent } from './Canvas';
 import Color from './Color';
+import { Direction } from './Direction';
 import Game from './Game';
 import Grid, { GridPosition, GridPositionEqual } from './Grid';
-import Snake, { Direction } from './Snake';
 import { randomIntInRange } from './Utils';
 import Vec2 from './Vec2';
 
