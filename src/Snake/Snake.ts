@@ -3,7 +3,7 @@ import {
   OppositeDirection,
   Vec2ForDirection,
 } from '../GenericModels/Direction';
-import Grid, { GridPosition, GridPositionEqual } from '../Grid';
+import GridRenderer, { GridPosition, GridPositionEqual } from '../GridRenderer';
 import { randomIntInRange } from '../Utils';
 
 export default class Snake {
@@ -13,7 +13,7 @@ export default class Snake {
     public readonly segmentsToAdd: number
   ) {}
 
-  static createRandom(grid: Grid): Snake {
+  static createRandom(grid: GridRenderer): Snake {
     const { columnCount, rowCount } = grid.size();
 
     // Choose a random location in the grid
@@ -93,7 +93,7 @@ export default class Snake {
     );
   }
 
-  hasCollision(grid: Grid): boolean {
+  hasCollision(grid: GridRenderer): boolean {
     const { headPosition } = this;
     const { rowCount, columnCount } = grid.size();
 

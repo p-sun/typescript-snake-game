@@ -2,7 +2,7 @@ import Canvas from '../Canvas';
 import Color from '../GenericModels/Color';
 import { Direction, Vec2ForDirection } from '../GenericModels/Direction';
 import Vec2 from '../GenericModels/Vec2';
-import Grid from '../Grid';
+import GridRenderer from '../GridRenderer';
 import Snake from './Snake';
 
 export type SnakeRenderConfig = {
@@ -13,7 +13,7 @@ export type SnakeRenderConfig = {
 export default class SnakeRenderer {
   constructor(public readonly renderConfig: SnakeRenderConfig) {}
 
-  draw(canvas: Canvas, grid: Grid, snake: Snake) {
+  draw(canvas: Canvas, grid: GridRenderer, snake: Snake) {
     const positions = snake.positions;
     const headPosition = snake.headPosition;
 

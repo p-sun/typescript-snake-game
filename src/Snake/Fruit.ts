@@ -1,4 +1,4 @@
-import Grid, { GridPosition } from '../Grid';
+import GridRenderer, { GridPosition } from '../GridRenderer';
 import { randomIntInRange } from '../Utils';
 import Snake from './Snake';
 
@@ -9,7 +9,7 @@ export default class Fruit {
     return this.#position;
   }
 
-  generateNewPosition(grid: Grid, snake: Snake) {
+  generateNewPosition(grid: GridRenderer, snake: Snake) {
     let pos = {
       row: randomIntInRange(0, grid.size().rowCount),
       column: randomIntInRange(0, grid.size().columnCount),

@@ -2,7 +2,7 @@ import Canvas, { CanvasMouseEvent } from '../Canvas';
 import Game from '../Game';
 import Color from '../GenericModels/Color';
 import Vec2 from '../GenericModels/Vec2';
-import Grid, { GridPosition } from '../Grid';
+import GridRenderer, { GridPosition } from '../GridRenderer';
 import { randomIntInRange } from '../Utils';
 
 type CellData =
@@ -10,7 +10,7 @@ type CellData =
   | { kind: 'covered' | 'cleared' };
 
 export default class BombBroomer extends Game {
-  #grid: Grid;
+  #grid: GridRenderer;
 
   #hasBombs: boolean[][];
 
@@ -19,7 +19,7 @@ export default class BombBroomer extends Game {
   constructor(rootElement: HTMLElement) {
     super(rootElement);
 
-    this.#grid = new Grid({
+    this.#grid = new GridRenderer({
       size: { columnCount: 20, rowCount: 20 },
       cellSize: new Vec2(16, 16),
       border: {

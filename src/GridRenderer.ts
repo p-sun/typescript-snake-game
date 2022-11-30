@@ -56,7 +56,7 @@ export type GridBorder = {
   style?: 'solid' | 'dashed';
 };
 
-export default class Grid {
+export default class GridRenderer {
   #config: GridRenderConfig;
 
   constructor(public config: Partial<GridRenderConfig>) {

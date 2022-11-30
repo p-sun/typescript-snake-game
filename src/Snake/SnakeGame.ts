@@ -3,7 +3,7 @@ import Game from '../Game';
 import Color from '../GenericModels/Color';
 import { Direction } from '../GenericModels/Direction';
 import Vec2 from '../GenericModels/Vec2';
-import Grid, { GridPosition, GridPositionEqual } from '../Grid';
+import GridRenderer, { GridPosition, GridPositionEqual } from '../GridRenderer';
 import Fruit from './Fruit';
 import FruitRenderer from './FruitRenderer';
 import Snake from './Snake';
@@ -13,14 +13,14 @@ export default class SnakeGame extends Game {
   #snake: Snake;
   #snakeRenderer: SnakeRenderer;
   #playState: 'waiting' | 'playing' | 'lost' = 'waiting';
-  #grid: Grid;
+  #grid: GridRenderer;
   #fruit: Fruit;
   #fruitRenderer: FruitRenderer;
 
   constructor(rootElement: HTMLElement) {
     super(rootElement);
 
-    this.#grid = new Grid({
+    this.#grid = new GridRenderer({
       size: { rowCount: 34, columnCount: 34 },
       cellSize: new Vec2(9, 9),
       background: {
