@@ -1,7 +1,6 @@
-import Grid, { GridPosition } from './Grid';
+import Grid, { GridPosition } from '../Grid';
+import { randomIntInRange } from '../Utils';
 import Snake from './Snake';
-import { randomIntInRange } from './Utils';
-import Vec2 from './Vec2';
 
 export default class Fruit {
   #position: GridPosition = { row: 0, column: 0 };

@@ -1,9 +1,9 @@
-import Canvas, { CanvasMouseEvent } from './Canvas';
-import Color from './Color';
-import Game from './Game';
-import Grid, { GridPosition } from './Grid';
-import { randomIntInRange } from './Utils';
-import Vec2 from './Vec2';
+import Canvas, { CanvasMouseEvent } from '../Canvas';
+import Game from '../Game';
+import Color from '../GenericModels/Color';
+import Vec2 from '../GenericModels/Vec2';
+import Grid, { GridPosition } from '../Grid';
+import { randomIntInRange } from '../Utils';
 
 type CellData =
   | { kind: 'flag'; count: number }

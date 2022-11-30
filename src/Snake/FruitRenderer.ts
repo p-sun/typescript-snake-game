@@ -1,7 +1,7 @@
-import Canvas from './Canvas';
-import Color from './Color';
+import Canvas from '../Canvas';
+import Color from '../GenericModels/Color';
+import Grid from '../Grid';
 import Fruit from './Fruit';
-import Grid from './Grid';
 
 export default class FruitRenderer {
   constructor(public readonly options: { color: Color }) {}

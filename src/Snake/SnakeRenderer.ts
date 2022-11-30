@@ -1,9 +1,9 @@
-import Canvas from './Canvas';
-import Color from './Color';
-import { Direction, Vec2ForDirection } from './Direction';
-import Grid from './Grid';
+import Canvas from '../Canvas';
+import Color from '../GenericModels/Color';
+import { Direction, Vec2ForDirection } from '../GenericModels/Direction';
+import Vec2 from '../GenericModels/Vec2';
+import Grid from '../Grid';
 import Snake from './Snake';
-import Vec2 from './Vec2';
 
 export type SnakeRenderConfig = {
   color: Color;

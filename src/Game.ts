@@ -1,5 +1,5 @@
 import Canvas, { CanvasMouseEvent } from './Canvas';
-import Vec2 from './Vec2';
+import Vec2 from './GenericModels/Vec2';
 
 export default abstract class Game {
   abstract update(canvas: Canvas): void;

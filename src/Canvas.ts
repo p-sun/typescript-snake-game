@@ -1,5 +1,5 @@
-import Color from './Color';
-import Vec2 from './Vec2';
+import Color from './GenericModels/Color';
+import Vec2 from './GenericModels/Vec2';
 
 export type TextAttributes = {
   color: Color;

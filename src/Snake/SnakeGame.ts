@@ -1,13 +1,13 @@
-import Canvas, { CanvasMouseEvent } from './Canvas';
-import Color from './Color';
-import { Direction } from './Direction';
+import Canvas, { CanvasMouseEvent } from '../Canvas';
+import Game from '../Game';
+import Color from '../GenericModels/Color';
+import { Direction } from '../GenericModels/Direction';
+import Vec2 from '../GenericModels/Vec2';
+import Grid, { GridPosition, GridPositionEqual } from '../Grid';
 import Fruit from './Fruit';
 import FruitRenderer from './FruitRenderer';
-import Game from './Game';
-import Grid, { GridPosition, GridPositionEqual } from './Grid';
 import Snake from './Snake';
 import SnakeRenderer from './SnakeRenderer';
-import Vec2 from './Vec2';
 
 export default class SnakeGame extends Game {
   #snake: Snake;

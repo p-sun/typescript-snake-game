@@ -1,6 +1,10 @@
-import { Direction, OppositeDirection, Vec2ForDirection } from './Direction';
-import Grid, { GridPosition, GridPositionEqual } from './Grid';
-import { randomIntInRange } from './Utils';
+import {
+  Direction,
+  OppositeDirection,
+  Vec2ForDirection,
+} from '../GenericModels/Direction';
+import Grid, { GridPosition, GridPositionEqual } from '../Grid';
+import { randomIntInRange } from '../Utils';
 
 export default class Snake {
   private constructor(
