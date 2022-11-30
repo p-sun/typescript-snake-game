@@ -65,7 +65,10 @@ export default class GridRenderer {
 
     if (background) {
       if (background.mode === 'fill') {
-        canvas.drawRect(origin, totalSize, background.color);
+        canvas.drawShape({
+          mode: 'rect',
+          options: { origin, size: totalSize, color: background.color },
+        });
       } else {
         this.forEachCell(gridSize, (cellPos, rect) => {
           const color =
@@ -74,8 +77,10 @@ export default class GridRenderer {
                 ? background.aColor
                 : background.bColor
               : background.colorer(cellPos);
-
-          canvas.drawRect(rect.origin, rect.size, color);
+          canvas.drawShape({
+            mode: 'rect',
+            options: { origin: rect.origin, size: rect.size, color },
+          });
         });
       }
     }
@@ -183,7 +188,10 @@ export default class GridRenderer {
 
   fillCell(canvas: Canvas, cellPos: GridPosition, color: Color) {
     const rect = this.cellContentRectAtPosition(cellPos);
-    canvas.drawRect(rect.origin, rect.size, color);
+    canvas.drawShape({
+      mode: 'rect',
+      options: { origin: rect.origin, size: rect.size, color },
+    });
   }
 
   drawLine(
@@ -238,11 +246,14 @@ export default class GridRenderer {
 
     const normalizedOffset = options?.normalizedOffset ?? Vec2.zero;
 
-    const p = this.#convertNormalizedPositionInCell({
+    const origin = this.#convertNormalizedPositionInCell({
       cellPos,
       normalizedOffset,
     });
-
-    canvas.drawEllipse(p, rx, ry, color, options?.rotationAngle);
+    const rotationAngle = options?.rotationAngle;
+    canvas.drawShape({
+      mode: 'ellipse',
+      options: { origin, rx, ry, color, rotationAngle },
+    });
   }
 }

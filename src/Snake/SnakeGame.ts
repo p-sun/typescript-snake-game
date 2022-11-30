@@ -84,38 +84,64 @@ export default class SnakeGame extends Game {
     this.#fruitRenderer.draw(canvas, this.#gridRenderer, this.#fruit);
 
     if (this.#playState !== 'playing') {
-      canvas.drawRect(Vec2.zero, canvas.size, Color.black, 0.5);
-
-      canvas.drawTextAtPosition(
-        `Press [space] to ${this.#playState === 'lost' ? 're' : ''}start!`,
-        canvas.midpoint,
-        {
-          color: Color.white,
-          fontSize: 30,
+      canvas.drawShape({
+        mode: 'rect',
+        options: {
+          origin: Vec2.zero,
+          size: canvas.size,
+          color: Color.black,
+          alpha: 0.5,
         },
-        {
-          normalizedOffsetX: 0,
-          normalizedOffsetY: 0,
-        }
-      );
+      });
+
+      canvas.drawShape({
+        mode: 'text',
+        options: {
+          contents: `Press [space] to ${
+            this.#playState === 'lost' ? 're' : ''
+          }start!`,
+          position: canvas.midpoint,
+          attributes: {
+            color: Color.white,
+            fontSize: 30,
+          },
+          normalizedAnchorOffset: {
+            offsetX: 0,
+            offsetY: 0,
+          },
+        },
+      });
 
       if (this.#playState === 'lost') {
-        canvas.drawTextAtPosition(
-          `Snake length: ${this.#snake.length}`,
-          canvas.midpoint.mapY((y) => y - 32),
-          {
-            color: new Color(1, 0.3, 0.2),
-            fontSize: 36,
-          }
-        );
-        canvas.drawTextAtPosition(
-          '☠️😭☠️',
-          canvas.midpoint.mapY((y) => y - 70),
-          {
-            color: Color.black,
-            fontSize: 40,
-          }
-        );
+        canvas.drawShape({
+          mode: 'text',
+          options: {
+            contents: `Snake length: ${this.#snake.length}`,
+            position: canvas.midpoint.mapY((y) => y - 32),
+            attributes: {
+              color: new Color(1, 0.3, 0.2),
+              fontSize: 36,
+            },
+            normalizedAnchorOffset: {
+              offsetX: 0,
+            },
+          },
+        });
+
+        canvas.drawShape({
+          mode: 'text',
+          options: {
+            contents: '☠️😭☠️',
+            position: canvas.midpoint.mapY((y) => y - 70),
+            attributes: {
+              color: Color.black,
+              fontSize: 40,
+            },
+            normalizedAnchorOffset: {
+              offsetX: 0,
+            },
+          },
+        });
       }
     }
   }

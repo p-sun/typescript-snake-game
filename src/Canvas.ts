@@ -18,6 +18,9 @@ export type CanvasMouseEvent =
 
 export type DrawableShape =
   | { mode: 'line'; options: LineOptions }
+  | { mode: 'ellipse'; options: EllipseOptions }
+  | { mode: 'rect'; options: RectOptions }
+  | { mode: 'text'; options: TextOptions };
 
 type LineOptions = {
   start: Vec2;
@@ -25,6 +28,31 @@ type LineOptions = {
   color: Color;
   thickness?: number;
   lineDash?: number[];
+};
+
+type EllipseOptions = {
+  origin: Vec2;
+  rx: number;
+  ry: number;
+  color: Color;
+  rotationAngle?: number;
+};
+
+type RectOptions = {
+  origin: Vec2;
+  size: Vec2;
+  color: Color;
+  alpha?: number;
+};
+
+type TextOptions = {
+  contents: string;
+  position: Vec2;
+  attributes: TextAttributes;
+  normalizedAnchorOffset?: {
+    offsetX?: number;
+    offsetY?: number | 'baseline';
+  };
 };
 
 export default class Canvas {
@@ -77,7 +105,37 @@ export default class Canvas {
     return pos.componentDiv(this.size);
   }
 
-  drawRect(origin: Vec2, size: Vec2, color: Color, alpha?: number) {
+  drawShape(shape: DrawableShape) {
+    switch (shape.mode) {
+      case 'line':
+        this.#drawLine(shape.options);
+        break;
+      case 'ellipse':
+        this.#drawEllipse(shape.options);
+        break;
+      case 'rect':
+        this.#drawRect(shape.options);
+        break;
+      case 'text':
+        this.#drawTextAtPosition(shape.options);
+    }
+  }
+
+  clear(color: Color) {
+    this.#drawRect({ origin: Vec2.zero, size: this.size, color });
+  }
+
+  measureText(
+    contents: string,
+    attributes: TextAttributes
+  ): { size: Vec2; baselineOffsetFromBottom: number } {
+    return this.#performCanvasTextOperation(attributes, () => {
+      return this.#measureTextWithContextReady(contents);
+    });
+  }
+
+  #drawRect(options: RectOptions) {
+    const { color, origin, size, alpha } = options;
     this.#context.fillStyle = color.asHexString();
 
     const globalAlpga = this.#context.globalAlpha;
@@ -88,13 +146,8 @@ export default class Canvas {
     this.#context.globalAlpha = globalAlpga;
   }
 
-  drawEllipse(
-    origin: Vec2,
-    rx: number,
-    ry: number,
-    color: Color,
-    rotationAngle: number = 0
-  ) {
+  #drawEllipse(options: EllipseOptions) {
+    const { color, origin, rx, ry, rotationAngle } = options;
     this.#context.fillStyle = color.asHexString();
     this.#context.beginPath();
     this.#context.ellipse(
@@ -102,22 +155,11 @@ export default class Canvas {
       origin.y,
       rx,
       ry,
-      rotationAngle,
+      rotationAngle ?? 0,
       2 * Math.PI,
       0
     );
     this.#context.fill();
-  }
-
-  clear(color: Color) {
-    this.drawRect(Vec2.zero, this.size, color);
-  }
-
-  drawShape(shape: DrawableShape) {
-    switch (shape.mode) {
-      case 'line':
-        this.#drawLine(shape.options);
-    }
   }
 
   #drawLine(options: LineOptions) {
@@ -131,6 +173,26 @@ export default class Canvas {
     this.#context.stroke();
   }
 
+  #drawTextAtPosition(options: TextOptions) {
+    this.#performCanvasTextOperation(options.attributes, () => {
+      let { x, y } = options.position;
+      if (options.normalizedAnchorOffset) {
+        const offsetX = options.normalizedAnchorOffset?.offsetX ?? 0;
+        const offsetY = options.normalizedAnchorOffset?.offsetY ?? 'baseline';
+        const measure = this.#measureTextWithContextReady(options.contents);
+        x += (-measure.size.x / 2) * (1 + offsetX);
+
+        if (offsetY === 'baseline') {
+          y += measure.baselineOffsetFromBottom;
+        } else {
+          y += (measure.size.y / 2) * (1 - offsetY);
+        }
+      }
+
+      this.#context.fillText(options.contents, x, y);
+    });
+  }
+
   #performCanvasTextOperation<T = undefined>(
     attributes: TextAttributes,
     op: () => T
@@ -142,49 +204,6 @@ export default class Canvas {
     this.#context.restore();
 
     return res;
-  }
-
-  drawTextAtPosition(
-    contents: string,
-    position: Vec2,
-    attributes: TextAttributes,
-    normalizedAnchorOffset: {
-      normalizedOffsetX?: number;
-      normalizedOffsetY?: number | 'baseline';
-    } = { normalizedOffsetX: 0, normalizedOffsetY: 'baseline' }
-  ) {
-    this.#performCanvasTextOperation(attributes, () => {
-      let { x, y } = position;
-      if (normalizedAnchorOffset) {
-        const measure = this.#measureTextWithContextReady(contents);
-        if (normalizedAnchorOffset.normalizedOffsetX !== undefined) {
-          x +=
-            (-measure.size.x / 2) *
-            (1 + normalizedAnchorOffset.normalizedOffsetX);
-        }
-
-        if (normalizedAnchorOffset.normalizedOffsetY !== undefined) {
-          if (normalizedAnchorOffset.normalizedOffsetY === 'baseline') {
-            y += measure.baselineOffsetFromBottom;
-          } else {
-            y +=
-              (measure.size.y / 2) *
-              (1 - normalizedAnchorOffset.normalizedOffsetY);
-          }
-        }
-      }
-
-      this.#context.fillText(contents, x, y);
-    });
-  }
-
-  measureText(
-    contents: string,
-    attributes: TextAttributes
-  ): { size: Vec2; baselineOffsetFromBottom: number } {
-    return this.#performCanvasTextOperation(attributes, () => {
-      return this.#measureTextWithContextReady(contents);
-    });
   }
 
   #measureTextWithContextReady(contents: string): {

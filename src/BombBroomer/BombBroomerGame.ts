@@ -125,26 +125,27 @@ export default class BombBroomerGame extends Game {
         });
 
         if (!this.#hasBombs[row][column] && numberOfBombs !== 0) {
-          canvas.drawTextAtPosition(
-            numberOfBombs.toString(),
-            rect.midpoint,
-            {
-              color: [
-                Color.blue,
-                Color.green,
-                Color.red,
-                Color.magenta,
-                Color.orange,
-                Color.yellow,
-                Color.white,
-              ][numberOfBombs - 1],
-              fontSize: 13,
+          const color = [
+            Color.blue,
+            Color.green,
+            Color.red,
+            Color.magenta,
+            Color.orange,
+            Color.yellow,
+            Color.white,
+          ][numberOfBombs - 1];
+          canvas.drawShape({
+            mode: 'text',
+            options: {
+              contents: numberOfBombs.toString(),
+              position: rect.midpoint,
+              attributes: { color, fontSize: 13 },
+              normalizedAnchorOffset: {
+                offsetX: 0,
+                offsetY: 0,
+              },
             },
-            {
-              normalizedOffsetX: 0,
-              normalizedOffsetY: 0,
-            }
-          );
+          });
         }
       }
     }
