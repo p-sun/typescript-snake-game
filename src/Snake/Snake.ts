@@ -14,7 +14,7 @@ export default class Snake {
   ) {}
 
   static createRandom(grid: Grid): Snake {
-    const { columnCount, rowCount } = grid;
+    const { columnCount, rowCount } = grid.size();
 
     // Choose a random location in the grid
     const column = randomIntInRange(2, columnCount - 2);
@@ -95,13 +95,14 @@ export default class Snake {
 
   hasCollision(grid: Grid): boolean {
     const { headPosition } = this;
+    const { rowCount, columnCount } = grid.size();
 
     // Check if the head went off the grid
     if (
       headPosition.column < 0 ||
       headPosition.row < 0 ||
-      headPosition.column >= grid.columnCount ||
-      headPosition.row >= grid.rowCount
+      headPosition.column >= columnCount ||
+      headPosition.row >= rowCount
     ) {
       return true;
     }

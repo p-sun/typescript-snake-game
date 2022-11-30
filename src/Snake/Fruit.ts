@@ -11,15 +11,15 @@ export default class Fruit {
 
   generateNewPosition(grid: Grid, snake: Snake) {
     let pos = {
-      row: randomIntInRange(0, grid.rowCount),
-      column: randomIntInRange(0, grid.columnCount),
+      row: randomIntInRange(0, grid.size().rowCount),
+      column: randomIntInRange(0, grid.size().columnCount),
     };
 
     // TODO - if you win and fill the WHOLE GRID this hangs
     while (snake.containsPosition(pos)) {
       pos = {
-        row: randomIntInRange(0, grid.rowCount),
-        column: randomIntInRange(0, grid.columnCount),
+        row: randomIntInRange(0, grid.size().rowCount),
+        column: randomIntInRange(0, grid.size().columnCount),
       };
     }
 

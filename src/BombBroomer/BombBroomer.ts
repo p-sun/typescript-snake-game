@@ -19,56 +19,53 @@ export default class BombBroomer extends Game {
   constructor(rootElement: HTMLElement) {
     super(rootElement);
 
-    this.#grid = new Grid();
-    this.#grid.columnCount = 20;
-    this.#grid.rowCount = 20;
-    this.#grid.cellSize = new Vec2(16, 16);
+    this.#grid = new Grid({
+      size: { columnCount: 20, rowCount: 20 },
+      cellSize: new Vec2(16, 16),
+      border: {
+        lineColor: Color.grey(0.5),
+        lineWidth: 2,
+      },
+      background: {
+        mode: 'custom',
+        colorer: ({ row, column }) => {
+          if (this.#hasBombs[row][column]) {
+            return Color.blue;
+          } else if (this.#cellData[row][column].kind === 'cleared') {
+            return Color.white;
+          }
+          return Color.grey(0.7);
+        },
+      },
+    });
 
     this.#hasBombs = [];
     this.#cellData = [];
 
-    for (let row = 0; row < this.#grid.rowCount; row++) {
-      this.#hasBombs.push(Array(this.#grid.columnCount).fill(false));
+    for (let row = 0; row < this.#grid.size().rowCount; row++) {
+      this.#hasBombs.push(Array(this.#grid.size().columnCount).fill(false));
 
       this.#cellData.push(
-        Array(this.#grid.columnCount).fill({
+        Array(this.#grid.size().columnCount).fill({
           kind: 'covered',
         })
       );
     }
 
     this.#generateBombLocations();
-
-    this.#grid.border = {
-      lineColor: Color.grey(0.5),
-      lineWidth: 2,
-    };
-
-    this.#grid.background = {
-      mode: 'custom',
-      colorer: ({ row, column }) => {
-        if (this.#hasBombs[row][column]) {
-          return Color.blue;
-        } else if (this.#cellData[row][column].kind === 'cleared') {
-          return Color.white;
-        }
-        return Color.grey(0.7);
-      },
-    };
-
-    this.canvas.size = this.#grid.totalSize;
+    this.canvas.size = this.#grid.totalSize();
   }
 
   #generateBombLocations() {
     const totalBombs = 80;
 
     for (let i = 0; i < totalBombs; i++) {
-      let column = randomIntInRange(0, this.#grid.columnCount);
-      let row = randomIntInRange(0, this.#grid.rowCount);
+      let column = randomIntInRange(0, this.#grid.size().columnCount);
+      let row = randomIntInRange(0, this.#grid.size().rowCount);
 
       while (this.#hasBombs[row][column]) {
-        column = randomIntInRange(0, this.#grid.columnCount);
-        row = randomIntInRange(0, this.#grid.rowCount);
+        column = randomIntInRange(0, this.#grid.size().columnCount);
+        row = randomIntInRange(0, this.#grid.size().rowCount);
       }
 
       this.#hasBombs[row][column] = true;
@@ -83,9 +80,9 @@ export default class BombBroomer extends Game {
         if (
           !(row === pos.row && column === pos.column) &&
           row >= 0 &&
-          row < this.#grid.rowCount &&
+          row < this.#grid.size().rowCount &&
           column >= 0 &&
-          column < this.#grid.columnCount &&
+          column < this.#grid.size().columnCount &&
           this.#hasBombs[row][column]
         ) {
           count++;
@@ -98,8 +95,8 @@ export default class BombBroomer extends Game {
   update(canvas: Canvas) {
     this.#grid.draw(canvas);
 
-    for (let row = 0; row < this.#grid.rowCount; row++) {
-      for (let column = 0; column < this.#grid.columnCount; column++) {
+    for (let row = 0; row < this.#grid.size().rowCount; row++) {
+      for (let column = 0; column < this.#grid.size().columnCount; column++) {
         const rect = this.#grid.cellContentRectAtPosition({ row, column });
 
         const numberOfBombs = this.#numberOfBombsNeighboringCell({
@@ -170,8 +167,8 @@ export default class BombBroomer extends Game {
         if (
           row >= 0 &&
           column >= 0 &&
-          row < this.#grid.rowCount &&
-          column < this.#grid.columnCount
+          row < this.#grid.size().rowCount &&
+          column < this.#grid.size().columnCount
         ) {
           if (
             !this.#numberOfBombsNeighboringCell({ row, column }) &&

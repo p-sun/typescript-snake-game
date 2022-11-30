@@ -20,27 +20,25 @@ export default class SnakeGame extends Game {
   constructor(rootElement: HTMLElement) {
     super(rootElement);
 
-    const grid = new Grid();
-    grid.rowCount = 34;
-    grid.columnCount = 34;
-    grid.cellSize = new Vec2(9, 9);
-    grid.background = {
-      mode: 'fill',
-      color: Color.grey(0.8),
-    };
-    grid.border = {
-      lineColor: Color.grey(0.78),
-      lineWidth: 1,
-    };
+    this.#grid = new Grid({
+      size: { rowCount: 34, columnCount: 34 },
+      cellSize: new Vec2(9, 9),
+      background: {
+        mode: 'fill',
+        color: Color.grey(0.8),
+      },
+      border: {
+        lineColor: Color.grey(0.78),
+        lineWidth: 1,
+      },
+    });
 
-    this.#grid = grid;
-
-    this.canvas.size = grid.totalSize;
+    this.canvas.size = this.#grid.totalSize();
 
     this.#snake = Snake.createRandom(this.#grid);
 
     this.#fruit = new Fruit();
-    this.#fruit.generateNewPosition(grid, this.#snake);
+    this.#fruit.generateNewPosition(this.#grid, this.#snake);
 
     this.#snakeRenderer = new SnakeRenderer({
       color: Color.cyan,
