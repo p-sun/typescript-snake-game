@@ -2,8 +2,9 @@ import Canvas, { CanvasMouseEvent } from '../Canvas';
 import Game from '../Game';
 import Color from '../GenericModels/Color';
 import { Direction } from '../GenericModels/Direction';
+import { GridPositionEqual, GridSize } from '../GenericModels/Grid';
 import Vec2 from '../GenericModels/Vec2';
-import GridRenderer, { GridPosition, GridPositionEqual } from '../GridRenderer';
+import GridRenderer from '../GridRenderer';
 import Fruit from './Fruit';
 import FruitRenderer from './FruitRenderer';
 import Snake from './Snake';
@@ -13,15 +14,16 @@ export default class SnakeGame extends Game {
   #snake: Snake;
   #snakeRenderer: SnakeRenderer;
   #playState: 'waiting' | 'playing' | 'lost' = 'waiting';
-  #grid: GridRenderer;
+  #gridSize: GridSize;
+  #gridRenderer: GridRenderer;
   #fruit: Fruit;
   #fruitRenderer: FruitRenderer;
 
   constructor(rootElement: HTMLElement) {
     super(rootElement);
 
-    this.#grid = new GridRenderer({
-      size: { rowCount: 34, columnCount: 34 },
+    this.#gridSize = { rowCount: 34, columnCount: 34 };
+    this.#gridRenderer = new GridRenderer({
       cellSize: new Vec2(9, 9),
       background: {
         mode: 'fill',
@@ -33,12 +35,12 @@ export default class SnakeGame extends Game {
       },
     });
 
-    this.canvas.size = this.#grid.totalSize();
+    this.canvas.size = this.#gridRenderer.totalSize(this.#gridSize);
 
-    this.#snake = Snake.createRandom(this.#grid);
+    this.#snake = Snake.createRandom(this.#gridSize);
 
     this.#fruit = new Fruit();
-    this.#fruit.generateNewPosition(this.#grid, this.#snake);
+    this.#fruit.generateNewPosition(this.#gridSize, this.#snake);
 
     this.#snakeRenderer = new SnakeRenderer({
       color: Color.cyan,
@@ -52,7 +54,7 @@ export default class SnakeGame extends Game {
   update(canvas: Canvas) {
     if (this.#playState === 'playing') {
       const newSnake = this.#snake.tick();
-      const hasCollision = newSnake.hasCollision(this.#grid);
+      const hasCollision = newSnake.hasCollision(this.#gridSize);
 
       if (hasCollision) {
         this.#playState = 'lost';
@@ -62,13 +64,13 @@ export default class SnakeGame extends Game {
 
       if (GridPositionEqual(this.#snake.headPosition, this.#fruit.position)) {
         this.#snake = this.#snake.extend();
-        this.#fruit.generateNewPosition(this.#grid, this.#snake);
+        this.#fruit.generateNewPosition(this.#gridSize, this.#snake);
       }
     }
 
-    this.#grid.draw(canvas);
-    this.#snakeRenderer.draw(canvas, this.#grid, this.#snake);
-    this.#fruitRenderer.draw(canvas, this.#grid, this.#fruit);
+    this.#gridRenderer.draw(canvas, this.#gridSize);
+    this.#snakeRenderer.draw(canvas, this.#gridRenderer, this.#snake);
+    this.#fruitRenderer.draw(canvas, this.#gridRenderer, this.#fruit);
 
     if (this.#playState !== 'playing') {
       canvas.drawRect(Vec2.zero, canvas.size, Color.black, 0.5);

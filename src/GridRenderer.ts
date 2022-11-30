@@ -1,12 +1,12 @@
 import Canvas from './Canvas';
 import Color from './GenericModels/Color';
+import { GridPosition, GridSize } from './GenericModels/Grid';
 import Rect from './GenericModels/Rect';
 import Vec2 from './GenericModels/Vec2';
 import { clamp } from './Utils';
 
 export type GridRenderConfig = {
   origin: Vec2;
-  size: GridSize;
   cellSize: Vec2;
   background: GridBackground;
   border: GridBorder;
@@ -14,10 +14,6 @@ export type GridRenderConfig = {
 
 const defaultConfig: GridRenderConfig = {
   origin: Vec2.zero,
-  size: {
-    rowCount: 10,
-    columnCount: 10,
-  },
   cellSize: new Vec2(20, 20),
   background: {
     mode: 'checker',
@@ -30,20 +26,6 @@ const defaultConfig: GridRenderConfig = {
     style: 'solid',
   },
 };
-
-export type GridPosition = {
-  row: number;
-  column: number;
-};
-
-export type GridSize = {
-  rowCount: number;
-  columnCount: number;
-};
-
-export function GridPositionEqual(a: GridPosition, b: GridPosition) {
-  return a.row === b.row && a.column === b.column;
-}
 
 export type GridBackground =
   | { mode: 'fill'; color: Color }
@@ -63,16 +45,12 @@ export default class GridRenderer {
     this.#config = { ...defaultConfig, ...config };
   }
 
-  size(): GridSize {
-    return this.#config.size;
-  }
-
-  totalSize(): Vec2 {
+  totalSize(gridSize: GridSize): Vec2 {
     const {
       cellSize,
-      size: { rowCount, columnCount },
       border: { lineWidth },
     } = this.#config;
+    const { rowCount, columnCount } = gridSize;
 
     const width = cellSize.x * columnCount + lineWidth * (columnCount + 1);
     const height = cellSize.y * rowCount + lineWidth * (rowCount + 1);
@@ -80,20 +58,16 @@ export default class GridRenderer {
     return new Vec2(width, height);
   }
 
-  draw(canvas: Canvas) {
-    const {
-      background,
-      border,
-      origin,
-      size: { rowCount, columnCount },
-    } = this.#config;
-    const totalSize = this.totalSize();
+  draw(canvas: Canvas, gridSize: GridSize) {
+    const { background, border, origin } = this.#config;
+    const totalSize = this.totalSize(gridSize);
+    const { rowCount, columnCount } = gridSize;
 
     if (background) {
       if (background.mode === 'fill') {
         canvas.drawRect(origin, totalSize, background.color);
       } else {
-        this.forEachCell((cellPos, rect) => {
+        this.forEachCell(gridSize, (cellPos, rect) => {
           const color =
             background.mode === 'checker'
               ? (cellPos.row + cellPos.column) % 2
@@ -149,10 +123,11 @@ export default class GridRenderer {
     return origin.add(new Vec2(d, d));
   }
 
-  forEachCell(fn: (cellPos: GridPosition, rect: Rect) => void) {
-    const {
-      size: { columnCount, rowCount },
-    } = this.#config;
+  forEachCell(
+    gridSize: GridSize,
+    fn: (cellPos: GridPosition, rect: Rect) => void
+  ) {
+    const { rowCount, columnCount } = gridSize;
 
     for (let column = 0; column < columnCount; column++) {
       for (let row = 0; row < rowCount; row++) {
@@ -178,13 +153,13 @@ export default class GridRenderer {
     return new Rect(this.cellContentOrigin.add(offset), cellSize);
   }
 
-  cellAtPosition(pos: Vec2): GridPosition {
+  cellAtPosition(gridSize: GridSize, pos: Vec2): GridPosition {
     const {
       origin,
       cellSize,
-      size: { rowCount, columnCount },
       border: { lineWidth },
     } = this.#config;
+    const { rowCount, columnCount } = gridSize;
 
     const { x, y } = pos.sub(origin);
 

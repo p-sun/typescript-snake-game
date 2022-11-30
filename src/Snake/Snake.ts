@@ -3,7 +3,11 @@ import {
   OppositeDirection,
   Vec2ForDirection,
 } from '../GenericModels/Direction';
-import GridRenderer, { GridPosition, GridPositionEqual } from '../GridRenderer';
+import {
+  GridPosition,
+  GridPositionEqual,
+  GridSize,
+} from '../GenericModels/Grid';
 import { randomIntInRange } from '../Utils';
 
 export default class Snake {
@@ -13,8 +17,8 @@ export default class Snake {
     public readonly segmentsToAdd: number
   ) {}
 
-  static createRandom(grid: GridRenderer): Snake {
-    const { columnCount, rowCount } = grid.size();
+  static createRandom(gridSize: GridSize): Snake {
+    const { columnCount, rowCount } = gridSize;
 
     // Choose a random location in the grid
     const column = randomIntInRange(2, columnCount - 2);
@@ -93,9 +97,9 @@ export default class Snake {
     );
   }
 
-  hasCollision(grid: GridRenderer): boolean {
+  hasCollision(gridSize: GridSize): boolean {
     const { headPosition } = this;
-    const { rowCount, columnCount } = grid.size();
+    const { rowCount, columnCount } = gridSize;
 
     // Check if the head went off the grid
     if (
