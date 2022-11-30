@@ -2,7 +2,7 @@ import Canvas, { CanvasKeyEvent, CanvasMouseEvent } from './Canvas';
 import Vec2 from './GenericModels/Vec2';
 
 export default abstract class Game {
-  abstract update(canvas: Canvas): void;
+  abstract onUpdate(canvas: Canvas): void;
   abstract onKeyDown(event: CanvasKeyEvent): void;
   abstract onMouseEvent(event: CanvasMouseEvent, pos: Vec2): void;
 
@@ -20,7 +20,7 @@ export default abstract class Game {
 
   run(fps: number = 60) {
     window.setInterval(() => {
-      this.update(this.canvas);
+      this.onUpdate(this.canvas);
     }, 1000 / fps);
   }
 }

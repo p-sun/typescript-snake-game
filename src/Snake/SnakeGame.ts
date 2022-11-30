@@ -58,7 +58,7 @@ export default class SnakeGame extends Game {
     this.canvas.size = this.#gridRenderer.totalSize(this.#gridSize);
   }
 
-  update(canvas: Canvas) {
+  onUpdate(canvas: Canvas) {
     if (this.#playState === 'playing') {
       const newSnake = this.#snake.tick();
       const hasCollision = newSnake.hasCollision(this.#gridSize);

@@ -109,7 +109,7 @@ export default class BombBroomerGame extends Game {
     return count;
   }
 
-  update(canvas: Canvas) {
+  onUpdate(canvas: Canvas) {
     this.#gridRenderer.draw(canvas, this.#gridSize);
 
     for (let row = 0; row < this.rowCount; row++) {

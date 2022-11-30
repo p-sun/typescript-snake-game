@@ -41,7 +41,7 @@ export type GridBorder = {
 export default class GridRenderer {
   #config: GridRenderConfig;
 
-  constructor(public config: Partial<GridRenderConfig>) {
+  constructor(config: Partial<GridRenderConfig>) {
     this.#config = { ...defaultConfig, ...config };
   }
 

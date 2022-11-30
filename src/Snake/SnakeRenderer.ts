@@ -11,7 +11,7 @@ export type SnakeRenderConfig = {
 };
 
 export default class SnakeRenderer {
-  constructor(public readonly renderConfig: SnakeRenderConfig) {}
+  constructor(public readonly config: SnakeRenderConfig) {}
 
   draw(canvas: Canvas, grid: GridRenderer, snake: Snake) {
     const positions = snake.positions;
@@ -19,14 +19,10 @@ export default class SnakeRenderer {
 
     positions.forEach((pos, index) => {
       const percent = positions.length > 1 ? index / (positions.length - 1) : 1;
-      grid.fillCell(
-        canvas,
-        pos,
-        this.renderConfig.color.lerp(Color.black, percent)
-      );
+      grid.fillCell(canvas, pos, this.config.color.lerp(Color.black, percent));
     });
 
-    grid.drawEllipseInCell(canvas, headPosition, this.renderConfig.eyeColor, {
+    grid.drawEllipseInCell(canvas, headPosition, this.config.eyeColor, {
       fillPercent: new Vec2(0.3, 0.3),
       normalizedOffset: this.#eyeNormalizedOffset(snake.moveDirection),
     });
