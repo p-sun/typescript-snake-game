@@ -1,7 +1,6 @@
 import Canvas, { CanvasKeyEvent, CanvasMouseEvent } from '../Canvas';
 import Game from '../Game';
 import Color from '../GenericModels/Color';
-import { Direction } from '../GenericModels/Direction';
 import { GridPositionEqual, GridSize } from '../GenericModels/Grid';
 import Vec2 from '../GenericModels/Vec2';
 import GridRenderer from '../GridRenderer';
@@ -28,11 +27,9 @@ export default class SnakeGame extends Game {
     // Game Logic
 
     this.#gridSize = { rowCount: 34, columnCount: 34 };
-
     this.#snake = Snake.createRandom(this.#gridSize);
-
     this.#fruit = new Fruit();
-    this.#fruit.generateNewPosition(this.#gridSize, this.#snake);
+    this.restartGame();
 
     // Rendering Logic
 
@@ -56,6 +53,13 @@ export default class SnakeGame extends Game {
     });
 
     this.canvas.size = this.#gridRenderer.totalSize(this.#gridSize);
+  }
+
+  restartGame() {
+    this.#snake = Snake.createRandom(this.#gridSize);
+
+    this.#fruit = new Fruit();
+    this.#fruit.generateNewPosition(this.#gridSize, this.#snake);
   }
 
   onUpdate(canvas: Canvas) {
@@ -121,6 +125,10 @@ export default class SnakeGame extends Game {
     if (key === 'arrow') {
       this.#snake = this.#snake.changeDirection(event.direction);
     } else if (key === 'space') {
+      if (this.#playState === 'lost') {
+        this.restartGame();
+      }
+
       this.#playState = 'playing';
     }
   }
