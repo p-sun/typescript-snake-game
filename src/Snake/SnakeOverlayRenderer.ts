@@ -13,12 +13,12 @@ type SnakeOverlayTexts = {
 export default class SnakeOverlayRenderer {
   static draw(
     canvas: Canvas,
-    snakeLength: number,
-    playStatus: SnakePlayStatus
+    playStatus: SnakePlayStatus,
+    snakeLength: number
   ) {
     const overlayTexts = SnakeOverlayRenderer.getOverlayTexts(
-      snakeLength,
-      playStatus
+      playStatus,
+      snakeLength
     );
     if (overlayTexts) {
       this.#drawOverlay(canvas, overlayTexts);
@@ -26,8 +26,8 @@ export default class SnakeOverlayRenderer {
   }
 
   static getOverlayTexts(
-    snakeLength: number,
-    playStatus: SnakePlayStatus
+    playStatus: SnakePlayStatus,
+    snakeLength: number
   ): SnakeOverlayTexts | undefined {
     if (playStatus === 'playing') {
       return undefined;

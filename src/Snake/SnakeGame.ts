@@ -66,25 +66,32 @@ export default class SnakeGame extends Game {
   onUpdate(canvas: Canvas) {
     if (this.#playStatus === 'playing') {
       const newSnake = this.#snake.tick();
-      const hasCollision = newSnake.hasCollision(this.#gridSize);
-
-      if (hasCollision) {
-        this.#playStatus = 'lost';
-      } else {
-        this.#snake = newSnake;
-      }
 
       if (GridPositionEqual(this.#snake.headPosition, this.#fruit.position)) {
         this.#snake = this.#snake.extend();
         this.#fruit.generateNewPosition(this.#gridSize, this.#snake);
       }
+
+      const hasCollision = newSnake.hasCollision(this.#gridSize);
+      if (hasCollision) {
+        this.#playStatus = 'lost';
+      } else {
+        this.#snake = newSnake;
+      }
     }
 
+    this.#drawSnake(canvas);
+    this.#drawOverlay(canvas);
+  }
+
+  #drawSnake(canvas: Canvas) {
     this.#gridRenderer.draw(canvas);
     this.#snakeRenderer.draw(canvas, this.#gridRenderer, this.#snake);
     this.#fruitRenderer.draw(canvas, this.#gridRenderer, this.#fruit);
+  }
 
-    SnakeOverlayRenderer.draw(canvas, this.#snake.length, this.#playStatus);
+  #drawOverlay(canvas: Canvas) {
+    SnakeOverlayRenderer.draw(canvas, this.#playStatus, this.#snake.length);
   }
 
   onKeyDown(event: CanvasKeyEvent) {
