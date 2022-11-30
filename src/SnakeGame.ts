@@ -1,11 +1,12 @@
 import Canvas, { CanvasMouseEvent } from './Canvas';
 import Color from './Color';
 import { Direction } from './Direction';
+import Fruit from './Fruit';
+import FruitRenderer from './FruitRenderer';
 import Game from './Game';
 import Grid, { GridPosition, GridPositionEqual } from './Grid';
 import Snake from './Snake';
 import SnakeRenderer from './SnakeRenderer';
-import { randomIntInRange } from './Utils';
 import Vec2 from './Vec2';
 
 export default class SnakeGame extends Game {
@@ -13,8 +14,8 @@ export default class SnakeGame extends Game {
   #snakeRenderer: SnakeRenderer;
   #playState: 'waiting' | 'playing' | 'lost' = 'waiting';
   #grid: Grid;
-  #fruitLocation: GridPosition;
-  #fruitColor: Color = Color.magenta;
+  #fruit: Fruit;
+  #fruitRenderer: FruitRenderer;
 
   constructor(rootElement: HTMLElement) {
     super(rootElement);
@@ -37,12 +38,17 @@ export default class SnakeGame extends Game {
     this.canvas.size = grid.totalSize;
 
     this.#snake = Snake.createRandom(this.#grid);
+
+    this.#fruit = new Fruit();
+    this.#fruit.generateNewPosition(grid, this.#snake);
+
     this.#snakeRenderer = new SnakeRenderer({
       color: Color.cyan,
       eyeColor: Color.blue,
     });
-
-    this.#fruitLocation = this.#generateFruitLocation();
+    this.#fruitRenderer = new FruitRenderer({
+      color: Color.magenta,
+    });
   }
 
   update(canvas: Canvas) {
@@ -56,15 +62,15 @@ export default class SnakeGame extends Game {
         this.#snake = newSnake;
       }
 
-      if (GridPositionEqual(this.#snake.headPosition, this.#fruitLocation)) {
+      if (GridPositionEqual(this.#snake.headPosition, this.#fruit.position)) {
         this.#snake = this.#snake.extend();
-        this.#fruitLocation = this.#generateFruitLocation();
+        this.#fruit.generateNewPosition(this.#grid, this.#snake);
       }
     }
 
     this.#grid.draw(canvas);
     this.#snakeRenderer.draw(canvas, this.#grid, this.#snake);
-    this.#grid.fillCell(canvas, this.#fruitLocation, this.#fruitColor);
+    this.#fruitRenderer.draw(canvas, this.#grid, this.#fruit);
 
     if (this.#playState !== 'playing') {
       canvas.drawRect(Vec2.zero, canvas.size, Color.black, 0.5);
@@ -101,23 +107,6 @@ export default class SnakeGame extends Game {
         );
       }
     }
-  }
-
-  #generateFruitLocation(): GridPosition {
-    let pos = {
-      row: randomIntInRange(0, this.#grid.rowCount),
-      column: randomIntInRange(0, this.#grid.columnCount),
-    };
-
-    // TODO - if you win and fill the WHOLE GRID this hangs
-    while (this.#snake.containsPosition(pos)) {
-      pos = {
-        row: randomIntInRange(0, this.#grid.rowCount),
-        column: randomIntInRange(0, this.#grid.columnCount),
-      };
-    }
-
-    return pos;
   }
 
   onKeyDown(event: KeyboardEvent) {
