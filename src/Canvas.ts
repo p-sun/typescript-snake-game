@@ -1,10 +1,15 @@
 import Color from './GenericModels/Color';
+import { Direction } from './GenericModels/Direction';
 import Vec2 from './GenericModels/Vec2';
 
 export type TextAttributes = {
   color: Color;
   fontSize: number;
 };
+
+export type CanvasKeyEvent =
+  | { key: 'space' }
+  | { key: 'arrow'; direction: Direction };
 
 export type CanvasMouseEvent =
   | { mode: 'move' }
@@ -184,17 +189,44 @@ export default class Canvas {
     };
   }
 
-  #keyboardListener: ((evt: KeyboardEvent) => void) | undefined = undefined;
+  #keyboardListener: ((evt: CanvasKeyEvent) => void) | undefined = undefined;
+  #_keyboardListener: ((evt: KeyboardEvent) => void) | undefined = undefined;
 
-  setKeyDownListener(fn: (key: KeyboardEvent) => void) {
+  setKeyDownListener(fn: (key: CanvasKeyEvent) => void) {
+    this.unsetKeyDownListener();
+
     this.#keyboardListener = fn;
-    window.addEventListener('keydown', this.#keyboardListener);
+    this.#_keyboardListener = (key) => {
+      this.#canvasKeyboardListener(key);
+    };
+    window.addEventListener('keydown', this.#_keyboardListener);
   }
 
   unsetKeyDownListener() {
-    if (this.#keyboardListener) {
-      window.removeEventListener('keydown', this.#keyboardListener);
+    if (this.#_keyboardListener) {
+      window.removeEventListener('keydown', this.#_keyboardListener);
+      this.#_keyboardListener = undefined;
       this.#keyboardListener = undefined;
+    }
+  }
+
+  #canvasKeyboardListener(event: KeyboardEvent) {
+    const listener = this.#keyboardListener;
+    if (!listener) {
+      return;
+    }
+
+    const { key } = event;
+    if (key === 'ArrowUp') {
+      listener({ key: 'arrow', direction: Direction.Up });
+    } else if (key === 'ArrowDown') {
+      listener({ key: 'arrow', direction: Direction.Down });
+    } else if (key === 'ArrowLeft') {
+      listener({ key: 'arrow', direction: Direction.Left });
+    } else if (key === 'ArrowRight') {
+      listener({ key: 'arrow', direction: Direction.Right });
+    } else if (key === ' ') {
+      listener({ key: 'space' });
     }
   }
 

@@ -1,4 +1,4 @@
-import Canvas, { CanvasMouseEvent } from '../Canvas';
+import Canvas, { CanvasKeyEvent, CanvasMouseEvent } from '../Canvas';
 import Game from '../Game';
 import Color from '../GenericModels/Color';
 import { Direction } from '../GenericModels/Direction';
@@ -116,18 +116,11 @@ export default class SnakeGame extends Game {
     }
   }
 
-  onKeyDown(event: KeyboardEvent) {
+  onKeyDown(event: CanvasKeyEvent) {
     const { key } = event;
-
-    if (key === 'ArrowUp') {
-      this.#snake = this.#snake.changeDirection(Direction.Up);
-    } else if (key === 'ArrowDown') {
-      this.#snake = this.#snake.changeDirection(Direction.Down);
-    } else if (key === 'ArrowLeft') {
-      this.#snake = this.#snake.changeDirection(Direction.Left);
-    } else if (key === 'ArrowRight') {
-      this.#snake = this.#snake.changeDirection(Direction.Right);
-    } else if (key === ' ') {
+    if (key === 'arrow') {
+      this.#snake = this.#snake.changeDirection(event.direction);
+    } else if (key === 'space') {
       this.#playState = 'playing';
     }
   }

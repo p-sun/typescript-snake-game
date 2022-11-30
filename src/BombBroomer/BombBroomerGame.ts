@@ -1,4 +1,4 @@
-import Canvas, { CanvasMouseEvent } from '../Canvas';
+import Canvas, { CanvasKeyEvent, CanvasMouseEvent } from '../Canvas';
 import Game from '../Game';
 import Color from '../GenericModels/Color';
 import { GridPosition, GridSize } from '../GenericModels/Grid';
@@ -150,7 +150,7 @@ export default class BombBroomerGame extends Game {
     }
   }
 
-  onKeyDown(event: KeyboardEvent) {}
+  onKeyDown(event: CanvasKeyEvent) {}
 
   onMouseEvent(event: CanvasMouseEvent, pos: Vec2) {
     if (event.mode === 'button' && event.state === 'down') {
