@@ -1,24 +1,15 @@
-import Canvas from './Canvas';
-import Color from './Color';
 import { Direction, OppositeDirection, Vec2ForDirection } from './Direction';
 import Grid, { GridPosition, GridPositionEqual } from './Grid';
 import { randomIntInRange } from './Utils';
-import Vec2 from './Vec2';
-
-export type SnakeRenderConfig = {
-  color: Color;
-  eyeColor: Color;
-};
 
 export default class Snake {
   private constructor(
-    public readonly renderConfig: SnakeRenderConfig,
     public readonly positions: GridPosition[],
     public readonly moveDirection: Direction,
     public readonly segmentsToAdd: number
   ) {}
 
-  static createRandom(grid: Grid, renderConfig: SnakeRenderConfig): Snake {
+  static createRandom(grid: Grid): Snake {
     const { columnCount, rowCount } = grid;
 
     // Choose a random location in the grid
@@ -43,7 +34,6 @@ export default class Snake {
     const p = { row, column };
 
     return new Snake(
-      renderConfig,
       [p, Snake.#moveGridPosition(p, OppositeDirection(moveDirection))],
       moveDirection,
       0
@@ -62,35 +52,6 @@ export default class Snake {
     return this.positions[0];
   }
 
-  draw(canvas: Canvas, grid: Grid) {
-    this.positions.forEach((pos, index) => {
-      const percent =
-        this.positions.length > 1 ? index / (this.positions.length - 1) : 1;
-      grid.fillCell(
-        canvas,
-        pos,
-        this.renderConfig.color.lerp(Color.black, percent)
-      );
-    });
-
-    const { headPosition } = this;
-
-    grid.drawEllipseInCell(canvas, headPosition, this.renderConfig.eyeColor, {
-      fillPercent: new Vec2(0.3, 0.3),
-      normalizedOffset: this.#eyeNormalizedOffset,
-    });
-  }
-
-  get #moveDirRotationAngleRad(): number {
-    const d = Vec2ForDirection(this.moveDirection);
-    return d.signedAngleRadTo(Vec2.right);
-  }
-
-  get #eyeNormalizedOffset(): Vec2 {
-    const ang = this.#moveDirRotationAngleRad;
-    return new Vec2(0.4, -0.25).rotate(ang);
-  }
-
   tick(): Snake {
     const newPositions = this.positions.slice();
     newPositions.unshift(
@@ -101,7 +62,6 @@ export default class Snake {
     }
 
     return new Snake(
-      this.renderConfig,
       newPositions,
       this.moveDirection,
       Math.max(0, this.segmentsToAdd - 1)
@@ -114,12 +74,7 @@ export default class Snake {
       return this;
     }
 
-    return new Snake(
-      this.renderConfig,
-      this.positions,
-      direction,
-      this.segmentsToAdd
-    );
+    return new Snake(this.positions, direction, this.segmentsToAdd);
   }
 
   get length(): number {
@@ -128,7 +83,6 @@ export default class Snake {
 
   extend(): Snake {
     return new Snake(
-      this.renderConfig,
       this.positions,
       this.moveDirection,
       this.segmentsToAdd + 1

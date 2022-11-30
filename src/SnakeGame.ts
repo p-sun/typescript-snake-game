@@ -3,11 +3,14 @@ import Color from './Color';
 import { Direction } from './Direction';
 import Game from './Game';
 import Grid, { GridPosition, GridPositionEqual } from './Grid';
+import Snake from './Snake';
+import SnakeRenderer from './SnakeRenderer';
 import { randomIntInRange } from './Utils';
 import Vec2 from './Vec2';
 
 export default class SnakeGame extends Game {
   #snake: Snake;
+  #snakeRenderer: SnakeRenderer;
   #playState: 'waiting' | 'playing' | 'lost' = 'waiting';
   #grid: Grid;
   #fruitLocation: GridPosition;
@@ -33,7 +36,8 @@ export default class SnakeGame extends Game {
 
     this.canvas.size = grid.totalSize;
 
-    this.#snake = Snake.createRandom(this.#grid, {
+    this.#snake = Snake.createRandom(this.#grid);
+    this.#snakeRenderer = new SnakeRenderer({
       color: Color.cyan,
       eyeColor: Color.blue,
     });
@@ -59,7 +63,7 @@ export default class SnakeGame extends Game {
     }
 
     this.#grid.draw(canvas);
-    this.#snake.draw(canvas, this.#grid);
+    this.#snakeRenderer.draw(canvas, this.#grid, this.#snake);
     this.#grid.fillCell(canvas, this.#fruitLocation, this.#fruitColor);
 
     if (this.#playState !== 'playing') {
