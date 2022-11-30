@@ -7,11 +7,14 @@ import GridRenderer from '../GridRenderer';
 import Fruit from './Fruit';
 import FruitRenderer from './FruitRenderer';
 import Snake from './Snake';
+import SnakeOverlayRenderer from './SnakeOverlayRenderer';
 import SnakeRenderer from './SnakeRenderer';
+
+export type SnakePlayStatus = 'waiting' | 'playing' | 'lost';
 
 export default class SnakeGame extends Game {
   // Game Logic
-  #playState: 'waiting' | 'playing' | 'lost' = 'waiting';
+  #playStatus: SnakePlayStatus = 'waiting';
   #gridSize: GridSize;
   #snake: Snake;
   #fruit: Fruit;
@@ -63,12 +66,12 @@ export default class SnakeGame extends Game {
   }
 
   onUpdate(canvas: Canvas) {
-    if (this.#playState === 'playing') {
+    if (this.#playStatus === 'playing') {
       const newSnake = this.#snake.tick();
       const hasCollision = newSnake.hasCollision(this.#gridSize);
 
       if (hasCollision) {
-        this.#playState = 'lost';
+        this.#playStatus = 'lost';
       } else {
         this.#snake = newSnake;
       }
@@ -83,67 +86,7 @@ export default class SnakeGame extends Game {
     this.#snakeRenderer.draw(canvas, this.#gridRenderer, this.#snake);
     this.#fruitRenderer.draw(canvas, this.#gridRenderer, this.#fruit);
 
-    if (this.#playState !== 'playing') {
-      canvas.drawShape({
-        mode: 'rect',
-        options: {
-          origin: Vec2.zero,
-          size: canvas.size,
-          color: Color.black,
-          alpha: 0.5,
-        },
-      });
-
-      canvas.drawShape({
-        mode: 'text',
-        options: {
-          contents: `Press [space] to ${
-            this.#playState === 'lost' ? 're' : ''
-          }start!`,
-          position: canvas.midpoint,
-          attributes: {
-            color: Color.white,
-            fontSize: 30,
-          },
-          normalizedAnchorOffset: {
-            offsetX: 0,
-            offsetY: 0,
-          },
-        },
-      });
-
-      if (this.#playState === 'lost') {
-        canvas.drawShape({
-          mode: 'text',
-          options: {
-            contents: `Snake length: ${this.#snake.length}`,
-            position: canvas.midpoint.mapY((y) => y - 32),
-            attributes: {
-              color: new Color(1, 0.3, 0.2),
-              fontSize: 36,
-            },
-            normalizedAnchorOffset: {
-              offsetX: 0,
-            },
-          },
-        });
-
-        canvas.drawShape({
-          mode: 'text',
-          options: {
-            contents: '☠️😭☠️',
-            position: canvas.midpoint.mapY((y) => y - 70),
-            attributes: {
-              color: Color.black,
-              fontSize: 40,
-            },
-            normalizedAnchorOffset: {
-              offsetX: 0,
-            },
-          },
-        });
-      }
-    }
+    SnakeOverlayRenderer.draw(canvas, this.#snake.length, this.#playStatus);
   }
 
   onKeyDown(event: CanvasKeyEvent) {
@@ -151,11 +94,11 @@ export default class SnakeGame extends Game {
     if (key === 'arrow') {
       this.#snake = this.#snake.changeDirection(event.direction);
     } else if (key === 'space') {
-      if (this.#playState === 'lost') {
+      if (this.#playStatus === 'lost') {
         this.restartGame();
       }
 
-      this.#playState = 'playing';
+      this.#playStatus = 'playing';
     }
   }
 
