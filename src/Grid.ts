@@ -169,14 +169,14 @@ export default class Grid {
     thickness: number = 1
   ) {
     canvas.drawLine(
-      this.convertNormalizedPositionInCell(start),
-      this.convertNormalizedPositionInCell(end),
+      this.#convertNormalizedPositionInCell(start),
+      this.#convertNormalizedPositionInCell(end),
       color,
       thickness
     );
   }
 
-  convertNormalizedPositionInCell(coord: {
+  #convertNormalizedPositionInCell(coord: {
     cellPos: GridPosition;
     normalizedOffset: Vec2;
   }): Vec2 {
@@ -210,7 +210,7 @@ export default class Grid {
 
     const normalizedOffset = options?.normalizedOffset ?? Vec2.zero;
 
-    const p = this.convertNormalizedPositionInCell({
+    const p = this.#convertNormalizedPositionInCell({
       cellPos,
       normalizedOffset,
     });
