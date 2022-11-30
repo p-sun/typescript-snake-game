@@ -16,6 +16,17 @@ export type CanvasMouseEvent =
   | { mode: 'boundary'; boundary: 'enter' | 'exit' }
   | { mode: 'button'; state: 'up' | 'down'; button: 'primary' | 'secondary' };
 
+export type DrawableShape =
+  | { mode: 'line'; options: LineOptions }
+
+type LineOptions = {
+  start: Vec2;
+  end: Vec2;
+  color: Color;
+  thickness?: number;
+  lineDash?: number[];
+};
+
 export default class Canvas {
   #context: CanvasRenderingContext2D;
   #size: Vec2;
@@ -102,20 +113,21 @@ export default class Canvas {
     this.drawRect(Vec2.zero, this.size, color);
   }
 
-  drawLine(
-    start: Vec2,
-    end: Vec2,
-    color: Color,
-    thickness: number = 1,
-    lineDash: number[] = []
-  ) {
-    this.#context.strokeStyle = color.asHexString();
-    this.#context.lineWidth = thickness;
-    this.#context.setLineDash(lineDash);
+  drawShape(shape: DrawableShape) {
+    switch (shape.mode) {
+      case 'line':
+        this.#drawLine(shape.options);
+    }
+  }
+
+  #drawLine(options: LineOptions) {
+    this.#context.strokeStyle = options.color.asHexString();
+    this.#context.lineWidth = options.thickness ?? 1;
+    this.#context.setLineDash(options.lineDash ?? []);
 
     this.#context.beginPath();
-    this.#context.moveTo(start.x, start.y);
-    this.#context.lineTo(end.x, end.y);
+    this.#context.moveTo(options.start.x, options.start.y);
+    this.#context.lineTo(options.end.x, options.end.y);
     this.#context.stroke();
   }
 

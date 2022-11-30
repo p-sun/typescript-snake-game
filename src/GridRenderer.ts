@@ -84,20 +84,23 @@ export default class GridRenderer {
       const { lineWidth, lineColor } = border;
       const shift = new Vec2(-lineWidth / 2, -lineWidth / 2);
 
-      const dashes = border.style === 'dashed' ? [lineWidth * 2] : [];
+      const lineDash = border.style === 'dashed' ? [lineWidth * 2] : [];
 
       for (let column = 0; column <= columnCount; column++) {
         const p = this.cellContentRectAtPosition({ row: 0, column }).origin.add(
           shift
         );
 
-        canvas.drawLine(
-          p,
-          p.mapY((y) => y + totalSize.y),
-          lineColor,
-          lineWidth,
-          dashes
-        );
+        canvas.drawShape({
+          mode: 'line',
+          options: {
+            start: p,
+            end: p.mapY((y) => y + totalSize.y),
+            color: lineColor,
+            thickness: lineWidth,
+            lineDash,
+          },
+        });
       }
 
       for (let row = 0; row <= rowCount; row++) {
@@ -105,13 +108,16 @@ export default class GridRenderer {
           shift
         );
 
-        canvas.drawLine(
-          p,
-          p.mapX((x) => x + totalSize.x),
-          lineColor,
-          lineWidth,
-          dashes
-        );
+        canvas.drawShape({
+          mode: 'line',
+          options: {
+            start: p,
+            end: p.mapX((x) => x + totalSize.x),
+            color: lineColor,
+            thickness: lineWidth,
+            lineDash,
+          },
+        });
       }
     }
   }
@@ -187,12 +193,15 @@ export default class GridRenderer {
     color: Color,
     thickness: number = 1
   ) {
-    canvas.drawLine(
-      this.#convertNormalizedPositionInCell(start),
-      this.#convertNormalizedPositionInCell(end),
-      color,
-      thickness
-    );
+    canvas.drawShape({
+      mode: 'line',
+      options: {
+        start: this.#convertNormalizedPositionInCell(start),
+        end: this.#convertNormalizedPositionInCell(end),
+        color,
+        thickness,
+      },
+    });
   }
 
   #convertNormalizedPositionInCell(coord: {
