@@ -11,20 +11,33 @@ import Snake from './Snake';
 import SnakeRenderer from './SnakeRenderer';
 
 export default class SnakeGame extends Game {
-  #snake: Snake;
-  #snakeRenderer: SnakeRenderer;
+  // Game Logic
   #playState: 'waiting' | 'playing' | 'lost' = 'waiting';
   #gridSize: GridSize;
-  #gridRenderer: GridRenderer;
+  #snake: Snake;
   #fruit: Fruit;
+
+  // Rendering Logic
+  #gridRenderer: GridRenderer;
+  #snakeRenderer: SnakeRenderer;
   #fruitRenderer: FruitRenderer;
 
   constructor(rootElement: HTMLElement) {
     super(rootElement);
 
+    // Game Logic
+
     this.#gridSize = { rowCount: 34, columnCount: 34 };
+
+    this.#snake = Snake.createRandom(this.#gridSize);
+
+    this.#fruit = new Fruit();
+    this.#fruit.generateNewPosition(this.#gridSize, this.#snake);
+
+    // Rendering Logic
+
     this.#gridRenderer = new GridRenderer({
-      cellSize: new Vec2(9, 9),
+      cellSize: new Vec2(20, 20),
       background: {
         mode: 'fill',
         color: Color.grey(0.8),
@@ -34,14 +47,6 @@ export default class SnakeGame extends Game {
         lineWidth: 1,
       },
     });
-
-    this.canvas.size = this.#gridRenderer.totalSize(this.#gridSize);
-
-    this.#snake = Snake.createRandom(this.#gridSize);
-
-    this.#fruit = new Fruit();
-    this.#fruit.generateNewPosition(this.#gridSize, this.#snake);
-
     this.#snakeRenderer = new SnakeRenderer({
       color: Color.cyan,
       eyeColor: Color.blue,
@@ -49,6 +54,8 @@ export default class SnakeGame extends Game {
     this.#fruitRenderer = new FruitRenderer({
       color: Color.magenta,
     });
+
+    this.canvas.size = this.#gridRenderer.totalSize(this.#gridSize);
   }
 
   update(canvas: Canvas) {

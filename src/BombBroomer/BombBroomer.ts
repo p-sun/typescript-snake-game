@@ -11,12 +11,13 @@ type CellData =
   | { kind: 'covered' | 'cleared' };
 
 export default class BombBroomer extends Game {
+  // Game Logic
   #gridSize: GridSize;
-  #gridRenderer: GridRenderer;
-
   #hasBombs: boolean[][];
-
   #cellData: CellData[][];
+
+  // Rendering Logic
+  #gridRenderer: GridRenderer;
 
   private get rowCount() {
     return this.#gridSize.rowCount;
@@ -29,7 +30,14 @@ export default class BombBroomer extends Game {
   constructor(rootElement: HTMLElement) {
     super(rootElement);
 
+    // Game Logic
+
     this.#gridSize = { rowCount: 20, columnCount: 20 };
+    this.#hasBombs = [];
+    this.#cellData = [];
+    this.#generateBombLocations();
+
+    // Rendering Logic
 
     this.#gridRenderer = new GridRenderer({
       cellSize: new Vec2(16, 16),
@@ -50,26 +58,12 @@ export default class BombBroomer extends Game {
       },
     });
 
-    this.#hasBombs = [];
-    this.#cellData = [];
-
-    for (let row = 0; row < this.rowCount; row++) {
-      this.#hasBombs.push(Array(this.columnCount).fill(false));
-
-      this.#cellData.push(
-        Array(this.columnCount).fill({
-          kind: 'covered',
-        })
-      );
-    }
-
-    this.#generateBombLocations();
     this.canvas.size = this.#gridRenderer.totalSize(this.#gridSize);
   }
 
   #generateBombLocations() {
+    this.#createEmptyBombGrid();
     const totalBombs = 80;
-
     for (let i = 0; i < totalBombs; i++) {
       let column = randomIntInRange(0, this.columnCount);
       let row = randomIntInRange(0, this.rowCount);
@@ -80,6 +74,18 @@ export default class BombBroomer extends Game {
       }
 
       this.#hasBombs[row][column] = true;
+    }
+  }
+
+  #createEmptyBombGrid() {
+    for (let row = 0; row < this.rowCount; row++) {
+      this.#hasBombs.push(Array(this.columnCount).fill(false));
+
+      this.#cellData.push(
+        Array(this.columnCount).fill({
+          kind: 'covered',
+        })
+      );
     }
   }
 
