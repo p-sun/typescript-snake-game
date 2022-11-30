@@ -36,7 +36,7 @@ export default class SnakeGame extends Game {
 
     // Rendering Logic
 
-    this.#gridRenderer = new GridRenderer({
+    this.#gridRenderer = new GridRenderer(this.#gridSize, this.canvas, {
       cellSize: new Vec2(20, 20),
       background: {
         mode: 'fill',
@@ -54,8 +54,6 @@ export default class SnakeGame extends Game {
     this.#fruitRenderer = new FruitRenderer({
       color: Color.magenta,
     });
-
-    this.canvas.size = this.#gridRenderer.totalSize(this.#gridSize);
   }
 
   restartGame() {
@@ -82,7 +80,7 @@ export default class SnakeGame extends Game {
       }
     }
 
-    this.#gridRenderer.draw(canvas, this.#gridSize);
+    this.#gridRenderer.draw(canvas);
     this.#snakeRenderer.draw(canvas, this.#gridRenderer, this.#snake);
     this.#fruitRenderer.draw(canvas, this.#gridRenderer, this.#fruit);
 

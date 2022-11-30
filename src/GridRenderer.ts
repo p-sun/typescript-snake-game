@@ -39,29 +39,43 @@ export type GridBorder = {
 };
 
 export default class GridRenderer {
+  #gridSize: GridSize;
   #config: GridRenderConfig;
 
-  constructor(config: Partial<GridRenderConfig>) {
+  constructor(
+    gridSize: GridSize,
+    cavas: Canvas,
+    config: Partial<GridRenderConfig>
+  ) {
     this.#config = { ...defaultConfig, ...config };
+    this.#gridSize = gridSize;
+    cavas.size = this.totalSize();
   }
 
-  totalSize(gridSize: GridSize): Vec2 {
+  get rowCount(): number {
+    return this.#gridSize.rowCount;
+  }
+
+  get columnCount(): number {
+    return this.#gridSize.columnCount;
+  }
+
+  totalSize(): Vec2 {
     const {
       cellSize,
       border: { lineWidth },
     } = this.#config;
-    const { rowCount, columnCount } = gridSize;
 
-    const width = cellSize.x * columnCount + lineWidth * (columnCount + 1);
-    const height = cellSize.y * rowCount + lineWidth * (rowCount + 1);
+    const width =
+      cellSize.x * this.columnCount + lineWidth * (this.columnCount + 1);
+    const height = cellSize.y * this.rowCount + lineWidth * (this.rowCount + 1);
 
     return new Vec2(width, height);
   }
 
-  draw(canvas: Canvas, gridSize: GridSize) {
+  draw(canvas: Canvas) {
     const { background, border, origin } = this.#config;
-    const totalSize = this.totalSize(gridSize);
-    const { rowCount, columnCount } = gridSize;
+    const totalSize = this.totalSize();
 
     if (background) {
       if (background.mode === 'fill') {
@@ -70,7 +84,7 @@ export default class GridRenderer {
           options: { origin, size: totalSize, color: background.color },
         });
       } else {
-        this.forEachCell(gridSize, (cellPos, rect) => {
+        this.forEachCell((cellPos, rect) => {
           const color =
             background.mode === 'checker'
               ? (cellPos.row + cellPos.column) % 2
@@ -91,7 +105,7 @@ export default class GridRenderer {
 
       const lineDash = border.style === 'dashed' ? [lineWidth * 2] : [];
 
-      for (let column = 0; column <= columnCount; column++) {
+      for (let column = 0; column <= this.columnCount; column++) {
         const p = this.cellContentRectAtPosition({ row: 0, column }).origin.add(
           shift
         );
@@ -108,7 +122,7 @@ export default class GridRenderer {
         });
       }
 
-      for (let row = 0; row <= rowCount; row++) {
+      for (let row = 0; row <= this.rowCount; row++) {
         const p = this.cellContentRectAtPosition({ row, column: 0 }).origin.add(
           shift
         );
@@ -134,14 +148,9 @@ export default class GridRenderer {
     return origin.add(new Vec2(d, d));
   }
 
-  forEachCell(
-    gridSize: GridSize,
-    fn: (cellPos: GridPosition, rect: Rect) => void
-  ) {
-    const { rowCount, columnCount } = gridSize;
-
-    for (let column = 0; column < columnCount; column++) {
-      for (let row = 0; row < rowCount; row++) {
+  forEachCell(fn: (cellPos: GridPosition, rect: Rect) => void) {
+    for (let column = 0; column < this.columnCount; column++) {
+      for (let row = 0; row < this.rowCount; row++) {
         const cellPos = { row, column };
         fn(cellPos, this.cellContentRectAtPosition(cellPos));
       }
@@ -164,14 +173,12 @@ export default class GridRenderer {
     return new Rect(this.cellContentOrigin.add(offset), cellSize);
   }
 
-  cellAtPosition(gridSize: GridSize, pos: Vec2): GridPosition {
+  cellAtPosition(pos: Vec2): GridPosition {
     const {
       origin,
       cellSize,
       border: { lineWidth },
     } = this.#config;
-    const { rowCount, columnCount } = gridSize;
-
     const { x, y } = pos.sub(origin);
 
     const c = x / (cellSize.x + lineWidth);
@@ -179,9 +186,9 @@ export default class GridRenderer {
 
     const column = clamp(Math.floor(c), {
       min: 0,
-      max: columnCount - 1,
+      max: this.columnCount - 1,
     });
-    const row = clamp(Math.floor(r), { min: 0, max: rowCount - 1 });
+    const row = clamp(Math.floor(r), { min: 0, max: this.rowCount - 1 });
 
     return { column, row };
   }

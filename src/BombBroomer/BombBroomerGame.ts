@@ -39,7 +39,7 @@ export default class BombBroomerGame extends Game {
 
     // Rendering Logic
 
-    this.#gridRenderer = new GridRenderer({
+    this.#gridRenderer = new GridRenderer(this.#gridSize, this.canvas, {
       cellSize: new Vec2(16, 16),
       border: {
         lineColor: Color.grey(0.5),
@@ -57,8 +57,6 @@ export default class BombBroomerGame extends Game {
         },
       },
     });
-
-    this.canvas.size = this.#gridRenderer.totalSize(this.#gridSize);
   }
 
   #generateBombLocations() {
@@ -110,7 +108,7 @@ export default class BombBroomerGame extends Game {
   }
 
   onUpdate(canvas: Canvas) {
-    this.#gridRenderer.draw(canvas, this.#gridSize);
+    this.#gridRenderer.draw(canvas);
 
     for (let row = 0; row < this.rowCount; row++) {
       for (let column = 0; column < this.columnCount; column++) {
