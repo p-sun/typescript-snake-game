@@ -24,11 +24,13 @@ export default class SnakeRenderer {
 
     grid.drawEllipseInCell(
       canvas,
-      { cellPos, normalizedOffset: Vec2.zero },
+      {
+        cellPos,
+        normalizedOffset: this.#eyeNormalizedOffset(snake.moveDirection),
+      },
       this.config.eyeColor,
       {
         fillPercent: new Vec2(0.3, 0.3),
-        normalizedOffset: this.#eyeNormalizedOffset(snake.moveDirection),
       }
     );
 
