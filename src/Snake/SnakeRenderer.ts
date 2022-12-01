@@ -15,17 +15,32 @@ export default class SnakeRenderer {
 
   draw(canvas: Canvas, grid: GridRenderer, snake: Snake) {
     const positions = snake.positions;
-    const headPosition = snake.headPosition;
+    const cellPos = snake.headPosition;
 
     positions.forEach((pos, index) => {
       const percent = positions.length > 1 ? index / (positions.length - 1) : 1;
       grid.fillCell(canvas, pos, this.config.color.lerp(Color.black, percent));
     });
 
-    grid.drawEllipseInCell(canvas, headPosition, this.config.eyeColor, {
-      fillPercent: new Vec2(0.3, 0.3),
-      normalizedOffset: this.#eyeNormalizedOffset(snake.moveDirection),
-    });
+    grid.drawEllipseInCell(
+      canvas,
+      { cellPos, normalizedOffset: Vec2.zero },
+      this.config.eyeColor,
+      {
+        fillPercent: new Vec2(0.3, 0.3),
+        normalizedOffset: this.#eyeNormalizedOffset(snake.moveDirection),
+      }
+    );
+
+    // grid.drawLine(
+    //   canvas,
+    //   {
+    //     cellPos: { row: 1, column: 1 },
+    //     normalizedOffset: new Vec2(-1, -1),
+    //   },
+    //   { cellPos: { row: 3, column: 1 }, normalizedOffset: Vec2.zero },
+    //   Color.blue
+    // );
   }
 
   #eyeNormalizedOffset(direction: Direction): Vec2 {

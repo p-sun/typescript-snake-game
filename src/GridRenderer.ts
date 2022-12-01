@@ -38,6 +38,11 @@ export type GridBorder = {
   style?: 'solid' | 'dashed';
 };
 
+type PositionInCell = {
+  cellPos: GridPosition;
+  normalizedOffset: Vec2;
+};
+
 export default class GridRenderer {
   #gridSize: GridSize;
   #config: GridRenderConfig;
@@ -61,11 +66,8 @@ export default class GridRenderer {
   }
 
   totalSize(): Vec2 {
-    const {
-      cellSize,
-      border: { lineWidth },
-    } = this.#config;
-
+    const { cellSize } = this.#config;
+    const lineWidth = this.#config.border.lineWidth;
     const width =
       cellSize.x * this.columnCount + lineWidth * (this.columnCount + 1);
     const height = cellSize.y * this.rowCount + lineWidth * (this.rowCount + 1);
@@ -106,9 +108,10 @@ export default class GridRenderer {
       const lineDash = border.style === 'dashed' ? [lineWidth * 2] : [];
 
       for (let column = 0; column <= this.columnCount; column++) {
-        const p = this.cellContentRectAtPosition({ row: 0, column }).origin.add(
-          shift
-        );
+        const p = this.cellContentRectAtPosition({
+          row: 0,
+          column,
+        }).origin.add(shift);
 
         canvas.drawShape({
           mode: 'line',
@@ -123,9 +126,10 @@ export default class GridRenderer {
       }
 
       for (let row = 0; row <= this.rowCount; row++) {
-        const p = this.cellContentRectAtPosition({ row, column: 0 }).origin.add(
-          shift
-        );
+        const p = this.cellContentRectAtPosition({
+          row,
+          column: 0,
+        }).origin.add(shift);
 
         canvas.drawShape({
           mode: 'line',
@@ -141,11 +145,23 @@ export default class GridRenderer {
     }
   }
 
-  get cellContentOrigin(): Vec2 {
-    const { border, origin } = this.#config;
+  cellAtPosition(pos: Vec2): GridPosition {
+    const { origin, cellSize } = this.#config;
+    const lineWidth = this.#config.border.lineWidth;
+    const { x, y } = pos.sub(origin);
 
-    const d = border.lineWidth;
-    return origin.add(new Vec2(d, d));
+    const c = x / (cellSize.x + lineWidth);
+    const r = y / (cellSize.y + lineWidth);
+
+    const column = clamp(Math.floor(c), {
+      min: 0,
+      max: this.#gridSize.columnCount - 1,
+    });
+    const row = clamp(Math.floor(r), {
+      min: 0,
+      max: this.#gridSize.rowCount - 1,
+    });
+    return { column, row };
   }
 
   forEachCell(fn: (cellPos: GridPosition, rect: Rect) => void) {
@@ -155,42 +171,6 @@ export default class GridRenderer {
         fn(cellPos, this.cellContentRectAtPosition(cellPos));
       }
     }
-  }
-
-  cellContentRectAtPosition(cellPos: GridPosition): Rect {
-    const {
-      cellSize,
-      border: { lineWidth },
-    } = this.#config;
-
-    const { row, column } = cellPos;
-
-    const offset = new Vec2(
-      (cellSize.x + lineWidth) * column,
-      (cellSize.y + lineWidth) * row
-    );
-
-    return new Rect(this.cellContentOrigin.add(offset), cellSize);
-  }
-
-  cellAtPosition(pos: Vec2): GridPosition {
-    const {
-      origin,
-      cellSize,
-      border: { lineWidth },
-    } = this.#config;
-    const { x, y } = pos.sub(origin);
-
-    const c = x / (cellSize.x + lineWidth);
-    const r = y / (cellSize.y + lineWidth);
-
-    const column = clamp(Math.floor(c), {
-      min: 0,
-      max: this.columnCount - 1,
-    });
-    const row = clamp(Math.floor(r), { min: 0, max: this.rowCount - 1 });
-
-    return { column, row };
   }
 
   fillCell(canvas: Canvas, cellPos: GridPosition, color: Color) {
@@ -203,29 +183,45 @@ export default class GridRenderer {
 
   drawLine(
     canvas: Canvas,
-    start: { cellPos: GridPosition; normalizedOffset: Vec2 },
-    end: { cellPos: GridPosition; normalizedOffset: Vec2 },
+    start: PositionInCell,
+    end: PositionInCell,
     color: Color,
     thickness: number = 1
   ) {
     canvas.drawShape({
       mode: 'line',
       options: {
-        start: this.#convertNormalizedPositionInCell(start),
-        end: this.#convertNormalizedPositionInCell(end),
+        start: this.#screenPositionForPositionInCell(start),
+        end: this.#screenPositionForPositionInCell(end),
         color,
         thickness,
       },
     });
   }
 
-  #convertNormalizedPositionInCell(coord: {
-    cellPos: GridPosition;
-    normalizedOffset: Vec2;
-  }): Vec2 {
-    const rect = this.cellContentRectAtPosition(coord.cellPos);
+  cellContentRectAtPosition(cellPos: GridPosition): Rect {
+    const { cellSize } = this.#config;
+    const lineWidth = this.#config.border.lineWidth;
+
+    const offset = new Vec2(
+      (cellSize.x + lineWidth) * cellPos.column,
+      (cellSize.y + lineWidth) * cellPos.row
+    );
+    const cellOrigin = this.#cellContentOrigin(this.#config);
+    return new Rect(cellOrigin.add(offset), cellSize);
+  }
+
+  #cellContentOrigin(config: GridRenderConfig): Vec2 {
+    const { border, origin } = config;
+
+    const d = border.lineWidth;
+    return origin.add(new Vec2(d, d));
+  }
+
+  #screenPositionForPositionInCell(positionInCell: PositionInCell): Vec2 {
+    const { cellPos, normalizedOffset } = positionInCell;
+    const rect = this.cellContentRectAtPosition(cellPos);
     const { size } = rect;
-    const { normalizedOffset } = coord;
 
     return rect.midpoint.add(
       new Vec2(
@@ -237,7 +233,7 @@ export default class GridRenderer {
 
   drawEllipseInCell(
     canvas: Canvas,
-    cellPos: GridPosition,
+    positionInCell: PositionInCell,
     color: Color,
     options?: {
       fillPercent?: Vec2;
@@ -245,18 +241,12 @@ export default class GridRenderer {
       rotationAngle?: number;
     }
   ) {
-    const rect = this.cellContentRectAtPosition(cellPos);
+    const rect = this.cellContentRectAtPosition(positionInCell.cellPos);
     const { size } = rect;
 
     const rx = (size.x / 2) * (options?.fillPercent?.x ?? 1);
     const ry = (size.y / 2) * (options?.fillPercent?.y ?? 1);
-
-    const normalizedOffset = options?.normalizedOffset ?? Vec2.zero;
-
-    const origin = this.#convertNormalizedPositionInCell({
-      cellPos,
-      normalizedOffset,
-    });
+    const origin = this.#screenPositionForPositionInCell(positionInCell);
     const rotationAngle = options?.rotationAngle;
     canvas.drawShape({
       mode: 'ellipse',

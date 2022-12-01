@@ -153,7 +153,7 @@ export default class BombBroomerGame extends Game {
 
   onMouseEvent(event: CanvasMouseEvent, pos: Vec2) {
     if (event.mode === 'button' && event.state === 'down') {
-      const cellPos = this.#gridRenderer.cellAtPosition(this.#gridSize, pos);
+      const cellPos = this.#gridRenderer.cellAtPosition(pos);
 
       if (event.button === 'primary') {
         this.#clearCell(cellPos);
