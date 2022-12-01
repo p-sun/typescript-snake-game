@@ -249,13 +249,13 @@ export default class Canvas {
 
     const { key } = event;
     if (key === 'ArrowUp') {
-      listener({ key: 'arrow', direction: Direction.Up });
+      listener({ key: 'arrow', direction: `up` });
     } else if (key === 'ArrowDown') {
-      listener({ key: 'arrow', direction: Direction.Down });
+      listener({ key: 'arrow', direction: `down` });
     } else if (key === 'ArrowLeft') {
-      listener({ key: 'arrow', direction: Direction.Left });
+      listener({ key: 'arrow', direction: `left` });
     } else if (key === 'ArrowRight') {
-      listener({ key: 'arrow', direction: Direction.Right });
+      listener({ key: 'arrow', direction: `right` });
     } else if (key === ' ') {
       listener({ key: 'space' });
     }

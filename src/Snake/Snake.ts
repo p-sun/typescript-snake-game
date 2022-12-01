@@ -33,11 +33,11 @@ export default class Snake {
     const moveDirection =
       Math.abs(dColumn) < Math.abs(dRow)
         ? dColumn > 0
-          ? Direction.Right
-          : Direction.Left
+          ? `right`
+          : `left`
         : dRow > 0
-        ? Direction.Down
-        : Direction.Up;
+        ? `down`
+        : `up`;
 
     const p = { row, column };
 
