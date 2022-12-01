@@ -10,7 +10,7 @@ export type FruitRenderConfig = {
 export default class FruitRenderer {
   constructor(public readonly config: FruitRenderConfig) {}
 
-  draw(canvas: Canvas, grid: GridRenderer, fruit: Fruit) {
+  render(canvas: Canvas, grid: GridRenderer, fruit: Fruit) {
     grid.fillCell(canvas, fruit.position, this.config.color);
   }
 }

@@ -13,7 +13,7 @@ export type SnakeRenderConfig = {
 export default class SnakeRenderer {
   constructor(public readonly config: SnakeRenderConfig) {}
 
-  draw(canvas: Canvas, grid: GridRenderer, snake: Snake) {
+  render(canvas: Canvas, grid: GridRenderer, snake: Snake) {
     const positions = snake.positions;
     const cellPos = snake.headPosition;
 

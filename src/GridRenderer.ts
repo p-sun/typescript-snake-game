@@ -75,7 +75,7 @@ export default class GridRenderer {
     return new Vec2(width, height);
   }
 
-  draw(canvas: Canvas) {
+  render(canvas: Canvas) {
     const { background, border, origin } = this.#config;
     const totalSize = this.totalSize();
 

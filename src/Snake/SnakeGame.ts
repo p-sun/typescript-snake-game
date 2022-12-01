@@ -80,18 +80,18 @@ export default class SnakeGame extends Game {
       }
     }
 
-    this.#drawSnake(canvas);
-    this.#drawOverlay(canvas);
+    this.#renderSnake(canvas);
+    this.#renderOverlay(canvas);
   }
 
-  #drawSnake(canvas: Canvas) {
-    this.#gridRenderer.draw(canvas);
-    this.#snakeRenderer.draw(canvas, this.#gridRenderer, this.#snake);
-    this.#fruitRenderer.draw(canvas, this.#gridRenderer, this.#fruit);
+  #renderSnake(canvas: Canvas) {
+    this.#gridRenderer.render(canvas);
+    this.#snakeRenderer.render(canvas, this.#gridRenderer, this.#snake);
+    this.#fruitRenderer.render(canvas, this.#gridRenderer, this.#fruit);
   }
 
-  #drawOverlay(canvas: Canvas) {
-    SnakeOverlayRenderer.draw(canvas, this.#playStatus, this.#snake.length);
+  #renderOverlay(canvas: Canvas) {
+    SnakeOverlayRenderer.render(canvas, this.#playStatus, this.#snake.length);
   }
 
   onKeyDown(event: CanvasKeyEvent) {

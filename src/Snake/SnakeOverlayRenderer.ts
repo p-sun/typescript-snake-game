@@ -11,7 +11,7 @@ type SnakeOverlayTexts = {
 };
 
 export default class SnakeOverlayRenderer {
-  static draw(
+  static render(
     canvas: Canvas,
     playStatus: SnakePlayStatus,
     snakeLength: number
