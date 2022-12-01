@@ -63,7 +63,7 @@ export default class SnakeGame extends Game {
     this.#fruit.generateNewPosition(this.#gridSize, this.#snake);
   }
 
-  onUpdate(canvas: Canvas) {
+  onUpdate() {
     if (this.#playStatus === 'playing') {
       const newSnake = this.#snake.tick();
 
@@ -79,18 +79,13 @@ export default class SnakeGame extends Game {
         this.#snake = newSnake;
       }
     }
-
-    this.#renderSnake(canvas);
-    this.#renderOverlay(canvas);
   }
 
-  #renderSnake(canvas: Canvas) {
+  onRender(canvas: Canvas) {
     this.#gridRenderer.render(canvas);
     this.#snakeRenderer.render(canvas, this.#gridRenderer, this.#snake);
     this.#fruitRenderer.render(canvas, this.#gridRenderer, this.#fruit);
-  }
 
-  #renderOverlay(canvas: Canvas) {
     SnakeOverlayRenderer.render(canvas, this.#playStatus, this.#snake.length);
   }
 
