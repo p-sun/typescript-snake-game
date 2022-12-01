@@ -178,6 +178,9 @@ export default class BombBroomerGame extends Game {
 
     while (stack.length > 0) {
       const pos = stack.pop();
+      if (!pos) {
+        return;
+      }
 
       this.#cellData[pos.row][pos.column] = { kind: 'cleared' };
 
