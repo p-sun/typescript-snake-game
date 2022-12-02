@@ -19,7 +19,11 @@ export default class SnakeRenderer {
 
     positions.forEach((pos, index) => {
       const percent = positions.length > 1 ? index / (positions.length - 1) : 1;
-      grid.fillCell(canvas, pos, this.config.color.lerp(Color.black, percent));
+      grid.fillCell(
+        canvas,
+        pos,
+        this.config.color.lerp(Color.black, percent * 0.5)
+      );
     });
 
     grid.drawEllipseInCell(
