@@ -7,16 +7,14 @@ import SnakeGameRenderer from './SnakeGameRenderer';
 export type SnakePlayStatus = 'waiting' | 'playing' | 'lost';
 
 export default class SnakeGame extends Game {
-  private readonly gridSize: GridSize = { rowCount: 34, columnCount: 34 };
-
   #gameLogic: SnakeGameLogic;
   #renderer: SnakeGameRenderer;
 
-  constructor(rootElement: HTMLElement) {
+  constructor(rootElement: HTMLElement, gridSize: GridSize) {
     super(rootElement);
 
-    this.#gameLogic = new SnakeGameLogic(this.gridSize);
-    this.#renderer = new SnakeGameRenderer(this.canvas, this.gridSize);
+    this.#gameLogic = new SnakeGameLogic(gridSize);
+    this.#renderer = new SnakeGameRenderer(this.canvas, gridSize);
   }
 
   onUpdate() {

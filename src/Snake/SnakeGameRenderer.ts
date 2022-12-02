@@ -19,7 +19,7 @@ export default class SnakeGameRenderer {
     this.#gridSize = gridSize;
 
     this.#gridRenderer = new GridRenderer(this.#gridSize, canvas, {
-      cellSize: new Vec2(20, 20),
+      cellSize: new Vec2(80, 80),
       background: {
         mode: 'fill',
         color: Color.grey(0.8),

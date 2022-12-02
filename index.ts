@@ -3,7 +3,8 @@ import SnakeGame from './src/Snake/SnakeGame';
 
 const appRoot = document.getElementById('root');
 if (appRoot) {
-  const snakeGame = new SnakeGame(appRoot);
+  const gridSize = { rowCount: 32, columnCount: 32 };
+  const snakeGame = new SnakeGame(appRoot, gridSize);
   snakeGame.run(12);
 
   //   const bombGame = new BombBroomerGame(appRoot);
