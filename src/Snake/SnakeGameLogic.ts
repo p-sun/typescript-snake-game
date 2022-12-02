@@ -5,10 +5,10 @@ import Snake from './Snake';
 import { SnakePlayStatus } from './SnakeGame';
 
 export default class SnakeGameLogic {
-  #gridSize: GridSize;
-  #playStatus: SnakePlayStatus = 'waiting';
   snake: Snake;
   fruit: Fruit;
+  #gridSize: GridSize;
+  #playStatus: SnakePlayStatus = 'waiting';
 
   get playStatus() {
     return this.#playStatus;

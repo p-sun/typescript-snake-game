@@ -60,6 +60,18 @@ export default class Snake {
     return this.positions[0];
   }
 
+  get length(): number {
+    return this.positions.length;
+  }
+
+  extend(): Snake {
+    return new Snake(
+      this.positions,
+      this.moveDirection,
+      this.segmentsToAdd + 1
+    );
+  }
+
   tick(): Snake {
     const newPositions = this.positions.slice();
     newPositions.unshift(
@@ -83,18 +95,6 @@ export default class Snake {
     }
 
     return new Snake(this.positions, direction, this.segmentsToAdd);
-  }
-
-  get length(): number {
-    return this.positions.length;
-  }
-
-  extend(): Snake {
-    return new Snake(
-      this.positions,
-      this.moveDirection,
-      this.segmentsToAdd + 1
-    );
   }
 
   hasWallCollision(gridSize: GridSize): boolean {

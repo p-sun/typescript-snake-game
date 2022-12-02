@@ -29,9 +29,7 @@ export default class SnakeRenderer {
         normalizedOffset: this.#eyeNormalizedOffset(snake.moveDirection),
       },
       this.config.eyeColor,
-      {
-        fillPercent: new Vec2(0.3, 0.3),
-      }
+      new Vec2(0.3, 0.3)
     );
 
     // grid.drawLine(
