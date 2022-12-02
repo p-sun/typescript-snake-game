@@ -3,28 +3,29 @@ import Color from '../GenericModels/Color';
 import Vec2 from '../GenericModels/Vec2';
 import { SnakePlayStatus } from './SnakeGame';
 
+export type SnakeOverlayConfig = {
+  pressSpaceTextColor: Color;
+  lostHeaderTextColor: Color;
+  snakeLengthTextColor: Color;
+};
+
 type SnakeOverlayTexts = {
-  lostHeader?: string;
-  snakeLength?: string;
-  pressSpace: string;
+  lostHeaderText?: string;
+  snakeLengthText?: string;
+  pressSpaceText: string;
 };
 
 export default class SnakeOverlayRenderer {
-  static render(
-    canvas: Canvas,
-    playStatus: SnakePlayStatus,
-    snakeLength: number
-  ) {
-    const overlayTexts = SnakeOverlayRenderer.getOverlayTexts(
-      playStatus,
-      snakeLength
-    );
+  constructor(public readonly config: SnakeOverlayConfig) {}
+
+  render(canvas: Canvas, playStatus: SnakePlayStatus, snakeLength: number) {
+    const overlayTexts = this.getOverlayTexts(playStatus, snakeLength);
     if (overlayTexts) {
       this.#drawOverlay(canvas, overlayTexts);
     }
   }
 
-  static getOverlayTexts(
+  getOverlayTexts(
     playStatus: SnakePlayStatus,
     snakeLength: number
   ): SnakeOverlayTexts | undefined {
@@ -33,26 +34,24 @@ export default class SnakeOverlayRenderer {
     }
 
     let texts: SnakeOverlayTexts = {
-      pressSpace: `Press [space] to ${playStatus === 'lost' ? 're' : ''}start!`,
+      pressSpaceText: `Press [space] to ${
+        playStatus === 'lost' ? 're' : ''
+      }start!`,
     };
 
     if (playStatus === 'lost') {
       texts = {
         ...texts,
-        lostHeader: '☠️😭☠️',
-        snakeLength: `Snake length: ${snakeLength}`,
+        lostHeaderText: '☠️😭☠️',
+        snakeLengthText: `Snake length: ${snakeLength}`,
       };
     }
 
     return texts;
   }
 
-  static #drawOverlay(canvas: Canvas, overlayTexts: SnakeOverlayTexts) {
-    const {
-      lostHeader: lostHeaderText,
-      snakeLength: snakeLengthText,
-      pressSpace: pressSpaceText,
-    } = overlayTexts;
+  #drawOverlay(canvas: Canvas, overlayTexts: SnakeOverlayTexts) {
+    const { lostHeaderText, snakeLengthText, pressSpaceText } = overlayTexts;
 
     canvas.drawRect({
       origin: Vec2.zero,
@@ -65,7 +64,7 @@ export default class SnakeOverlayRenderer {
       text: pressSpaceText,
       position: canvas.midpoint,
       attributes: {
-        color: Color.white,
+        color: this.config.pressSpaceTextColor,
         fontSize: 30,
       },
       normalizedAnchorOffset: {
@@ -79,7 +78,7 @@ export default class SnakeOverlayRenderer {
         text: lostHeaderText,
         position: canvas.midpoint.mapY((y) => y - 70),
         attributes: {
-          color: Color.black,
+          color: this.config.lostHeaderTextColor,
           fontSize: 40,
         },
         normalizedAnchorOffset: {
@@ -93,7 +92,7 @@ export default class SnakeOverlayRenderer {
         text: snakeLengthText,
         position: canvas.midpoint.mapY((y) => y - 32),
         attributes: {
-          color: new Color(1, 0.3, 0.2),
+          color: this.config.snakeLengthTextColor,
           fontSize: 36,
         },
         normalizedAnchorOffset: {

@@ -14,6 +14,7 @@ export default class SnakeGameRenderer {
   #gridRenderer: GridRenderer;
   #snakeRenderer: SnakeRenderer;
   #fruitRenderer: FruitRenderer;
+  #overlayRenderer: SnakeOverlayRenderer;
 
   constructor(canvas: Canvas, gridSize: GridSize) {
     this.#gridSize = gridSize;
@@ -40,14 +41,19 @@ export default class SnakeGameRenderer {
     this.#fruitRenderer = new FruitRenderer({
       color: Color.fromHex(0xe88273),
     });
+
+    this.#overlayRenderer = new SnakeOverlayRenderer({
+      lostHeaderTextColor: Color.fromHex(0xf4f1de),
+      pressSpaceTextColor: Color.fromHex(0xf4f1de),
+      snakeLengthTextColor: Color.fromHex(0xf4f1de),
+    });
   }
 
   render(canvas: Canvas, gameLogic: SnakeGameLogic) {
     this.#gridRenderer.render(canvas);
     this.#snakeRenderer.render(canvas, this.#gridRenderer, gameLogic.snake);
     this.#fruitRenderer.render(canvas, this.#gridRenderer, gameLogic.fruit);
-
-    SnakeOverlayRenderer.render(
+    this.#overlayRenderer.render(
       canvas,
       gameLogic.playStatus,
       gameLogic.snake.length
