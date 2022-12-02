@@ -134,16 +134,13 @@ export default class BombBroomerGame extends Game {
             Color.yellow,
             Color.white,
           ][numberOfBombs - 1];
-          canvas.drawShape({
-            mode: 'text',
-            options: {
-              contents: numberOfBombs.toString(),
-              position: rect.midpoint,
-              attributes: { color, fontSize: 13 },
-              normalizedAnchorOffset: {
-                offsetX: 0,
-                offsetY: 0,
-              },
+          canvas.drawText({
+            text: numberOfBombs.toString(),
+            position: rect.midpoint,
+            attributes: { color, fontSize: 13 },
+            normalizedAnchorOffset: {
+              offsetX: 0,
+              offsetY: 0,
             },
           });
         }

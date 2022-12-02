@@ -54,62 +54,50 @@ export default class SnakeOverlayRenderer {
       pressSpace: pressSpaceText,
     } = overlayTexts;
 
-    canvas.drawShape({
-      mode: 'rect',
-      options: {
-        origin: Vec2.zero,
-        size: canvas.size,
-        color: Color.black,
-        alpha: 0.5,
-      },
+    canvas.drawRect({
+      origin: Vec2.zero,
+      size: canvas.size,
+      color: Color.black,
+      alpha: 0.5,
     });
 
-    canvas.drawShape({
-      mode: 'text',
-      options: {
-        contents: pressSpaceText,
-        position: canvas.midpoint,
-        attributes: {
-          color: Color.white,
-          fontSize: 30,
-        },
-        normalizedAnchorOffset: {
-          offsetX: 0,
-          offsetY: 0,
-        },
+    canvas.drawText({
+      text: pressSpaceText,
+      position: canvas.midpoint,
+      attributes: {
+        color: Color.white,
+        fontSize: 30,
+      },
+      normalizedAnchorOffset: {
+        offsetX: 0,
+        offsetY: 0,
       },
     });
 
     if (lostHeaderText) {
-      canvas.drawShape({
-        mode: 'text',
-        options: {
-          contents: lostHeaderText,
-          position: canvas.midpoint.mapY((y) => y - 70),
-          attributes: {
-            color: Color.black,
-            fontSize: 40,
-          },
-          normalizedAnchorOffset: {
-            offsetX: 0,
-          },
+      canvas.drawText({
+        text: lostHeaderText,
+        position: canvas.midpoint.mapY((y) => y - 70),
+        attributes: {
+          color: Color.black,
+          fontSize: 40,
+        },
+        normalizedAnchorOffset: {
+          offsetX: 0,
         },
       });
     }
 
     if (snakeLengthText) {
-      canvas.drawShape({
-        mode: 'text',
-        options: {
-          contents: snakeLengthText,
-          position: canvas.midpoint.mapY((y) => y - 32),
-          attributes: {
-            color: new Color(1, 0.3, 0.2),
-            fontSize: 36,
-          },
-          normalizedAnchorOffset: {
-            offsetX: 0,
-          },
+      canvas.drawText({
+        text: snakeLengthText,
+        position: canvas.midpoint.mapY((y) => y - 32),
+        attributes: {
+          color: new Color(1, 0.3, 0.2),
+          fontSize: 36,
+        },
+        normalizedAnchorOffset: {
+          offsetX: 0,
         },
       });
     }

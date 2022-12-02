@@ -81,10 +81,7 @@ export default class GridRenderer {
 
     if (background) {
       if (background.mode === 'fill') {
-        canvas.drawShape({
-          mode: 'rect',
-          options: { origin, size: totalSize, color: background.color },
-        });
+        canvas.drawRect({ origin, size: totalSize, color: background.color });
       } else {
         this.forEachCell((cellPos, rect) => {
           const color =
@@ -93,10 +90,7 @@ export default class GridRenderer {
                 ? background.aColor
                 : background.bColor
               : background.colorer(cellPos);
-          canvas.drawShape({
-            mode: 'rect',
-            options: { origin: rect.origin, size: rect.size, color },
-          });
+          canvas.drawRect({ origin: rect.origin, size: rect.size, color });
         });
       }
     }
@@ -112,16 +106,12 @@ export default class GridRenderer {
           row: 0,
           column,
         }).origin.add(shift);
-
-        canvas.drawShape({
-          mode: 'line',
-          options: {
-            start: p,
-            end: p.mapY((y) => y + totalSize.y),
-            color: lineColor,
-            thickness: lineWidth,
-            lineDash,
-          },
+        canvas.drawLine({
+          start: p,
+          end: p.mapY((y) => y + totalSize.y),
+          color: lineColor,
+          thickness: lineWidth,
+          lineDash,
         });
       }
 
@@ -130,16 +120,12 @@ export default class GridRenderer {
           row,
           column: 0,
         }).origin.add(shift);
-
-        canvas.drawShape({
-          mode: 'line',
-          options: {
-            start: p,
-            end: p.mapX((x) => x + totalSize.x),
-            color: lineColor,
-            thickness: lineWidth,
-            lineDash,
-          },
+        canvas.drawLine({
+          start: p,
+          end: p.mapX((x) => x + totalSize.x),
+          color: lineColor,
+          thickness: lineWidth,
+          lineDash,
         });
       }
     }
@@ -158,10 +144,7 @@ export default class GridRenderer {
 
   fillCell(canvas: Canvas, cellPos: GridPosition, color: Color) {
     const rect = this.cellContentRectAtPosition(cellPos);
-    canvas.drawShape({
-      mode: 'rect',
-      options: { origin: rect.origin, size: rect.size, color },
-    });
+    canvas.drawRect({ origin: rect.origin, size: rect.size, color });
   }
 
   drawLine(
@@ -171,14 +154,11 @@ export default class GridRenderer {
     color: Color,
     thickness: number = 1
   ) {
-    canvas.drawShape({
-      mode: 'line',
-      options: {
-        start: this.#screenPositionAtPositionInCell(start),
-        end: this.#screenPositionAtPositionInCell(end),
-        color,
-        thickness,
-      },
+    canvas.drawLine({
+      start: this.#screenPositionAtPositionInCell(start),
+      end: this.#screenPositionAtPositionInCell(end),
+      color,
+      thickness,
     });
   }
 
@@ -196,10 +176,7 @@ export default class GridRenderer {
     const rx = (cellWidth / 2) * (fillPercent?.x ?? 1);
     const ry = (cellHeight / 2) * (fillPercent?.y ?? 1);
     const origin = this.#screenPositionAtPositionInCell(positionInCell);
-    canvas.drawShape({
-      mode: 'ellipse',
-      options: { origin, rx, ry, color, rotationAngle },
-    });
+    canvas.drawEllipse({ origin, rx, ry, color, rotationAngle });
   }
 
   // GridPosition Convertions -------------------------------------

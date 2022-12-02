@@ -46,7 +46,7 @@ type RectOptions = {
 };
 
 type TextOptions = {
-  contents: string;
+  text: string;
   position: Vec2;
   attributes: TextAttributes;
   normalizedAnchorOffset?: {
@@ -105,24 +105,8 @@ export default class Canvas {
     return pos.componentDiv(this.size);
   }
 
-  drawShape(shape: DrawableShape) {
-    switch (shape.mode) {
-      case 'line':
-        this.#drawLine(shape.options);
-        break;
-      case 'ellipse':
-        this.#drawEllipse(shape.options);
-        break;
-      case 'rect':
-        this.#drawRect(shape.options);
-        break;
-      case 'text':
-        this.#drawTextAtPosition(shape.options);
-    }
-  }
-
   clear(color: Color) {
-    this.#drawRect({ origin: Vec2.zero, size: this.size, color });
+    this.drawRect({ origin: Vec2.zero, size: this.size, color });
   }
 
   measureText(
@@ -134,7 +118,7 @@ export default class Canvas {
     });
   }
 
-  #drawRect(options: RectOptions) {
+  drawRect(options: RectOptions) {
     const { color, origin, size, alpha } = options;
     this.#context.fillStyle = color.asHexString();
 
@@ -146,7 +130,7 @@ export default class Canvas {
     this.#context.globalAlpha = globalAlpga;
   }
 
-  #drawEllipse(options: EllipseOptions) {
+  drawEllipse(options: EllipseOptions) {
     const { color, origin, rx, ry, rotationAngle } = options;
     this.#context.fillStyle = color.asHexString();
     this.#context.beginPath();
@@ -162,7 +146,7 @@ export default class Canvas {
     this.#context.fill();
   }
 
-  #drawLine(options: LineOptions) {
+  drawLine(options: LineOptions) {
     this.#context.strokeStyle = options.color.asHexString();
     this.#context.lineWidth = options.thickness ?? 1;
     this.#context.setLineDash(options.lineDash ?? []);
@@ -173,13 +157,13 @@ export default class Canvas {
     this.#context.stroke();
   }
 
-  #drawTextAtPosition(options: TextOptions) {
+  drawText(options: TextOptions) {
     this.#performCanvasTextOperation(options.attributes, () => {
       let { x, y } = options.position;
       if (options.normalizedAnchorOffset) {
         const offsetX = options.normalizedAnchorOffset?.offsetX ?? 0;
         const offsetY = options.normalizedAnchorOffset?.offsetY ?? 'baseline';
-        const measure = this.#measureTextWithContextReady(options.contents);
+        const measure = this.#measureTextWithContextReady(options.text);
         x += (-measure.size.x / 2) * (1 + offsetX);
 
         if (offsetY === 'baseline') {
@@ -189,7 +173,7 @@ export default class Canvas {
         }
       }
 
-      this.#context.fillText(options.contents, x, y);
+      this.#context.fillText(options.text, x, y);
     });
   }
 
