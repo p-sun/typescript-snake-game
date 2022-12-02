@@ -1,5 +1,5 @@
 import { Direction } from '../GenericModels/Direction';
-import { GridSize, GridPositionEqual } from '../GenericModels/Grid';
+import { GridPositionEqual, GridSize } from '../GenericModels/Grid';
 import Fruit from './Fruit';
 import Snake from './Snake';
 import { SnakePlayStatus } from './SnakeGame';
@@ -31,16 +31,18 @@ export default class SnakeGameLogic {
     if (this.#playStatus === 'playing') {
       const newSnake = this.snake.tick();
 
-      if (GridPositionEqual(this.snake.headPosition, this.fruit.position)) {
-        this.snake = this.snake.extend();
-        this.fruit.generateNewPosition(this.#gridSize, this.snake);
-      }
-
-      const hasCollision = newSnake.hasCollision(this.#gridSize);
-      if (hasCollision) {
+      const collidesWall = newSnake.hasWallCollision(this.#gridSize);
+      if (collidesWall) {
         this.#playStatus = 'lost';
       } else {
-        this.snake = newSnake;
+        const headPos = newSnake.headPosition;
+        const collidesFruit = GridPositionEqual(headPos, this.fruit.position);
+        if (collidesFruit) {
+          this.snake = newSnake.extend();
+          this.fruit.generateNewPosition(this.#gridSize, this.snake);
+        } else {
+          this.snake = newSnake;
+        }
       }
     }
   }

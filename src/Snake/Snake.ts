@@ -97,7 +97,7 @@ export default class Snake {
     );
   }
 
-  hasCollision(gridSize: GridSize): boolean {
+  hasWallCollision(gridSize: GridSize): boolean {
     const { headPosition } = this;
     const { rowCount, columnCount } = gridSize;
 

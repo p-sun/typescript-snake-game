@@ -4,7 +4,6 @@ import { GridSize } from '../GenericModels/Grid';
 import Vec2 from '../GenericModels/Vec2';
 import GridRenderer, { GridRenderConfig } from '../GridRenderer';
 import FruitRenderer from './FruitRenderer';
-import { SnakeColors } from './SnakeColors';
 import SnakeGameLogic from './SnakeGameLogic';
 import SnakeOverlayRenderer from './SnakeOverlayRenderer';
 import SnakeRenderer from './SnakeRenderer';
@@ -45,8 +44,8 @@ export default class SnakeGameRenderer {
 
   render(canvas: Canvas, gameLogic: SnakeGameLogic) {
     this.#gridRenderer.render(canvas);
-    this.#fruitRenderer.render(canvas, this.#gridRenderer, gameLogic.fruit);
     this.#snakeRenderer.render(canvas, this.#gridRenderer, gameLogic.snake);
+    this.#fruitRenderer.render(canvas, this.#gridRenderer, gameLogic.fruit);
 
     SnakeOverlayRenderer.render(
       canvas,
