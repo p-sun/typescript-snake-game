@@ -20,14 +20,15 @@ export default class Fruit {
       column: randomIntInRange(0, columnCount),
     };
 
-    // TODO - if you win and fill the WHOLE GRID this hangs
-    while (snake.containsPosition(pos)) {
-      pos = {
-        row: randomIntInRange(0, rowCount),
-        column: randomIntInRange(0, columnCount),
-      };
-    }
+    if (snake.length < rowCount * columnCount) {
+      while (snake.containsPosition(pos)) {
+        pos = {
+          row: randomIntInRange(0, rowCount),
+          column: randomIntInRange(0, columnCount),
+        };
+      }
 
-    this.#position = pos;
+      this.#position = pos;
+    }
   }
 }
