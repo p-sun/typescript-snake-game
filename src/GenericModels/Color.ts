@@ -21,6 +21,14 @@ export default class Color {
   static readonly blue = new Color(0, 0, 1);
   static readonly magenta = new Color(1, 0, 1);
 
+  // Usage: Color.fromHex(0x81b29a)
+  static fromHex(hex: number): Color {
+    const r = (hex >> 16) & 0xff;
+    const g = (hex >> 8) & 0xff;
+    const b = hex & 0xff;
+    return new Color(r / 255, g / 255, b / 255);
+  }
+
   asHexString(): string {
     function hexComponentString(n: number): string {
       const s = Math.floor(clamp(n, { min: 0, max: 1 }) * 255).toString(16);
