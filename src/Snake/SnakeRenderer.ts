@@ -35,16 +35,6 @@ export default class SnakeRenderer {
       this.config.eyeColor,
       new Vec2(0.3, 0.3)
     );
-
-    // grid.drawLine(
-    //   canvas,
-    //   {
-    //     cellPos: { row: 1, column: 1 },
-    //     normalizedOffset: new Vec2(-1, -1),
-    //   },
-    //   { cellPos: { row: 3, column: 1 }, normalizedOffset: Vec2.zero },
-    //   Color.blue
-    // );
   }
 
   #eyeNormalizedOffset(direction: Direction): Vec2 {

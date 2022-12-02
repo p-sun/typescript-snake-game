@@ -106,7 +106,7 @@ export default class Snake {
     return new Snake(this.#positions, direction, this.segmentsToAdd);
   }
 
-  hasWallCollision(gridSize: GridSize): boolean {
+  hasCollision(gridSize: GridSize): boolean {
     const { headPosition } = this;
     const { rowCount, columnCount } = gridSize;
 

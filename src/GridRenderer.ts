@@ -1,4 +1,4 @@
-import Canvas from './Canvas';
+import Canvas, { TextAttributes } from './Canvas';
 import Color from './GenericModels/Color';
 import { GridPosition, GridSize } from './GenericModels/Grid';
 import Rect from './GenericModels/Rect';
@@ -38,7 +38,7 @@ export type GridBorder = {
   style?: 'solid' | 'dashed';
 };
 
-type PositionInCell = {
+export type PositionInCell = {
   cellPos: GridPosition;
   normalizedOffset: Vec2;
 };
@@ -145,6 +145,20 @@ export default class GridRenderer {
   fillCell(canvas: Canvas, cellPos: GridPosition, color: Color) {
     const rect = this.cellContentRectAtPosition(cellPos);
     canvas.drawRect({ origin: rect.origin, size: rect.size, color });
+  }
+
+  drawText(
+    canvas: Canvas,
+    text: string,
+    positionInCell: PositionInCell,
+    attributes: TextAttributes,
+    normalizedAnchorOffset?: {
+      offsetX?: number;
+      offsetY?: number | 'baseline';
+    }
+  ) {
+    const position = this.#screenPositionAtPositionInCell(positionInCell);
+    canvas.drawText({ text, position, attributes, normalizedAnchorOffset });
   }
 
   drawLine(

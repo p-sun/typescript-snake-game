@@ -16,13 +16,7 @@ export type CanvasMouseEvent =
   | { mode: 'boundary'; boundary: 'enter' | 'exit' }
   | { mode: 'button'; state: 'up' | 'down'; button: 'primary' | 'secondary' };
 
-export type DrawableShape =
-  | { mode: 'line'; options: LineOptions }
-  | { mode: 'ellipse'; options: EllipseOptions }
-  | { mode: 'rect'; options: RectOptions }
-  | { mode: 'text'; options: TextOptions };
-
-type LineOptions = {
+export type LineOptions = {
   start: Vec2;
   end: Vec2;
   color: Color;
@@ -30,7 +24,7 @@ type LineOptions = {
   lineDash?: number[];
 };
 
-type EllipseOptions = {
+export type EllipseOptions = {
   origin: Vec2;
   rx: number;
   ry: number;
@@ -38,14 +32,14 @@ type EllipseOptions = {
   rotationAngle?: number;
 };
 
-type RectOptions = {
+export type RectOptions = {
   origin: Vec2;
   size: Vec2;
   color: Color;
   alpha?: number;
 };
 
-type TextOptions = {
+export type TextOptions = {
   text: string;
   position: Vec2;
   attributes: TextAttributes;

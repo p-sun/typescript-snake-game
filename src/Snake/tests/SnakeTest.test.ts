@@ -3,7 +3,7 @@ import { GridPosition, GridSize } from '../../GenericModels/Grid';
 import Snake from '../Snake';
 
 const headPos: GridPosition = { row: 1, column: 2 };
-function createSnake(options?: {
+export function createSnake(options?: {
   segmentsToAdd?: number;
   direction?: Direction;
 }): Snake {
@@ -21,7 +21,7 @@ function createSnake(options?: {
   gridPositions.push({ row: 2, column: 3 });
 
   const segmentsToAdd = options?.segmentsToAdd ?? 0;
-  return new Snake(gridPositions, options?.direction ?? 'right', segmentsToAdd);
+  return new Snake(gridPositions, options?.direction ?? 'down', segmentsToAdd);
 }
 
 describe('test snake length() and headPosition()', () => {
@@ -213,20 +213,20 @@ describe('when snake moves up out of bounds', () => {
     let snake = createSnake({ direction: 'down' });
 
     snake = snake.tick().tick();
-    expect(snake.hasWallCollision(gridSize)).toBe(false);
+    expect(snake.hasCollision(gridSize)).toBe(false);
 
     snake = snake.tick();
-    expect(snake.hasWallCollision(gridSize)).toBe(true);
+    expect(snake.hasCollision(gridSize)).toBe(true);
   });
 
   it('should collide with the left wall', () => {
     const gridSize: GridSize = { rowCount: 4, columnCount: 5 };
     let snake = createSnake({ direction: 'left' });
     snake = snake.tick().tick();
-    expect(snake.hasWallCollision(gridSize)).toBe(false);
+    expect(snake.hasCollision(gridSize)).toBe(false);
 
     snake = snake.tick();
-    expect(snake.hasWallCollision(gridSize)).toBe(true);
+    expect(snake.hasCollision(gridSize)).toBe(true);
   });
 });
 

@@ -31,8 +31,7 @@ export default class SnakeGameLogic {
     if (this.#playStatus === 'playing') {
       const newSnake = this.snake.tick();
 
-      const collidesWall = newSnake.hasWallCollision(this.#gridSize);
-      if (collidesWall) {
+      if (newSnake.hasCollision(this.#gridSize)) {
         this.#playStatus = 'lost';
       } else {
         const headPos = newSnake.headPosition;
