@@ -81,10 +81,10 @@ export default class Canvas {
     rootElement: Element,
     size: Vec2 = Vec2.zero
   ): Canvas {
-    const canvas = document.createElement('canvas') as HTMLCanvasElement;
-    rootElement.appendChild(canvas);
+    const canvasElement = document.createElement('canvas') as HTMLCanvasElement;
+    rootElement.appendChild(canvasElement);
 
-    return new Canvas(canvas, size);
+    return new Canvas(canvasElement, size);
   }
 
   get midpoint(): Vec2 {

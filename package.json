@@ -1,7 +1,7 @@
 {
-  "name": "lifecycle-testing-framework",
+  "name": "typescript-snake-game",
   "version": "1.0.0",
-  "description": "A Jest-like testing framework for testing lifecycles.",
+  "description": "A snake game with a clean architecture that is extremely well tested in Jest.",
   "main": "index.js",
   "scripts": {
     "start": "parcel index.html --open",
@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/p-sun/lifecycle-testing-framework.git"
+    "url": "git+https://github.com/p-sun/typescript-snake-game.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/p-sun/lifecycle-testing-framework/issues"
+    "url": "https://github.com/p-sun/typescript-snake-game/issues"
   },
-  "homepage": "https://github.com/p-sun/lifecycle-testing-framework#readme",
+  "homepage": "https://github.com/p-sun/typescript-snake-game#readme",
   "devDependencies": {
     "@types/jest": "^29.2.3",
     "@types/node": "^18.11.9",
