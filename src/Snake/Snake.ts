@@ -11,11 +11,15 @@ import {
 import { randomIntInRange } from '../Utils';
 
 export default class Snake {
-  private constructor(
-    public readonly positions: GridPosition[],
-    public readonly moveDirection: Direction,
-    public readonly segmentsToAdd: number
-  ) {}
+  #positions: GridPosition[];
+
+  constructor(
+    gridPositions: GridPosition[],
+    readonly moveDirection: Direction,
+    readonly segmentsToAdd: number
+  ) {
+    this.#positions = gridPositions;
+  }
 
   static createRandom(gridSize: GridSize): Snake {
     const { columnCount, rowCount } = gridSize;
@@ -56,24 +60,28 @@ export default class Snake {
     return { row: gridPos.row + d.y, column: gridPos.column + d.x };
   }
 
+  get positions(): GridPosition[] {
+    return this.#positions.slice();
+  }
+
   get headPosition(): GridPosition {
-    return this.positions[0];
+    return Object.assign({}, this.#positions[0]);
   }
 
   get length(): number {
-    return this.positions.length;
+    return this.#positions.length + this.segmentsToAdd;
   }
 
   extend(): Snake {
     return new Snake(
-      this.positions,
+      this.#positions,
       this.moveDirection,
       this.segmentsToAdd + 1
     );
   }
 
   tick(): Snake {
-    const newPositions = this.positions.slice();
+    const newPositions = this.#positions.slice();
     newPositions.unshift(
       Snake.#moveGridPosition(this.headPosition, this.moveDirection)
     );
@@ -94,7 +102,7 @@ export default class Snake {
       return this;
     }
 
-    return new Snake(this.positions, direction, this.segmentsToAdd);
+    return new Snake(this.#positions, direction, this.segmentsToAdd);
   }
 
   hasWallCollision(gridSize: GridSize): boolean {
@@ -119,8 +127,8 @@ export default class Snake {
     options?: { skipHead: boolean }
   ): boolean {
     const positionsToCheck = options?.skipHead
-      ? this.positions.slice(1)
-      : this.positions;
+      ? this.#positions.slice(1)
+      : this.#positions;
 
     return positionsToCheck.some((p) => GridPositionEqual(p, pos));
   }
