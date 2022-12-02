@@ -229,3 +229,32 @@ describe('when snake moves up out of bounds', () => {
     expect(snake.hasWallCollision(gridSize)).toBe(true);
   });
 });
+
+describe('when snake tries to move in the direction of its positions[1] segment', () => {
+  it('should not be allowed', () => {
+    let snake = createSnake({ direction: 'down' }).extend().tick();
+    /**
+     *    h = head
+     * c  0 1 2 3 4
+     * 0  x x x x x
+     * 1  x x o o x
+     * 2  x x h o x
+     * 3  x x x x x
+     */
+
+    snake = snake.changeDirection('up');
+    expect(snake.moveDirection).toBe('down');
+
+    snake = snake.changeDirection('left');
+    expect(snake.moveDirection).toBe('left');
+
+    snake = snake.changeDirection('right');
+    expect(snake.moveDirection).toBe('right');
+
+    snake = snake.changeDirection('up');
+    expect(snake.moveDirection).toBe('right');
+
+    snake = snake.changeDirection('down');
+    expect(snake.moveDirection).toBe('down');
+  });
+});

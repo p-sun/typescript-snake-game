@@ -97,7 +97,8 @@ export default class Snake {
   }
 
   changeDirection(direction: Direction): Snake {
-    if (direction === OppositeDirection(direction)) {
+    const newHeadPos = Snake.#moveGridPosition(this.headPosition, direction);
+    if (GridPositionEqual(newHeadPos, this.#positions[1])) {
       // Ignore an immediate death
       return this;
     }
