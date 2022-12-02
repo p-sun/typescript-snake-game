@@ -3,7 +3,11 @@ import { randomIntInRange } from '../Utils';
 import Snake from './Snake';
 
 export default class Fruit {
-  #position: GridPosition = { row: 0, column: 0 };
+  #position: GridPosition;
+
+  constructor(position?: GridPosition) {
+    this.#position = position ?? { row: 0, column: 0 };
+  }
 
   get position(): GridPosition {
     return this.#position;

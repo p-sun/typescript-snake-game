@@ -14,11 +14,13 @@ export default class SnakeGameLogic {
     return this.#playStatus;
   }
 
-  constructor(gridSize: GridSize) {
+  constructor(gridSize: GridSize, snake?: Snake, fruit?: Fruit) {
     this.#gridSize = gridSize;
-    this.snake = Snake.createRandom(gridSize);
-    this.fruit = new Fruit();
-    this.#restartGame();
+    this.snake = snake ?? Snake.createRandom(gridSize);
+    this.fruit = fruit ?? new Fruit();
+    if (!fruit) {
+      this.fruit.generateNewPosition(this.#gridSize, this.snake);
+    }
   }
 
   #restartGame() {
