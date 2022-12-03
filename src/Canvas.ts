@@ -189,9 +189,11 @@ export default class Canvas implements ICanvas {
         x += (-measure.size.x / 2) * (1 + offsetX);
 
         if (offsetY === 'baseline') {
-          y += measure.baselineOffsetFromBottom;
+          y -= measure.baselineOffsetFromBottom;
         } else {
-          y += (measure.size.y / 2) * (1 - offsetY);
+          y +=
+            (measure.size.y / 2) * (1 - offsetY) -
+            measure.baselineOffsetFromBottom;
         }
       }
 
