@@ -27,8 +27,8 @@ export default class BombBroomerGame extends Game {
     return this.#gridSize.columnCount;
   }
 
-  constructor(rootElement: HTMLElement) {
-    super(rootElement);
+  constructor(canvas: Canvas) {
+    super(canvas);
 
     // Game Logic
 

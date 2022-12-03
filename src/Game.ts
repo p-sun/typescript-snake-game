@@ -9,8 +9,8 @@ export default abstract class Game {
 
   protected readonly canvas: Canvas;
 
-  constructor(rootElement: HTMLElement) {
-    this.canvas = Canvas.createInRootElement(rootElement);
+  constructor(canvas: Canvas) {
+    this.canvas = canvas;
     this.canvas.setKeyDownListener((event) => {
       this.onKeyDown(event);
     });

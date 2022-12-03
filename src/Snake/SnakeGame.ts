@@ -10,11 +10,16 @@ export default class SnakeGame extends Game {
   #gameLogic: SnakeGameLogic;
   #renderer: SnakeGameRenderer;
 
-  constructor(rootElement: HTMLElement, gridSize: GridSize) {
-    super(rootElement);
+  constructor(
+    canvas: Canvas,
+    gridSize: GridSize,
+    gameLogic?: SnakeGameLogic,
+    renderer?: SnakeGameRenderer
+  ) {
+    super(canvas);
 
-    this.#gameLogic = new SnakeGameLogic(gridSize);
-    this.#renderer = new SnakeGameRenderer(this.canvas, gridSize);
+    this.#gameLogic = gameLogic ?? new SnakeGameLogic(gridSize);
+    this.#renderer = renderer ?? new SnakeGameRenderer(this.canvas, gridSize);
   }
 
   onUpdate() {
