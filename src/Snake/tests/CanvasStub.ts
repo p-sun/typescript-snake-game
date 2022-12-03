@@ -1,8 +1,4 @@
-/**
- * @jest-environment jsdom
- */
-
-import Canvas, {
+import {
   CanvasKeyEvent,
   CanvasMouseEvent,
   EllipseOptions,
@@ -14,28 +10,6 @@ import Canvas, {
 } from '../../Canvas';
 import Color from '../../GenericModels/Color';
 import Vec2 from '../../GenericModels/Vec2';
-import 'jest-canvas-mock';
-import { JSDOM } from 'jsdom';
-
-// In order to use HTML canvas, you'd need 3 npm packages:
-// `@types/jsdom` & `jest-environment-jsdom` for HTMLDocument & Window
-// `jest-canvas-mock` for HTMLCanvasElement
-export function createRealCanvas() {
-  const dom = new JSDOM('<!DOCTYPE html>').window as unknown as Window;
-  global.document = dom.window.document;
-  global.window = dom.window;
-  document.body.innerHTML = '<div id="root"></div>';
-
-  const appRoot = document.getElementById('root');
-  if (!appRoot) {
-    return;
-  }
-  const canvasElement = document.createElement('canvas') as HTMLCanvasElement;
-  appRoot.appendChild(canvasElement);
-
-  return new Canvas(canvasElement, Vec2.zero);
-}
-
 export class CanvasStub implements ICanvas {
   get size(): Vec2 {
     return Vec2.zero;
