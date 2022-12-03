@@ -39,7 +39,7 @@ export default class SnakeGameRenderer {
     });
 
     this.#fruitRenderer = new FruitRenderer({
-      color: Color.fromHex(0xe88273),
+      color: Color.fromHex(0xf4f1de),
     });
 
     this.#overlayRenderer = new SnakeOverlayRenderer({

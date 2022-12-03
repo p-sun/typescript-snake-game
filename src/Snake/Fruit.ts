@@ -4,13 +4,19 @@ import Snake from './Snake';
 
 export default class Fruit {
   #position: GridPosition;
+  #fruitText: string;
 
   constructor(position?: GridPosition) {
     this.#position = position ?? { row: 0, column: 0 };
+    this.#fruitText = this.#randomFruitText();
   }
 
   get position(): GridPosition {
     return this.#position;
+  }
+
+  get fruitText(): string {
+    return this.#fruitText;
   }
 
   generateNewPosition(gridSize: GridSize, snake: Snake) {
@@ -29,6 +35,12 @@ export default class Fruit {
       }
 
       this.#position = pos;
+      this.#fruitText = this.#randomFruitText();
     }
+  }
+
+  #randomFruitText(): string {
+    const fruits = ['🍓', '🍎', '🥝', '🍊', '🍉', '🍏', '🥭', '🍌'];
+    return fruits[Math.floor(Math.random() * fruits.length)];
   }
 }

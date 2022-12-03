@@ -4,7 +4,7 @@ import SnakeGame from './src/Snake/SnakeGame';
 
 const appRoot = document.getElementById('root');
 if (appRoot) {
-  const gridSize = { rowCount: 32, columnCount: 32 };
+  const gridSize = { rowCount: 30, columnCount: 30 };
   const canvas = Canvas.createInRootElement(appRoot);
   const snakeGame = new SnakeGame(canvas, gridSize);
   snakeGame.run(12);

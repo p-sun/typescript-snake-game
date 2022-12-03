@@ -42,7 +42,7 @@ export default class SnakeOverlayRenderer {
     if (playStatus === 'lost') {
       texts = {
         ...texts,
-        lostHeaderText: '☠️😭☠️',
+        lostHeaderText: '😖😭😖',
         snakeLengthText: `Snake length: ${snakeLength}`,
       };
     }
@@ -69,7 +69,6 @@ export default class SnakeOverlayRenderer {
       },
       normalizedAnchorOffset: {
         offsetX: 0,
-        offsetY: 0,
       },
     });
 

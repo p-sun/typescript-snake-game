@@ -65,6 +65,10 @@ export default class GridRenderer {
     return this.#gridSize.columnCount;
   }
 
+  get cellSize(): Vec2 {
+    return Object.assign({}, this.#config.cellSize);
+  }
+
   totalSize(): Vec2 {
     const { cellSize } = this.#config;
     const lineWidth = this.#config.border.lineWidth;
