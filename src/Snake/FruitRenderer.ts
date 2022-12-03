@@ -1,4 +1,4 @@
-import Canvas from '../Canvas';
+import { ICanvas } from '../Canvas';
 import Color from '../GenericModels/Color';
 import GridRenderer from '../GridRenderer';
 import Fruit from './Fruit';
@@ -10,7 +10,7 @@ export type FruitRenderConfig = {
 export default class FruitRenderer {
   constructor(public readonly config: FruitRenderConfig) {}
 
-  render(canvas: Canvas, grid: GridRenderer, fruit: Fruit) {
+  render(canvas: ICanvas, grid: GridRenderer, fruit: Fruit) {
     grid.fillCell(canvas, fruit.position, this.config.color);
   }
 }

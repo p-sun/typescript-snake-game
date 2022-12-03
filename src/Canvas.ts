@@ -49,7 +49,35 @@ export type TextOptions = {
   };
 };
 
-export default class Canvas {
+export interface ICanvas {
+  get size(): Vec2;
+  set size(newSize: Vec2);
+  get midpoint(): Vec2;
+
+  // Math
+  fromNormalizedCoordinate(coord: Vec2): Vec2;
+  toNormalizedCoordinate(pos: Vec2): Vec2;
+  toNormalizedCoordinate(pos: Vec2): Vec2;
+  measureText(
+    contents: string,
+    attributes: TextAttributes
+  ): { size: Vec2; baselineOffsetFromBottom: number };
+
+  // Drawing
+  clear(color: Color): void;
+  drawRect(options: RectOptions): void;
+  drawLine(options: LineOptions): void;
+  drawEllipse(options: EllipseOptions): void;
+  drawText(options: TextOptions): void;
+
+  // Listen for Input
+  setKeyDownListener(fn: (key: CanvasKeyEvent) => void): void;
+  unsetKeyDownListener(): void;
+  setMouseListener(fn: (event: CanvasMouseEvent, pos: Vec2) => void): void;
+  unsetMouseListener(): void;
+}
+
+export default class Canvas implements ICanvas {
   #context: CanvasRenderingContext2D;
   #size: Vec2;
   #canvasElement: HTMLCanvasElement;

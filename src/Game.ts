@@ -1,15 +1,15 @@
-import Canvas, { CanvasKeyEvent, CanvasMouseEvent } from './Canvas';
+import { ICanvas, CanvasKeyEvent, CanvasMouseEvent } from './Canvas';
 import Vec2 from './GenericModels/Vec2';
 
 export default abstract class Game {
   abstract onUpdate(): void;
-  abstract onRender(canvas: Canvas): void;
+  abstract onRender(canvas: ICanvas): void;
   abstract onKeyDown(event: CanvasKeyEvent): void;
   abstract onMouseEvent(event: CanvasMouseEvent, pos: Vec2): void;
 
-  protected readonly canvas: Canvas;
+  protected readonly canvas: ICanvas;
 
-  constructor(canvas: Canvas) {
+  constructor(canvas: ICanvas) {
     this.canvas = canvas;
     this.canvas.setKeyDownListener((event) => {
       this.onKeyDown(event);

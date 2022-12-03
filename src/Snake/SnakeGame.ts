@@ -1,4 +1,4 @@
-import Canvas, { CanvasKeyEvent, CanvasMouseEvent } from '../Canvas';
+import { ICanvas, CanvasKeyEvent, CanvasMouseEvent } from '../Canvas';
 import Game from '../Game';
 import { GridSize } from '../GenericModels/Grid';
 import SnakeGameLogic from './SnakeGameLogic';
@@ -11,7 +11,7 @@ export default class SnakeGame extends Game {
   #renderer: SnakeGameRenderer;
 
   constructor(
-    canvas: Canvas,
+    canvas: ICanvas,
     gridSize: GridSize,
     gameLogic?: SnakeGameLogic,
     renderer?: SnakeGameRenderer
@@ -26,7 +26,7 @@ export default class SnakeGame extends Game {
     this.#gameLogic?.tick();
   }
 
-  onRender(canvas: Canvas) {
+  onRender(canvas: ICanvas) {
     this.#renderer.render(canvas, this.#gameLogic);
   }
 

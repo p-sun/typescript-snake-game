@@ -1,4 +1,4 @@
-import Canvas, { CanvasKeyEvent, CanvasMouseEvent } from '../Canvas';
+import { ICanvas, CanvasKeyEvent, CanvasMouseEvent } from '../Canvas';
 import Game from '../Game';
 import Color from '../GenericModels/Color';
 import { GridPosition, GridSize } from '../GenericModels/Grid';
@@ -27,7 +27,7 @@ export default class BombBroomerGame extends Game {
     return this.#gridSize.columnCount;
   }
 
-  constructor(canvas: Canvas) {
+  constructor(canvas: ICanvas) {
     super(canvas);
 
     // Game Logic
@@ -109,7 +109,7 @@ export default class BombBroomerGame extends Game {
 
   onUpdate() {}
 
-  onRender(canvas: Canvas) {
+  onRender(canvas: ICanvas) {
     this.#gridRenderer.render(canvas);
 
     for (let row = 0; row < this.rowCount; row++) {

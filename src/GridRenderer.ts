@@ -1,4 +1,4 @@
-import Canvas, { TextAttributes } from './Canvas';
+import { ICanvas, TextAttributes } from './Canvas';
 import Color from './GenericModels/Color';
 import { GridPosition, GridSize } from './GenericModels/Grid';
 import Rect from './GenericModels/Rect';
@@ -49,7 +49,7 @@ export default class GridRenderer {
 
   constructor(
     gridSize: GridSize,
-    canvas: Canvas,
+    canvas: ICanvas,
     config: Partial<GridRenderConfig>
   ) {
     this.#config = { ...defaultConfig, ...config };
@@ -75,7 +75,7 @@ export default class GridRenderer {
     return new Vec2(width, height);
   }
 
-  render(canvas: Canvas) {
+  render(canvas: ICanvas) {
     const { background, border, origin } = this.#config;
     const totalSize = this.totalSize();
 
@@ -142,13 +142,13 @@ export default class GridRenderer {
 
   // DRAWING -------------------------------------
 
-  fillCell(canvas: Canvas, cellPos: GridPosition, color: Color) {
+  fillCell(canvas: ICanvas, cellPos: GridPosition, color: Color) {
     const rect = this.cellContentRectAtPosition(cellPos);
     canvas.drawRect({ origin: rect.origin, size: rect.size, color });
   }
 
   drawText(
-    canvas: Canvas,
+    canvas: ICanvas,
     text: string,
     positionInCell: PositionInCell,
     attributes: TextAttributes,
@@ -162,7 +162,7 @@ export default class GridRenderer {
   }
 
   drawLine(
-    canvas: Canvas,
+    canvas: ICanvas,
     start: PositionInCell,
     end: PositionInCell,
     color: Color,
@@ -177,7 +177,7 @@ export default class GridRenderer {
   }
 
   drawEllipseInCell(
-    canvas: Canvas,
+    canvas: ICanvas,
     positionInCell: PositionInCell,
     color: Color,
     fillPercent?: Vec2,

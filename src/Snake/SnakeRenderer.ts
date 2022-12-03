@@ -1,4 +1,4 @@
-import Canvas from '../Canvas';
+import { ICanvas } from '../Canvas';
 import Color from '../GenericModels/Color';
 import { Direction, Vec2ForDirection } from '../GenericModels/Direction';
 import Vec2 from '../GenericModels/Vec2';
@@ -13,7 +13,7 @@ export type SnakeRenderConfig = {
 export default class SnakeRenderer {
   constructor(public readonly config: SnakeRenderConfig) {}
 
-  render(canvas: Canvas, grid: GridRenderer, snake: Snake) {
+  render(canvas: ICanvas, grid: GridRenderer, snake: Snake) {
     const positions = snake.positions;
     const cellPos = snake.headPosition;
 
