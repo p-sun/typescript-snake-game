@@ -1,29 +1,6 @@
-import { ICanvas, TextOptions } from '../../Canvas';
-import { GridPosition } from '../../GenericModels/Grid';
-import Fruit from '../Fruit';
-import Snake from '../Snake';
-import SnakeGame from '../SnakeGame';
-import SnakeGameLogic from '../SnakeGameLogic';
+import { TextOptions } from '../../Canvas';
 import { CanvasStub } from './CanvasStub';
-
-function createSnakeGame(canvas: ICanvas) {
-  const gridSize = { rowCount: 4, columnCount: 5 };
-  const snakePositions: GridPosition[] = [
-    { row: 0, column: 2 },
-    { row: 0, column: 3 },
-    { row: 1, column: 3 },
-    { row: 2, column: 3 },
-    { row: 3, column: 3 },
-    { row: 3, column: 4 },
-  ];
-  const gameLogic = new SnakeGameLogic(
-    gridSize,
-    new Snake(snakePositions, 'down', 0),
-    new Fruit({ row: 1, column: 2 })
-  );
-
-  return new SnakeGame(canvas, gridSize, gameLogic);
-}
+import { createSnakeGame } from './SnakeTestData';
 
 describe('test SnakeGame', () => {
   const drawTextFn = jest.fn((options: TextOptions) => {});

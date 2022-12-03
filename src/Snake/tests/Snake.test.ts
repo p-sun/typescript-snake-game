@@ -1,44 +1,23 @@
-import { Direction } from '../../GenericModels/Direction';
-import { GridPosition, GridSize } from '../../GenericModels/Grid';
-import Snake from '../Snake';
-
-const headPos: GridPosition = { row: 1, column: 2 };
-export function createSnake(options?: {
-  segmentsToAdd?: number;
-  direction?: Direction;
-}): Snake {
-  /**
-   *    h = head
-   * c  0 1 2 3 4
-   * 0  x x x x x
-   * 1  x x h o x
-   * 2  x x x o x
-   * 3  x x x x x
-   */
-  const gridPositions: GridPosition[] = [];
-  gridPositions.push({ row: headPos.row, column: headPos.column });
-  gridPositions.push({ row: 1, column: 3 });
-  gridPositions.push({ row: 2, column: 3 });
-
-  const segmentsToAdd = options?.segmentsToAdd ?? 0;
-  return new Snake(gridPositions, options?.direction ?? 'down', segmentsToAdd);
-}
+import { GridSize } from '../../GenericModels/Grid';
+import { createSnake } from './SnakeTestData';
 
 describe('test snake length() and headPosition()', () => {
   describe('when initialized with 3 GridPositions', () => {
     it('should have length of 3, and be readonly', () => {
       const snake = createSnake();
       expect(snake.length).toBe(3);
+
       snake.positions.push({ row: 3, column: 6 });
       expect(snake.length).toBe(3);
     });
 
     it('should have correct headPositions, and be readonly', () => {
       const snake = createSnake();
-      expect(snake.headPosition).toMatchObject(headPos);
-      snake.headPosition.row = 7;
-      snake.headPosition.row = 8;
-      expect(snake.headPosition).toMatchObject(headPos);
+      expect(snake.headPosition).toMatchObject({ row: 1, column: 2 });
+
+      snake.headPosition.row = 888888;
+      snake.headPosition.row = 111111;
+      expect(snake.headPosition).toMatchObject({ row: 1, column: 2 });
     });
   });
 
