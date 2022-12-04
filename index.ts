@@ -1,12 +1,12 @@
-import BombBroomerGame from './src/BombBroomer/BombBroomerGame';
-import HTMLCanvas from './src/GenericGame/HTMLCanvas';
-import Vec2 from './src/GenericModels/Vec2';
-import SnakeGame from './src/SnakeGame/SnakeGame';
+import BombBroomerGame from "./src/BombBroomer/BombBroomerGame";
+import HTMLCanvas from "./src/GenericGame/HTMLCanvas";
+import SnakeGame from "./src/SnakeGame/SnakeGame";
+import Vec2 from "./src/GenericModels/Vec2";
 
-const appRoot = document.getElementById('root');
+const appRoot = document.getElementById("root");
 if (appRoot) {
   const canvas = HTMLCanvas.createInRootElement(appRoot);
-  const gridSize = { rowCount: 24, columnCount: 24 };
+  const gridSize = { rowCount: 18, columnCount: 18 };
   const cellSize = new Vec2(22, 22);
   const snakeGame = new SnakeGame(canvas, gridSize, cellSize);
   snakeGame.run(12);
