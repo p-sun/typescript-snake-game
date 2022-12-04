@@ -6,8 +6,8 @@ import SnakeGame from './src/SnakeGame/SnakeGame';
 const appRoot = document.getElementById('root');
 if (appRoot) {
   const canvas = HTMLCanvas.createInRootElement(appRoot);
-  const gridSize = { rowCount: 24, columnCount: 24 };
-  const cellSize = new Vec2(30, 30);
+  const gridSize = { rowCount: 18, columnCount: 18 };
+  const cellSize = new Vec2(22, 22);
   const snakeGame = new SnakeGame(canvas, gridSize, cellSize);
   snakeGame.run(12);
 
