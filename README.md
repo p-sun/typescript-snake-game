@@ -231,3 +231,5 @@ classDiagram
         'left' | 'right' | 'up' | 'down'
     }
 ```
+
+![game](./images/SampleSnakeGameplay.gif)
