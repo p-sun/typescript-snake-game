@@ -206,7 +206,7 @@ export default class Canvas implements ICanvas {
     op: () => T
   ) {
     this.#context.save();
-    this.#context.font = `${attributes.fontSize}px Arial`;
+    this.#context.font = `${attributes.fontSize}px Monoco`;
     this.#context.fillStyle = attributes.color.asHexString();
     const res = op();
     this.#context.restore();

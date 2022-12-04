@@ -1,6 +1,7 @@
 import { ICanvas } from '../../Canvas';
 import { Direction } from '../../GenericModels/Direction';
 import { GridPosition } from '../../GenericModels/Grid';
+import Vec2 from '../../GenericModels/Vec2';
 import Fruit from '../Models/Fruit';
 import Snake from '../Models/Snake';
 import SnakeGameLogic from '../Models/SnakeGameLogic';
@@ -22,7 +23,7 @@ export function createSnakeGame(canvas: ICanvas) {
     new Fruit({ row: 1, column: 2 })
   );
 
-  return new SnakeGame(canvas, gridSize, gameLogic);
+  return new SnakeGame(canvas, gridSize, Vec2.zero, gameLogic);
 }
 
 export function createSnake(options?: {
