@@ -1,4 +1,4 @@
-import { ICanvas } from '../../Canvas';
+import { ICanvas } from '../../GenericGame/ICanvas';
 import { Direction } from '../../GenericModels/Direction';
 import { GridPosition } from '../../GenericModels/Grid';
 import Vec2 from '../../GenericModels/Vec2';

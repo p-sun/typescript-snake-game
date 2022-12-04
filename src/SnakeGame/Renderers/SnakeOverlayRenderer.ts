@@ -1,4 +1,4 @@
-import { ICanvas } from '../../Canvas';
+import { ICanvas } from '../../GenericGame/ICanvas';
 import Color from '../../GenericModels/Color';
 import Vec2 from '../../GenericModels/Vec2';
 import { SnakePlayStatus } from '../SnakeGame';
@@ -19,13 +19,13 @@ export default class SnakeOverlayRenderer {
   constructor(public readonly config: SnakeOverlayConfig) {}
 
   render(canvas: ICanvas, playStatus: SnakePlayStatus, snakeLength: number) {
-    const overlayTexts = this.getOverlayTexts(playStatus, snakeLength);
+    const overlayTexts = this.#getOverlayTexts(playStatus, snakeLength);
     if (overlayTexts) {
       this.#drawOverlay(canvas, overlayTexts);
     }
   }
 
-  getOverlayTexts(
+  #getOverlayTexts(
     playStatus: SnakePlayStatus,
     snakeLength: number
   ): SnakeOverlayTexts | undefined {

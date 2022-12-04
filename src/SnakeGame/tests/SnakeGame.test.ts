@@ -1,4 +1,4 @@
-import { TextOptions } from '../../Canvas';
+import { TextOptions } from '../../GenericGame/ICanvas';
 import { CanvasStub } from './CanvasStub';
 import { createSnakeGame } from './SnakeTestData';
 

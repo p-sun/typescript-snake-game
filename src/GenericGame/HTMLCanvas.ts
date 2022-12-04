@@ -1,83 +1,17 @@
-import Color from './GenericModels/Color';
-import { Direction } from './GenericModels/Direction';
-import Vec2 from './GenericModels/Vec2';
+import Color from '../GenericModels/Color';
+import Vec2 from '../GenericModels/Vec2';
+import {
+  ICanvas,
+  TextAttributes,
+  RectOptions,
+  EllipseOptions,
+  LineOptions,
+  TextOptions,
+  CanvasKeyEvent,
+  CanvasMouseEvent,
+} from './ICanvas';
 
-export type TextAttributes = {
-  color: Color;
-  fontSize: number;
-};
-
-export type CanvasKeyEvent =
-  | { key: 'space' }
-  | { key: 'arrow'; direction: Direction };
-
-export type CanvasMouseEvent =
-  | { mode: 'move' }
-  | { mode: 'boundary'; boundary: 'enter' | 'exit' }
-  | { mode: 'button'; state: 'up' | 'down'; button: 'primary' | 'secondary' };
-
-export type LineOptions = {
-  start: Vec2;
-  end: Vec2;
-  color: Color;
-  thickness?: number;
-  lineDash?: number[];
-};
-
-export type EllipseOptions = {
-  origin: Vec2;
-  rx: number;
-  ry: number;
-  color: Color;
-  rotationAngle?: number;
-};
-
-export type RectOptions = {
-  origin: Vec2;
-  size: Vec2;
-  color: Color;
-  alpha?: number;
-};
-
-export type TextOptions = {
-  text: string;
-  position: Vec2;
-  attributes: TextAttributes;
-  normalizedAnchorOffset?: {
-    offsetX?: number;
-    offsetY?: number | 'baseline';
-  };
-};
-
-export interface ICanvas {
-  get size(): Vec2;
-  set size(newSize: Vec2);
-  get midpoint(): Vec2;
-
-  // Math
-  fromNormalizedCoordinate(coord: Vec2): Vec2;
-  toNormalizedCoordinate(pos: Vec2): Vec2;
-  toNormalizedCoordinate(pos: Vec2): Vec2;
-  measureText(
-    contents: string,
-    attributes: TextAttributes
-  ): { size: Vec2; baselineOffsetFromBottom: number };
-
-  // Drawing
-  clear(color: Color): void;
-  drawRect(options: RectOptions): void;
-  drawLine(options: LineOptions): void;
-  drawEllipse(options: EllipseOptions): void;
-  drawText(options: TextOptions): void;
-
-  // Listen for Input
-  setKeyDownListener(fn: (key: CanvasKeyEvent) => void): void;
-  unsetKeyDownListener(): void;
-  setMouseListener(fn: (event: CanvasMouseEvent, pos: Vec2) => void): void;
-  unsetMouseListener(): void;
-}
-
-export default class Canvas implements ICanvas {
+export default class HTMLCanvas implements ICanvas {
   #context: CanvasRenderingContext2D;
   #size: Vec2;
   #canvasElement: HTMLCanvasElement;
@@ -108,11 +42,11 @@ export default class Canvas implements ICanvas {
   static createInRootElement(
     rootElement: Element,
     size: Vec2 = Vec2.zero
-  ): Canvas {
+  ): HTMLCanvas {
     const canvasElement = document.createElement('canvas') as HTMLCanvasElement;
     rootElement.appendChild(canvasElement);
 
-    return new Canvas(canvasElement, size);
+    return new HTMLCanvas(canvasElement, size);
   }
 
   get midpoint(): Vec2 {

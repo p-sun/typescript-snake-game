@@ -1,3 +1,4 @@
+import { randomIntInRange } from '../../GenericGame/Utils';
 import {
   Direction,
   OppositeDirection,
@@ -8,7 +9,6 @@ import {
   GridSize,
   GridPositionEqual,
 } from '../../GenericModels/Grid';
-import { randomIntInRange } from '../../Utils';
 
 export default class Snake {
   #positions: GridPosition[];

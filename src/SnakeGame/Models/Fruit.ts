@@ -1,5 +1,5 @@
+import { randomIntInRange } from '../../GenericGame/Utils';
 import { GridPosition, GridSize } from '../../GenericModels/Grid';
-import { randomIntInRange } from '../../Utils';
 import Snake from './Snake';
 
 export default class Fruit {

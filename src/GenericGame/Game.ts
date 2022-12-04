@@ -1,5 +1,5 @@
-import { ICanvas, CanvasKeyEvent, CanvasMouseEvent } from './Canvas';
-import Vec2 from './GenericModels/Vec2';
+import Vec2 from '../GenericModels/Vec2';
+import { ICanvas, CanvasKeyEvent, CanvasMouseEvent } from './ICanvas';
 
 export default abstract class Game {
   abstract onUpdate(): void;

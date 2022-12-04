@@ -1,8 +1,8 @@
-import { ICanvas, TextAttributes } from './Canvas';
-import Color from './GenericModels/Color';
-import { GridPosition, GridSize } from './GenericModels/Grid';
-import Rect from './GenericModels/Rect';
-import Vec2 from './GenericModels/Vec2';
+import Color from '../GenericModels/Color';
+import { GridPosition, GridSize } from '../GenericModels/Grid';
+import Rect from '../GenericModels/Rect';
+import Vec2 from '../GenericModels/Vec2';
+import { ICanvas, TextAttributes } from './ICanvas';
 import { clamp } from './Utils';
 
 export type GridRenderConfig = {

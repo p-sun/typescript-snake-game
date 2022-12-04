@@ -1,4 +1,4 @@
-import { clamp } from '../Utils';
+import { clamp } from '../GenericGame/Utils';
 
 export default class Color {
   constructor(

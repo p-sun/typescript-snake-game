@@ -1,8 +1,8 @@
-import { ICanvas } from '../../Canvas';
+import GridRenderer, { GridRenderConfig } from '../../GenericGame/GridRenderer';
+import { ICanvas } from '../../GenericGame/ICanvas';
 import Color from '../../GenericModels/Color';
 import { GridSize } from '../../GenericModels/Grid';
 import Vec2 from '../../GenericModels/Vec2';
-import GridRenderer, { GridRenderConfig } from '../../GridRenderer';
 import SnakeGameLogic from '../Models/SnakeGameLogic';
 import FruitRenderer from './FruitRenderer';
 import SnakeOverlayRenderer from './SnakeOverlayRenderer';
