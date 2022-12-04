@@ -23,8 +23,7 @@ describe('test SnakeGame', () => {
       expect(drawTextFn).toBeCalledTimes(0);
       game.onUpdate();
       game.onRender(canvas);
-      expect(drawTextFn).toBeCalledTimes(1);
-      expect(drawTextFn.mock.calls.at(0)?.at(0)?.text).toEqual(
+      expect(drawTextFn.mock.lastCall?.at(0)?.text).toEqual(
         'Press [space] to start!'
       );
     });
@@ -44,21 +43,22 @@ describe('test SnakeGame', () => {
       game.onRender(canvas);
 
       game.onUpdate();
-      expect(drawTextFn).toBeCalledTimes(0);
+
+      const allTexts = drawTextFn.mock.calls.map((arg) => arg[0].text);
+      const hasPressSpaceText = allTexts.some((t) => {
+        t.includes('Press [space]');
+      });
+      expect(hasPressSpaceText).toBe(false);
     });
   });
 
   describe('when snake hits a wall', () => {
     it('the game should display scores', () => {
       game.onRender(canvas);
-      expect(drawTextFn).toBeCalledTimes(3);
 
-      expect(drawTextFn.mock.calls.at(0)?.at(0)?.text).toEqual(
-        'Press [space] to restart!'
-      );
-      expect(drawTextFn.mock.calls.at(2)?.at(0)?.text).toEqual(
-        'Snake length: 7'
-      );
+      const allTexts = drawTextFn.mock.calls.map((arg) => arg[0].text);
+      expect(allTexts).toContain('Press [space] to restart!');
+      expect(allTexts).toContain('Snake length: 7');
     });
   });
 });
