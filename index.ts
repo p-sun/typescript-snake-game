@@ -1,6 +1,6 @@
 import BombBroomerGame from './src/BombBroomer/BombBroomerGame';
 import Canvas from './src/Canvas';
-import SnakeGame from './src/Snake/SnakeGame';
+import SnakeGame from './src/SnakeGame/SnakeGame';
 
 const appRoot = document.getElementById('root');
 if (appRoot) {

@@ -1,7 +1,7 @@
-import { ICanvas } from '../Canvas';
-import Color from '../GenericModels/Color';
-import Vec2 from '../GenericModels/Vec2';
-import { SnakePlayStatus } from './SnakeGame';
+import { ICanvas } from '../../Canvas';
+import Color from '../../GenericModels/Color';
+import Vec2 from '../../GenericModels/Vec2';
+import { SnakePlayStatus } from '../SnakeGame';
 
 export type SnakeOverlayConfig = {
   pressSpaceTextColor: Color;

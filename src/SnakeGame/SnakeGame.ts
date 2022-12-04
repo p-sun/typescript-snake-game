@@ -1,8 +1,8 @@
 import { ICanvas, CanvasKeyEvent, CanvasMouseEvent } from '../Canvas';
 import Game from '../Game';
 import { GridSize } from '../GenericModels/Grid';
-import SnakeGameLogic from './SnakeGameLogic';
-import SnakeGameRenderer from './SnakeGameRenderer';
+import SnakeGameLogic from './Models/SnakeGameLogic';
+import SnakeGameRenderer from './Renderers/SnakeGameRenderer';
 
 export type SnakePlayStatus = 'waiting' | 'playing' | 'lost';
 

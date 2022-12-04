@@ -1,8 +1,8 @@
-import { Direction } from '../GenericModels/Direction';
-import { GridPositionEqual, GridSize } from '../GenericModels/Grid';
+import { Direction } from '../../GenericModels/Direction';
+import { GridPositionEqual, GridSize } from '../../GenericModels/Grid';
+import { SnakePlayStatus } from '../SnakeGame';
 import Fruit from './Fruit';
 import Snake from './Snake';
-import { SnakePlayStatus } from './SnakeGame';
 
 export default class SnakeGameLogic {
   snake: Snake;

@@ -1,7 +1,7 @@
 import { GridPosition, GridSize } from '../../GenericModels/Grid';
-import Fruit from '../Fruit';
-import Snake from '../Snake';
-import SnakeGameLogic from '../SnakeGameLogic';
+import Fruit from '../Models/Fruit';
+import Snake from '../Models/Snake';
+import SnakeGameLogic from '../Models/SnakeGameLogic';
 
 describe('test intial game state', () => {
   it('should wait for spacebar keypress before starting the game', () => {

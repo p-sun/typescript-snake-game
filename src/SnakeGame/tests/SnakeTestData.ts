@@ -1,10 +1,10 @@
 import { ICanvas } from '../../Canvas';
 import { Direction } from '../../GenericModels/Direction';
 import { GridPosition } from '../../GenericModels/Grid';
-import Fruit from '../Fruit';
-import Snake from '../Snake';
+import Fruit from '../Models/Fruit';
+import Snake from '../Models/Snake';
+import SnakeGameLogic from '../Models/SnakeGameLogic';
 import SnakeGame from '../SnakeGame';
-import SnakeGameLogic from '../SnakeGameLogic';
 
 export function createSnakeGame(canvas: ICanvas) {
   const gridSize = { rowCount: 4, columnCount: 5 };

@@ -1,8 +1,8 @@
-import { ICanvas } from '../Canvas';
-import Color from '../GenericModels/Color';
-import Vec2 from '../GenericModels/Vec2';
-import GridRenderer from '../GridRenderer';
-import Fruit from './Fruit';
+import { ICanvas } from '../../Canvas';
+import Color from '../../GenericModels/Color';
+import Vec2 from '../../GenericModels/Vec2';
+import GridRenderer from '../../GridRenderer';
+import Fruit from '../Models/Fruit';
 
 export type FruitRenderConfig = {
   color: Color;

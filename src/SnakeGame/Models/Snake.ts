@@ -2,13 +2,13 @@ import {
   Direction,
   OppositeDirection,
   Vec2ForDirection,
-} from '../GenericModels/Direction';
+} from '../../GenericModels/Direction';
 import {
   GridPosition,
-  GridPositionEqual,
   GridSize,
-} from '../GenericModels/Grid';
-import { randomIntInRange } from '../Utils';
+  GridPositionEqual,
+} from '../../GenericModels/Grid';
+import { randomIntInRange } from '../../Utils';
 
 export default class Snake {
   #positions: GridPosition[];
