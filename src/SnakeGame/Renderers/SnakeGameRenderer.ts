@@ -16,12 +16,12 @@ export default class SnakeGameRenderer {
   #fruitRenderer: FruitRenderer;
   #overlayRenderer: SnakeOverlayRenderer;
 
-  constructor(canvas: ICanvas, gridSize: GridSize) {
+  constructor(canvas: ICanvas, gridSize: GridSize, cellSize: Vec2) {
     this.#gridSize = gridSize;
 
     const gridConfig: GridRenderConfig = {
       origin: Vec2.zero,
-      cellSize: new Vec2(30, 30),
+      cellSize: cellSize,
       background: {
         mode: 'fill',
         color: Color.fromHex(0x81b29a),
