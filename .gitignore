@@ -105,3 +105,6 @@ dist
 
 # Typescript
 out
+
+# For this project
+images/originalDiagram.txt
