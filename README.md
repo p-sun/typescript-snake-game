@@ -232,4 +232,6 @@ classDiagram
     }
 ```
 
-![game](./images/SampleSnakeGameplay.gif)
+![umlDiagram](./images/SnakeUML.png)
+
+![gameplay](./images/SampleSnakeGameplay.gif)
