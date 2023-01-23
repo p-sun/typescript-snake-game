@@ -1,13 +1,18 @@
 import Vec2 from '../GenericModels/Vec2';
 import { ICanvas, CanvasKeyEvent, CanvasMouseEvent } from './ICanvas';
 
-export default abstract class Game {
+export interface Runnable {
+  run(fps: number): void;
+}
+
+export default abstract class Game implements Runnable {
   abstract onUpdate(): void;
   abstract onRender(canvas: ICanvas): void;
   abstract onKeyDown(event: CanvasKeyEvent): void;
   abstract onMouseEvent(event: CanvasMouseEvent, pos: Vec2): void;
 
   protected readonly canvas: ICanvas;
+  protected fps: number = 60;
 
   constructor(canvas: ICanvas) {
     this.canvas = canvas;
@@ -20,6 +25,7 @@ export default abstract class Game {
   }
 
   run(fps: number = 60) {
+    this.fps = fps;
     window.setInterval(() => {
       this.onUpdate();
       this.onRender(this.canvas);
