@@ -69,6 +69,18 @@ export default class GridRenderer {
     return Object.assign({}, this.#config.cellSize);
   }
 
+  get midpoint() {
+    return this.rect.midpoint;
+  }
+
+  set midpoint(m: Vec2) {
+    this.#config.origin = m.sub(this.totalSize().mul(0.5));
+  }
+
+  public get rect(): Rect {
+    return new Rect(this.#config.origin, this.totalSize());
+  }
+
   totalSize(): Vec2 {
     const { cellSize } = this.#config;
     const lineWidth = this.#config.border.lineWidth;
@@ -135,11 +147,15 @@ export default class GridRenderer {
     }
   }
 
-  forEachCell(fn: (cellPos: GridPosition, rect: Rect) => void) {
+  forEachCell(fn: (cellPos: GridPosition, rect: Rect, idx: number) => void) {
     for (let column = 0; column < this.columnCount; column++) {
       for (let row = 0; row < this.rowCount; row++) {
         const cellPos = { row, column };
-        fn(cellPos, this.cellContentRectAtPosition(cellPos));
+        fn(
+          cellPos,
+          this.cellContentRectAtPosition(cellPos),
+          row * this.columnCount + column
+        );
       }
     }
   }

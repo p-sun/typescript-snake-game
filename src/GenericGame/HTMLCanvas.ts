@@ -131,7 +131,87 @@ export default class HTMLCanvas implements ICanvas {
         }
       }
 
+      let { background } = options;
+      if (background) {
+        this.#context.save();
+
+        if (background.alpha !== undefined) {
+          this.#context.globalAlpha = background.alpha;
+        }
+
+        const measure = this.#measureTextWithContextReady(options.text);
+        let p = new Vec2(x, y).mapY((y) => y - measure.size.y);
+        let s = measure.size;
+
+        if (background.padding) {
+          const offset = new Vec2(background.padding);
+          p = p.sub(offset);
+          s = s.add(offset.mul(2));
+        }
+
+        this.drawRect({ origin: p, size: s, color: background.color });
+        this.#context.restore();
+      }
+
       this.#context.fillText(options.text, x, y);
+    });
+  }
+
+  drawTextAtPosition(
+    contents: string,
+    position: Vec2,
+    attributes: TextAttributes,
+    normalizedAnchorOffset: {
+      normalizedOffsetX?: number;
+      normalizedOffsetY?: number | 'baseline';
+    } = { normalizedOffsetX: 0, normalizedOffsetY: 0 },
+    background?: { color: Color; alpha?: number; padding?: number }
+  ) {
+    this.#performCanvasTextOperation(attributes, () => {
+      let { x, y } = position;
+
+      const measure = this.#measureTextWithContextReady(contents);
+
+      if (normalizedAnchorOffset) {
+        if (normalizedAnchorOffset.normalizedOffsetX !== undefined) {
+          x +=
+            (-measure.size.x / 2) *
+            (1 + normalizedAnchorOffset.normalizedOffsetX);
+        }
+
+        if (normalizedAnchorOffset.normalizedOffsetY !== undefined) {
+          if (normalizedAnchorOffset.normalizedOffsetY === 'baseline') {
+            y += measure.baselineOffsetFromBottom;
+          } else {
+            y +=
+              (measure.size.y / 2) *
+              (1 - normalizedAnchorOffset.normalizedOffsetY);
+          }
+        }
+      }
+
+      if (background) {
+        this.#context.save();
+
+        if (background.alpha !== undefined) {
+          this.#context.globalAlpha = background.alpha;
+        }
+
+        let p = new Vec2(x, y).mapY((y) => y - measure.size.y);
+        let s = measure.size;
+
+        if (background.padding) {
+          const offset = new Vec2(background.padding);
+          p = p.sub(offset);
+          s = s.add(offset.mul(2));
+        }
+
+        this.drawRect({ origin: p, size: s, color: background.color });
+
+        this.#context.restore();
+      }
+
+      this.#context.fillText(contents, x, y);
     });
   }
 
@@ -189,7 +269,7 @@ export default class HTMLCanvas implements ICanvas {
       return;
     }
 
-    const { key } = event;
+    const { key, code } = event;
     if (key === 'ArrowUp') {
       listener({ key: 'arrow', direction: `up` });
     } else if (key === 'ArrowDown') {
@@ -200,6 +280,17 @@ export default class HTMLCanvas implements ICanvas {
       listener({ key: 'arrow', direction: `right` });
     } else if (key === ' ') {
       listener({ key: 'space' });
+    } else if (code === 'KeyE') {
+      listener({ key: 'letter', letter: 'E' });
+    } else if (code === 'KeyM') {
+      listener({ key: 'letter', letter: 'M' });
+    } else if (code === 'KeyH') {
+      listener({ key: 'letter', letter: 'H' });
+    } else if (code === 'Backspace') {
+      listener({ key: 'backspace' });
+    } else if (code.startsWith('Digit')) {
+      const digit = Number(event.code.slice('Digit'.length));
+      listener({ key: 'digit', digit: digit });
     }
   }
 

@@ -1,5 +1,5 @@
 export default class Vec2 {
-  constructor(public readonly x: number, public readonly y: number) {}
+  constructor(public readonly x: number, public readonly y: number = x) {}
 
   static readonly zero = new Vec2(0, 0);
   static readonly one = new Vec2(1, 1);
@@ -106,5 +106,28 @@ export default class Vec2 {
 
   signedAngleRadTo(other: Vec2): number {
     return Math.atan2(this.sinAnlgeRadTo(other), this.cosAnlgeRadTo(other));
+  }
+
+  mapComponents(fn: (value: number, component: 'x' | 'y') => number): Vec2 {
+    return new Vec2(fn(this.x, 'x'), fn(this.y, 'y'));
+  }
+
+  roundToIntegers(): Vec2 {
+    return this.mapComponents((n) => Math.round(n));
+  }
+
+  static max(...vecs: Vec2[]): Vec2 {
+    if (vecs.length === 0) {
+      return Vec2.zero;
+    }
+
+    let [{ x, y }, ...tail] = vecs;
+
+    for (const v of tail) {
+      x = Math.max(x, v.x);
+      y = Math.max(y, v.y);
+    }
+
+    return new Vec2(x, y);
   }
 }

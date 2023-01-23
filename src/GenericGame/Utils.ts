@@ -20,3 +20,13 @@ export function randomIntInRange(
 ): number {
   return Math.floor(Math.random() * (excludedMax - includedMin)) + includedMin;
 }
+
+export function randomOrderArray<T>(iter: Iterable<T>): T[] {
+  let res: T[] = [];
+
+  for (const value of iter) {
+    res.splice(randomIntInRange(0, res.length + 1), 0, value);
+  }
+
+  return res;
+}

@@ -9,7 +9,10 @@ export type TextAttributes = {
 
 export type CanvasKeyEvent =
   | { key: 'space' }
-  | { key: 'arrow'; direction: Direction };
+  | { key: 'backspace' }
+  | { key: 'arrow'; direction: Direction }
+  | { key: 'letter'; letter: 'E' | 'M' | 'H' }
+  | { key: 'digit'; digit: number };
 
 export type CanvasMouseEvent =
   | { mode: 'move' }
@@ -47,6 +50,7 @@ export type TextOptions = {
     offsetX?: number;
     offsetY?: number | 'baseline';
   };
+  background?: { color: Color; alpha?: number; padding?: number };
 };
 
 export interface ICanvas {
@@ -69,6 +73,16 @@ export interface ICanvas {
   drawLine(options: LineOptions): void;
   drawEllipse(options: EllipseOptions): void;
   drawText(options: TextOptions): void;
+  drawTextAtPosition(
+    contents: string,
+    position: Vec2,
+    attributes: TextAttributes,
+    normalizedAnchorOffset?: {
+      normalizedOffsetX?: number;
+      normalizedOffsetY?: number | 'baseline';
+    },
+    background?: { color: Color; alpha?: number; padding?: number }
+  ): void;
 
   // Listen for Input
   setKeyDownListener(fn: (key: CanvasKeyEvent) => void): void;

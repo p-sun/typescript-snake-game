@@ -14,7 +14,7 @@ type CellData =
   | { kind: 'flag'; count: number }
   | { kind: 'covered' | 'cleared' };
 
-export default class BombBroomerGame extends Game {
+export default class BombBroomer extends Game {
   // Game Logic
   #gridSize: GridSize;
   #hasBombs: boolean[][];
