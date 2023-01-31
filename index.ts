@@ -1,11 +1,11 @@
-import BombBroomerGame from './src/BombBroomer/BombBroomerGame';
-import Game from './src/GenericGame/Game';
-import HTMLCanvas from './src/GenericGame/HTMLCanvas';
-import { ICanvas } from './src/GenericGame/ICanvas';
-import Vec2 from './src/GenericModels/Vec2';
-import EasingRenderer from './src/Playgrounds/EasingRenderer';
-import SnakeGame from './src/SnakeGame/SnakeGame';
-import SudokuGame from './src/Sudoku/SudokuGame';
+import BombBroomerGame from "./src/BombBroomer/BombBroomerGame";
+import EasingRenderer from "./src/Playgrounds/EasingRenderer";
+import HTMLCanvas from "./src/GenericGame/HTMLCanvas";
+import { ICanvas } from "./src/GenericGame/ICanvas";
+import SnakeGame from "./src/SnakeGame/SnakeGame";
+import SudokuGame from "./src/Sudoku/SudokuGame";
+import Vec2 from "./src/GenericModels/Vec2";
+import Game from "./src/GenericGame/Game";
 
 const Games: { [k: string]: (canvas: ICanvas) => Game } = {
   Snake: (canvas) => {
@@ -27,15 +27,15 @@ const Playgrounds = {
   },
 };
 
-const appRoot = document.getElementById('root');
+const appRoot = document.getElementById("root");
 if (appRoot) {
   const canvas = HTMLCanvas.createInRootElement(appRoot!);
 
-  // const game = Games.Snake(canvas);
+  const game = Games.Snake(canvas);
   // const game = Games.BombBroomer(canvas);
   // const game = Games.Sudoku(canvas);
-  // game.run(12);
+  game.run(12);
 
-  const playground = Playgrounds.Easing(canvas);
-  playground.run(canvas);
+  // const playground = Playgrounds.Easing(canvas);
+  // playground.run(canvas);
 }
