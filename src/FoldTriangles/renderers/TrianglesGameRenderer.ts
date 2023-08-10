@@ -3,6 +3,7 @@ import { ICanvas } from '../../GenericGame/ICanvas';
 import Color from '../../GenericModels/Color';
 import { GridSize } from '../../GenericModels/Grid';
 import Vec2 from '../../GenericModels/Vec2';
+import { TrianglesGameLogic } from '../models/TrianglesGameLogic';
 
 export default class TrianglesGameRenderer {
   #gridRenderer: GridRenderer;
@@ -23,7 +24,7 @@ export default class TrianglesGameRenderer {
     this.#gridRenderer = new GridRenderer(gridSize, canvas, gridConfig);
   }
 
-  render(canvas: ICanvas) {
+  render(canvas: ICanvas, logic: TrianglesGameLogic) {
     this.#gridRenderer.render(canvas);
   }
 }
