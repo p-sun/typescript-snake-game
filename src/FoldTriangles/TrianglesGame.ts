@@ -20,21 +20,21 @@ export default class TrianglesGame extends Game {
     const { canvas, cellSize, trianglesCount } = config;
     super(canvas);
 
-    let gridSize = Math.ceil(trianglesCount / 2) * 2 + 1;
+    this.#logic = new TrianglesGameLogic({ trianglesCount });
+
+    const gridSize = this.#logic.gridSize;
     this.#renderer = new TrianglesGameRenderer(
       canvas,
       { rowCount: gridSize, columnCount: gridSize },
       cellSize
     );
 
-    this.#logic = new TrianglesGameLogic({ trianglesCount });
+    this.#renderer.render(canvas, this.#logic);
   }
 
   onUpdate() {}
 
-  onRender(canvas: ICanvas) {
-    this.#renderer.render(canvas, this.#logic);
-  }
+  onRender(canvas: ICanvas) {}
 
   onKeyDown(event: CanvasKeyEvent) {}
 

@@ -3,6 +3,7 @@ import { ICanvas } from '../../GenericGame/ICanvas';
 import Color from '../../GenericModels/Color';
 import { GridSize } from '../../GenericModels/Grid';
 import Vec2 from '../../GenericModels/Vec2';
+import { getTriangleVerts } from '../models/TrianglePosition';
 import { TrianglesGameLogic } from '../models/TrianglesGameLogic';
 
 export default class TrianglesGameRenderer {
@@ -26,5 +27,26 @@ export default class TrianglesGameRenderer {
 
   render(canvas: ICanvas, logic: TrianglesGameLogic) {
     this.#gridRenderer.render(canvas);
+
+    this.#gridRenderer.forEachCell((cellPos, rect) => {
+      const cell = logic.getCell(0, cellPos.column, cellPos.row);
+      if (cell) {
+        // console.log(`cell ${cellPos.row}, ${cellPos.column} is filled`);
+        // canvas.drawRect({
+        //   origin: rect.origin,
+        //   size: rect.size,
+        //   color: Color.green,
+        // });
+        const verts = getTriangleVerts(cell.trianglePos, rect);
+        canvas.drawPolygon({
+          points: verts,
+          stroke: {
+            color: Color.black,
+            thickness: 2,
+          },
+          fillColor: Color.green,
+        });
+      }
+    });
   }
 }
