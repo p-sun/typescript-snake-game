@@ -9,6 +9,7 @@ import {
   TextOptions,
   CanvasKeyEvent,
   CanvasMouseEvent,
+  PolygonOptions,
 } from './ICanvas';
 
 export default class HTMLCanvas implements ICanvas {
@@ -111,6 +112,33 @@ export default class HTMLCanvas implements ICanvas {
     this.#context.moveTo(options.start.x, options.start.y);
     this.#context.lineTo(options.end.x, options.end.y);
     this.#context.stroke();
+  }
+
+  drawPolygon(options: PolygonOptions) {
+    const { points, stroke, fillColor } = options;
+
+    this.#context.beginPath();
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i];
+      if (i === 0) {
+        this.#context.moveTo(point.x, point.y);
+      } else {
+        this.#context.lineTo(point.x, point.y);
+      }
+    }
+    this.#context.closePath();
+
+    if (fillColor) {
+      this.#context.fillStyle = fillColor.asHexString();
+      this.#context.fill();
+    }
+
+    if (stroke) {
+      this.#context.strokeStyle = stroke.color.asHexString();
+      this.#context.lineWidth = stroke.thickness ?? 1;
+      this.#context.setLineDash(stroke.lineDash ?? []);
+      this.#context.stroke();
+    }
   }
 
   drawText(options: TextOptions) {

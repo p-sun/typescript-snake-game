@@ -27,6 +27,16 @@ export type LineOptions = {
   lineDash?: number[];
 };
 
+export type PolygonOptions = {
+  points: Vec2[];
+  fillColor?: Color;
+  stroke?: {
+    color: Color;
+    thickness?: number;
+    lineDash?: number[];
+  };
+};
+
 export type EllipseOptions = {
   origin: Vec2;
   rx: number;
@@ -71,6 +81,7 @@ export interface ICanvas {
   clear(color: Color): void;
   drawRect(options: RectOptions): void;
   drawLine(options: LineOptions): void;
+  drawPolygon(options: PolygonOptions): void;
   drawEllipse(options: EllipseOptions): void;
   drawText(options: TextOptions): void;
   drawTextAtPosition(
