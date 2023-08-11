@@ -17,7 +17,7 @@ const Games: { [k: string]: (canvas: ICanvas) => Game } = {
   BombBroomer: (canvas) => new BombBroomerGame(canvas),
   Sudoku: (canvas) => new SudokuGame(canvas),
   Triangles: (canvas) => {
-    const cellSize = new Vec2(30, 30);
+    const cellSize = new Vec2(80, 80);
     return new TrianglesGame({ canvas, cellSize });
   },
 };

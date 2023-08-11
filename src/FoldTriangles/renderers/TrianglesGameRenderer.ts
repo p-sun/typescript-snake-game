@@ -59,7 +59,7 @@ export default class TrianglesGameRenderer {
       points: verts,
       stroke: {
         color: Color.black,
-        thickness: 2,
+        thickness: 4,
       },
       fillColor: triangleColor,
     });
@@ -80,7 +80,7 @@ export default class TrianglesGameRenderer {
       start: center.sub(dir),
       end: center.add(dir),
       color: Color.black,
-      thickness: 4,
+      thickness: 8,
     });
   }
 }
