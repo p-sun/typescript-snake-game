@@ -6,19 +6,21 @@ type Cell = {
   triangle1: Triangle;
   triangle2?: Triangle;
 };
-export type TriangleRotation = 1 | 2 | 3 | 4; // topRight, bottomRight, bottomLeft, topLeft
-export type Triangle = {
-  rotation: TriangleRotation;
-  clockwise: boolean; // Whether next rotation is clockwise, if fold is -1 or 1.
-  drawStyle: 'first' | 'middle' | 'last';
-};
 
+type FoldDirection = -1 | 0 | 1;
+
+type FoldResult = { joint: Joint; triangle: Triangle };
 type Joint = {
   layer: number;
   pos: GridPosition;
 };
 
-type Fold = -1 | 0 | 1;
+export type Triangle = {
+  rotation: TriangleRotation;
+  clockwise: boolean; // Whether next rotation is clockwise, if fold is -1 or 1.
+  drawStyle: 'first' | 'middle' | 'last';
+};
+export type TriangleRotation = 1 | 2 | 3 | 4; // topRight, bottomRight, bottomLeft, topLeft
 
 export class TrianglesGameLogic {
   #maxCount: number;
@@ -28,7 +30,7 @@ export class TrianglesGameLogic {
 
   // For Folding
   #joint: Joint;
-  #folds: Fold[] = []; // 5 triangles, 3 folds
+  #folds: FoldDirection[] = []; // 5 triangles, 3 folds
   #count = 1; // Total number of triangles
 
   constructor(config: { maxTriangles: number }) {
@@ -47,7 +49,7 @@ export class TrianglesGameLogic {
     };
     this.#joint = { layer: 0, pos: startPos };
 
-    const allFolds: Fold[] = [-1, 0, 1];
+    const allFolds: FoldDirection[] = [-1, 0, 1];
     while (this.#count < this.#maxCount) {
       const i = Math.floor(Math.random() * 3);
       if (
@@ -88,7 +90,8 @@ export class TrianglesGameLogic {
     return Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => null));
   }
 
-  canAddTriangleToCell(joint: Joint, triangle: Triangle) {
+  canAddFoldToLayers(foldResult: FoldResult) {
+    const { joint, triangle } = foldResult;
     const { layer, pos } = joint;
     if (layer >= 0 && layer < this.#layers.length) {
       const cell = this.#layers[layer][pos.row][pos.column];
@@ -102,20 +105,21 @@ export class TrianglesGameLogic {
     return true;
   }
 
-  addTriangleToCell(joint: Joint, triangle: Triangle) {
-    let { layer } = joint;
+  addFoldToLayers(foldResult: FoldResult) {
+    const { joint, triangle } = foldResult;
     const { pos } = joint;
-    if (layer === this.#layers.length) {
+    let l = joint.layer;
+    if (l === this.#layers.length) {
       this.#layers.push(this.createEmptyLayer(this.#gridSize));
-    } else if (layer === -1) {
+    } else if (l === -1) {
       this.#layers.unshift(this.createEmptyLayer(this.#gridSize));
       joint.layer = 0;
-      layer = 0;
+      l = 0;
     }
 
-    const cell = this.#layers[layer][pos.row][pos.column];
+    const cell = this.#layers[l][pos.row][pos.column];
     if (!cell) {
-      this.#layers[layer][pos.row][pos.column] = {
+      this.#layers[l][pos.row][pos.column] = {
         triangle1: triangle,
       };
     } else if (!cell.triangle2) {
@@ -127,16 +131,16 @@ export class TrianglesGameLogic {
   /*                                   Folding                                  */
   /* -------------------------------------------------------------------------- */
 
-  private tryApplyFold(fold: Fold): boolean {
+  private tryApplyFold(fold: FoldDirection): boolean {
     if (this.#count === this.#maxCount) {
       return false;
     }
 
     const drawStyle = this.#count < this.#maxCount - 1 ? 'middle' : 'last';
     let result = this.nextFoldResult(this.#joint, fold, drawStyle);
-    if (result && this.canAddTriangleToCell(result.newJoint, result.newTriangle)) {
-      this.addTriangleToCell(result.newJoint, result.newTriangle);
-      this.#joint = result.newJoint;
+    if (result && this.canAddFoldToLayers(result)) {
+      this.addFoldToLayers(result);
+      this.#joint = result.joint;
       this.#folds.push(fold);
       this.#count += 1;
       return true;
@@ -144,11 +148,7 @@ export class TrianglesGameLogic {
     return false;
   }
 
-  private nextFoldResult(
-    joint: Joint,
-    fold: Fold,
-    drawStyle: Triangle['drawStyle']
-  ): { newJoint: Joint; newTriangle: Triangle } | undefined {
+  private nextFoldResult(joint: Joint, fold: FoldDirection, drawStyle: Triangle['drawStyle']): FoldResult | undefined {
     const cell = this.getCell(joint.layer, joint.pos)!;
     const currTriangle = cell.triangle2 ?? cell.triangle1;
     const { rotation, clockwise: clockwise } = currTriangle;
@@ -156,11 +156,11 @@ export class TrianglesGameLogic {
     if (fold === 0) {
       const newDirection = this.directionForFold0(currTriangle);
       return {
-        newJoint: {
+        joint: {
           layer,
           pos: GridPositionAdd(pos, this.toGridPos(newDirection)),
         },
-        newTriangle: {
+        triangle: {
           rotation: this.oppositeRotation(rotation),
           clockwise: !clockwise,
           drawStyle: drawStyle,
@@ -168,8 +168,8 @@ export class TrianglesGameLogic {
       };
     } else {
       return {
-        newJoint: { layer: layer + fold, pos },
-        newTriangle: {
+        joint: { layer: layer + fold, pos },
+        triangle: {
           rotation: this.adjacentRotation(currTriangle),
           clockwise: clockwise,
           drawStyle,
@@ -224,13 +224,13 @@ export class TrianglesGameLogic {
   /*                                    Debug                                   */
   /* -------------------------------------------------------------------------- */
 
-  private patternDescription(count: number, folds: Fold[], startClockwise: boolean) {
+  private patternDescription(count: number, folds: FoldDirection[], startClockwise: boolean) {
     return (
       `Generated a pattern!\nCount: ${count} \nStart clockwise: ${startClockwise}\n\n` + this.foldsDescription(folds)
     );
   }
 
-  private foldsDescription(folds: Fold[]) {
+  private foldsDescription(folds: FoldDirection[]) {
     const groupedFolds = this.#folds
       .map((f) => (f === 1 ? 'Up   ' : f === -1 ? 'Down ' : '-    '))
       .reduce(
