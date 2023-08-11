@@ -2,9 +2,13 @@ import GridRenderer, { GridRenderConfig } from '../../GenericGame/GridRenderer';
 import { ICanvas } from '../../GenericGame/ICanvas';
 import Color from '../../GenericModels/Color';
 import { GridSize } from '../../GenericModels/Grid';
+import Rect from '../../GenericModels/Rect';
 import Vec2 from '../../GenericModels/Vec2';
-import { getTriangleVerts } from '../models/TrianglePosition';
-import { TrianglesGameLogic } from '../models/TrianglesGameLogic';
+import {
+  TriangleRotation,
+  TrianglesGameLogic,
+} from '../models/TrianglesGameLogic';
+import { getTriangleVerts } from './TriangleRenderHelpers';
 
 export default class TrianglesGameRenderer {
   #gridRenderer: GridRenderer;
@@ -29,7 +33,7 @@ export default class TrianglesGameRenderer {
     this.#gridRenderer.render(canvas);
 
     this.#gridRenderer.forEachCell((cellPos, rect) => {
-      const cell = logic.getCell(0, cellPos.column, cellPos.row);
+      const cell = logic.getCell(0, cellPos);
       if (cell) {
         // console.log(`cell ${cellPos.row}, ${cellPos.column} is filled`);
         // canvas.drawRect({
@@ -37,16 +41,26 @@ export default class TrianglesGameRenderer {
         //   size: rect.size,
         //   color: Color.green,
         // });
-        const verts = getTriangleVerts(cell.trianglePos, rect);
-        canvas.drawPolygon({
-          points: verts,
-          stroke: {
-            color: Color.black,
-            thickness: 2,
-          },
-          fillColor: Color.green,
-        });
+        this.drawTriangle(canvas, rect, cell.triangle1);
+        if (cell.triangle2) {
+          this.drawTriangle(canvas, rect, cell.triangle2);
+        }
       }
+    });
+  }
+
+  private drawTriangle(
+    canvas: ICanvas,
+    rect: Rect,
+    triangle: TriangleRotation
+  ) {
+    canvas.drawPolygon({
+      points: getTriangleVerts(triangle, rect),
+      stroke: {
+        color: Color.black,
+        thickness: 2,
+      },
+      fillColor: Color.green,
     });
   }
 }
