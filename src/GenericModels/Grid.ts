@@ -15,6 +15,10 @@ export function GridPositionEqual(a: GridPosition, b: GridPosition) {
   return a.row === b.row && a.column === b.column;
 }
 
+export function GridPositionAdd(a: GridPosition, b: GridPosition) {
+  return { row: a.row + b.row, column: a.column + b.column };
+}
+
 export function GridPositionsManhattanDistance(
   a: GridPosition,
   b: GridPosition
