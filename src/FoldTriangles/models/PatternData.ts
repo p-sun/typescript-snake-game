@@ -12,12 +12,12 @@ type Cell = {
 };
 
 export class PatternData {
+  readonly gridSize: number;
   #layers: GridLayer[] = [];
-  #gridSize: number;
 
   constructor(gridSize: number) {
-    this.#gridSize = gridSize;
-    this.#layers = [this.createEmptyLayer(this.#gridSize)];
+    this.gridSize = gridSize;
+    this.#layers = [this.createEmptyLayer(this.gridSize)];
   }
 
   get layersCount() {
@@ -29,14 +29,14 @@ export class PatternData {
   }
 
   reset() {
-    this.#layers = [this.createEmptyLayer(this.#gridSize)];
+    this.#layers = [this.createEmptyLayer(this.gridSize)];
   }
 
   canAddFoldResult(foldResult: FoldResult) {
     const { pos, triangle } = foldResult;
     const { layer, row, column } = pos;
     if (layer >= 0 && layer < this.#layers.length) {
-      if (row < 0 || row >= this.#gridSize || column < 0 || column >= this.#gridSize) {
+      if (row < 0 || row >= this.gridSize || column < 0 || column >= this.gridSize) {
         return false;
       }
       const cell = this.#layers[layer][row][column];
@@ -56,9 +56,9 @@ export class PatternData {
     let l = pos.layer;
 
     if (l === this.#layers.length) {
-      this.#layers.push(this.createEmptyLayer(this.#gridSize));
+      this.#layers.push(this.createEmptyLayer(this.gridSize));
     } else if (l === -1) {
-      this.#layers.unshift(this.createEmptyLayer(this.#gridSize));
+      this.#layers.unshift(this.createEmptyLayer(this.gridSize));
       pos.layer = 0;
       l = 0;
     }
