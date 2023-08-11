@@ -18,7 +18,7 @@ type Joint = {
 type Fold = -1 | 0 | 1;
 
 export class TrianglesGameLogic {
-  #trianglesCount: number;
+  #maxTriangles: number;
   #gridSize: number;
 
   #layers: GridLayer[] = [];
@@ -27,10 +27,10 @@ export class TrianglesGameLogic {
   #joint: Joint;
   #folds: Fold[] = []; // 5 triangles, 3 folds
 
-  constructor(config: { trianglesCount: number }) {
-    const { trianglesCount } = config;
-    this.#trianglesCount = trianglesCount;
-    this.#gridSize = Math.ceil(trianglesCount / 2) * 2 + 1;
+  constructor(config: { maxTriangles: number }) {
+    const { maxTriangles } = config;
+    this.#maxTriangles = maxTriangles;
+    this.#gridSize = Math.ceil(maxTriangles / 2) * 2 + 1;
 
     this.#layers = [this.createEmptyLayer(this.#gridSize)];
 

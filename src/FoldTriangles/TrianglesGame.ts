@@ -15,12 +15,12 @@ export default class TrianglesGame extends Game {
   constructor(config: {
     canvas: ICanvas;
     cellSize: Vec2;
-    trianglesCount: number;
+    maxTriangles: number;
   }) {
-    const { canvas, cellSize, trianglesCount } = config;
+    const { canvas, cellSize, maxTriangles } = config;
     super(canvas);
 
-    this.#logic = new TrianglesGameLogic({ trianglesCount });
+    this.#logic = new TrianglesGameLogic({ maxTriangles });
 
     const gridSize = this.#logic.gridSize;
     this.#renderer = new TrianglesGameRenderer(
