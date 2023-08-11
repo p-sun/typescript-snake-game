@@ -9,8 +9,11 @@ import { getTriangleVerts } from './TriangleRenderHelpers';
 
 export default class TrianglesGameRenderer {
   #gridRenderer: GridRenderer;
+  #colors: Color[];
 
-  constructor(canvas: ICanvas, gridSize: GridSize, cellSize: Vec2) {
+  constructor(canvas: ICanvas, gridSize: GridSize, cellSize: Vec2, colors: Color[]) {
+    this.#colors = colors;
+
     const gridConfig: GridRenderConfig = {
       origin: Vec2.zero,
       cellSize: cellSize,
@@ -29,20 +32,26 @@ export default class TrianglesGameRenderer {
   render(canvas: ICanvas, logic: TrianglesGameLogic) {
     this.#gridRenderer.render(canvas);
 
+    let i = 0;
+
     this.#gridRenderer.forEachCell((cellPos, rect) => {
       for (let layer = 0; layer < logic.layersCount; layer++) {
         const cell = logic.getCell(layer, cellPos);
         if (cell) {
-          this.drawTriangle(canvas, rect, cell.triangle1);
+          this.drawTriangle(canvas, rect, cell.triangle1, this.color(i++));
           if (cell.triangle2) {
-            this.drawTriangle(canvas, rect, cell.triangle2);
+            this.drawTriangle(canvas, rect, cell.triangle2, this.color(i++));
           }
         }
       }
     });
   }
 
-  private drawTriangle(canvas: ICanvas, rect: Rect, triangle: Triangle) {
+  private color(i: number) {
+    return this.#colors[i % this.#colors.length];
+  }
+
+  private drawTriangle(canvas: ICanvas, rect: Rect, triangle: Triangle, triangleColor: Color) {
     const verts = getTriangleVerts(triangle.rotation, rect);
     canvas.drawPolygon({
       points: verts,
@@ -50,7 +59,7 @@ export default class TrianglesGameRenderer {
         color: Color.black,
         thickness: 2,
       },
-      fillColor: Color.green,
+      fillColor: triangleColor,
     });
 
     const { rotateClockwise: clockwise, drawStyle: style } = triangle;
