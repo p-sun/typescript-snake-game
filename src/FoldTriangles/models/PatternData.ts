@@ -24,6 +24,10 @@ export class PatternData {
     return this.#layers[layer][gridPos.row][gridPos.column];
   }
 
+  reset() {
+    this.#layers = [this.createEmptyLayer(this.#gridSize)];
+  }
+
   canAddFoldResult(foldResult: FoldResult) {
     const { joint, triangle } = foldResult;
     const { layer, pos } = joint;

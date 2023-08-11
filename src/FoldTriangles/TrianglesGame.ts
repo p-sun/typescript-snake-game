@@ -21,7 +21,7 @@ export default class TrianglesGame extends Game {
 
     this.#logic = new TrianglesGameLogic({
       maxTriangles: triangleColors.length,
-      gridSize: 5,
+      gridSize: 10,
     });
 
     const gridSize = this.#logic.gridSize;
@@ -39,7 +39,12 @@ export default class TrianglesGame extends Game {
 
   onRender(canvas: ICanvas) {}
 
-  onKeyDown(event: CanvasKeyEvent) {}
+  onKeyDown(event: CanvasKeyEvent) {
+    if (event.key === 'space') {
+      this.#logic.generatePattern();
+      this.#renderer.render(this.canvas, this.#logic);
+    }
+  }
 
   onMouseEvent(event: CanvasMouseEvent) {}
 }
