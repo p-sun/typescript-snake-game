@@ -1,9 +1,5 @@
 import Game from '../GenericGame/Game';
-import {
-  CanvasKeyEvent,
-  CanvasMouseEvent,
-  ICanvas,
-} from '../GenericGame/ICanvas';
+import { CanvasKeyEvent, CanvasMouseEvent, ICanvas } from '../GenericGame/ICanvas';
 import { GridSize } from '../GenericModels/Grid';
 import Vec2 from '../GenericModels/Vec2';
 import SnakeGameLogic from './Models/SnakeGameLogic';
@@ -25,8 +21,7 @@ export default class SnakeGame extends Game {
     super(canvas);
 
     this.#gameLogic = gameLogic ?? new SnakeGameLogic(gridSize);
-    this.#renderer =
-      renderer ?? new SnakeGameRenderer(canvas, gridSize, cellSize);
+    this.#renderer = renderer ?? new SnakeGameRenderer(canvas, gridSize, cellSize);
   }
 
   onUpdate() {

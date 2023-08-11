@@ -62,7 +62,7 @@ export default class TrianglesGameRenderer {
       fillColor: triangleColor,
     });
 
-    const { rotateClockwise: clockwise, drawStyle: style } = triangle;
+    const { clockwise: clockwise, drawStyle: style } = triangle;
     if ((!clockwise && style !== 'first') || (clockwise && style !== 'last')) {
       this.drawTriangleJoint(canvas, verts[0], verts[1]);
     }

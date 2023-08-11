@@ -9,7 +9,7 @@ type Cell = {
 export type TriangleRotation = 1 | 2 | 3 | 4; // topRight, bottomRight, bottomLeft, topLeft
 export type Triangle = {
   rotation: TriangleRotation;
-  rotateClockwise: boolean;
+  clockwise: boolean; // Whether next rotation is clockwise, if fold is -1 or 1.
   drawStyle: 'first' | 'middle' | 'last';
 };
 
@@ -40,10 +40,10 @@ export class TrianglesGameLogic {
 
     // First Triangle
     const mid = Math.floor(this.#gridSize / 2);
-    const rotateClockwise = false; //Math.random() < 0.5,
+    const clockwise = Math.random() < 0.5;
     const startPos = { row: mid, column: mid };
     this.#layers[0][startPos.row][startPos.column] = {
-      triangle1: { rotation: 1, rotateClockwise, drawStyle: 'first' },
+      triangle1: { rotation: 1, clockwise: clockwise, drawStyle: 'first' },
     };
     this.#joint = { layer: 0, pos: startPos };
 
@@ -62,16 +62,12 @@ export class TrianglesGameLogic {
       }
     }
 
-    // this.tryApplyFold(0);
-    // this.tryApplyFold(0);
-    // this.tryApplyFold(0);
-    // this.tryApplyFold(0);
+    // Debug
+    // this.#layers.push(this.createEmptyLayer(this.#gridSize));
+    // this.#layers[1][m][m] = { triangle1: 2 };
     // this.tryApplyFold(0);
 
     console.log('Generated Pattern. Count:', this.#count, this.#folds, this.#layers);
-
-    // this.#layers.push(this.createEmptyLayer(this.#gridSize));
-    // this.#layers[1][m][m] = { triangle1: 2 };
   }
 
   get gridSize() {
@@ -85,6 +81,10 @@ export class TrianglesGameLogic {
   getCell(layer: number, gridPos: GridPosition) {
     return this.#layers[layer][gridPos.row][gridPos.column];
   }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                    Layer                                   */
+  /* -------------------------------------------------------------------------- */
 
   createEmptyLayer(gridSize: number) {
     return Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => null));
@@ -125,6 +125,10 @@ export class TrianglesGameLogic {
     }
   }
 
+  /* -------------------------------------------------------------------------- */
+  /*                                   Folding                                  */
+  /* -------------------------------------------------------------------------- */
+
   private tryApplyFold(fold: Fold): boolean {
     if (this.#count === this.#maxCount) {
       return false;
@@ -149,7 +153,7 @@ export class TrianglesGameLogic {
   ): { newJoint: Joint; newTriangle: Triangle } | undefined {
     const cell = this.getCell(joint.layer, joint.pos)!;
     const currTriangle = cell.triangle2 ?? cell.triangle1;
-    const { rotation, rotateClockwise } = currTriangle;
+    const { rotation, clockwise: clockwise } = currTriangle;
     const { layer, pos } = joint;
     if (fold === 0) {
       const newDirection = this.directionForFold0(currTriangle);
@@ -160,16 +164,16 @@ export class TrianglesGameLogic {
         },
         newTriangle: {
           rotation: this.oppositeRotation(rotation),
-          rotateClockwise: !rotateClockwise,
+          clockwise: !clockwise,
           drawStyle: drawStyle,
         },
       };
-    } else if (fold === 1 || fold === -1) {
+    } else {
       return {
         newJoint: { layer: layer + fold, pos },
         newTriangle: {
           rotation: this.adjacentRotation(currTriangle),
-          rotateClockwise,
+          clockwise: clockwise,
           drawStyle,
         },
       };
@@ -183,26 +187,25 @@ export class TrianglesGameLogic {
   }
 
   private adjacentRotation(triangle: Triangle) {
-    const { rotation, rotateClockwise } = triangle;
+    const { rotation, clockwise: clockwise } = triangle;
     // const nextCWRot: TriangleRotation[] = [2, 3, 4, 1];
     // const nextCCWRot: TriangleRotation[] = [4, 1, 2, 3];
-    // return rotateClockwise ? nextCWRot[rotation - 1] : nextCCWRot[rotation - 1];
-    const offset = rotateClockwise ? 1 : 3;
-    const val = (rotation + offset) % 4;
+    // return clockwise ? nextCWRot[rotation - 1] : nextCCWRot[rotation - 1];
+    const val = (rotation + (clockwise ? 1 : 3)) % 4;
     return val === 0 ? 4 : (val as TriangleRotation);
   }
 
   private directionForFold0(triangle: Triangle): Direction {
-    const { rotation, rotateClockwise } = triangle;
+    const { rotation, clockwise: clockwise } = triangle;
     switch (rotation) {
       case 1:
-        return rotateClockwise ? 'right' : 'up';
+        return clockwise ? 'right' : 'up';
       case 2:
-        return rotateClockwise ? 'down' : 'right';
+        return clockwise ? 'down' : 'right';
       case 3:
-        return rotateClockwise ? 'left' : 'down';
+        return clockwise ? 'left' : 'down';
       case 4:
-        return rotateClockwise ? 'up' : 'left';
+        return clockwise ? 'up' : 'left';
     }
   }
 
