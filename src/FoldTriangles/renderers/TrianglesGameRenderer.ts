@@ -48,9 +48,9 @@ export default class TrianglesGameRenderer {
   }
 
   private color(i: number, layer: number, layersCount: number) {
-    // layer == layersCount --> multiply by 1
+    // layer === layersCount - 1 --> multiply by 1
     // layer < layersCount --> mulitply by 0.3...1
-    return this.#colors[i % this.#colors.length].mul(0.3 + (0.7 * layer) / layersCount);
+    return this.#colors[i % this.#colors.length].mul(0.3 + (0.7 * layer) / (layersCount - 1));
   }
 
   private drawTriangle(canvas: ICanvas, rect: Rect, triangle: Triangle, trianglesCount: number, triangleColor: Color) {

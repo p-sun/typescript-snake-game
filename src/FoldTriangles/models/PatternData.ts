@@ -1,15 +1,15 @@
 import { GridPosition } from '../../GenericModels/Grid';
 import { FoldResult, Triangle, oppositeRotation } from './TrianglesGameLogic';
 
+export type PatternPos = {
+  layer: number;
+} & GridPosition;
+
 type GridLayer = (Cell | null)[][];
 type Cell = {
   triangle1: Triangle;
   triangle2?: Triangle;
 };
-
-export type PatternPos = {
-  layer: number;
-} & GridPosition;
 
 export class PatternData {
   #layers: GridLayer[] = [];
