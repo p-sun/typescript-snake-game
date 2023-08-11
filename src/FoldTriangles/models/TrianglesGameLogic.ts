@@ -33,10 +33,10 @@ export class TrianglesGameLogic {
   #folds: FoldDirection[] = []; // 5 triangles, 3 folds
   #count = 1; // Total number of triangles
 
-  constructor(config: { maxTriangles: number }) {
-    const { maxTriangles } = config;
+  constructor(config: { maxTriangles: number; gridSize: number }) {
+    const { maxTriangles, gridSize } = config;
     this.#maxCount = maxTriangles;
-    this.#gridSize = Math.ceil(this.#maxCount / 2) * 2 + 1;
+    this.#gridSize = gridSize <= 0 ? Math.ceil(this.#maxCount / 2) * 2 + 1 : gridSize;
 
     this.#layers = [this.createEmptyLayer(this.#gridSize)];
 
@@ -94,6 +94,9 @@ export class TrianglesGameLogic {
     const { joint, triangle } = foldResult;
     const { layer, pos } = joint;
     if (layer >= 0 && layer < this.#layers.length) {
+      if (pos.row < 0 || pos.row >= this.#gridSize || pos.column < 0 || pos.column >= this.#gridSize) {
+        return false;
+      }
       const cell = this.#layers[layer][pos.row][pos.column];
       if (!cell) {
         return true;

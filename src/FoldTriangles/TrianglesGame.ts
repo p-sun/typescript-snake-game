@@ -21,6 +21,7 @@ export default class TrianglesGame extends Game {
 
     this.#logic = new TrianglesGameLogic({
       maxTriangles: triangleColors.length,
+      gridSize: 5,
     });
 
     const gridSize = this.#logic.gridSize;
