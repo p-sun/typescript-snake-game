@@ -21,13 +21,13 @@ function vertForCorner(c: Corner, rect: Rect) {
 function cornersInTriangle(rot: TriangleRotation): Corner[] {
   if (rot === 1) {
     // topRight
-    return ['topRight', 'topLeft', 'bottomRight'];
+    return ['bottomRight', 'topRight', 'topLeft'];
   } else if (rot === 2) {
     // bottomRight
-    return ['topRight', 'bottomLeft', 'bottomRight'];
+    return ['bottomLeft', 'bottomRight', 'topRight'];
   } else if (rot === 3) {
     // bottomLeft
-    return ['topLeft', 'bottomLeft', 'bottomRight'];
+    return ['bottomRight', 'bottomLeft', 'topLeft'];
   } else if (rot === 4) {
     // topLeft
     return ['topRight', 'topLeft', 'bottomLeft'];

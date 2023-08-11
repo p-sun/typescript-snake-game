@@ -50,13 +50,28 @@ export default class TrianglesGameRenderer {
     rect: Rect,
     triangle: TriangleRotation
   ) {
+    const verts = getTriangleVerts(triangle, rect);
     canvas.drawPolygon({
-      points: getTriangleVerts(triangle, rect),
+      points: verts,
       stroke: {
         color: Color.black,
         thickness: 2,
       },
       fillColor: Color.green,
+    });
+
+    this.drawTriangleJoint(canvas, verts[0], verts[1]);
+    this.drawTriangleJoint(canvas, verts[1], verts[2]);
+  }
+
+  private drawTriangleJoint(canvas: ICanvas, from: Vec2, to: Vec2) {
+    const dir = new Vec2(to.x - from.x, to.y - from.y).mul(0.28);
+    const center = from.add(to).mul(0.5);
+    canvas.drawLine({
+      start: center.sub(dir),
+      end: center.add(dir),
+      color: Color.black,
+      thickness: 4,
     });
   }
 }
