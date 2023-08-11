@@ -51,11 +51,9 @@ export class TrianglesGameLogic {
     while (this.#count < this.#maxCount) {
       const i = Math.floor(Math.random() * 3);
       if (
-        !(
-          this.tryApplyFold(allFolds[i]) ||
-          this.tryApplyFold(allFolds[(i + 1) % 3]) ||
-          this.tryApplyFold(allFolds[(i + 2) % 3])
-        )
+        !this.tryApplyFold(allFolds[i]) &&
+        !this.tryApplyFold(allFolds[(i + 1) % 3]) &&
+        !this.tryApplyFold(allFolds[(i + 2) % 3])
       ) {
         console.error('No more folds possible. Count so far:', this.#count);
         break;
