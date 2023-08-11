@@ -67,21 +67,7 @@ export class TrianglesGameLogic {
     // this.#layers[1][m][m] = { triangle1: 2 };
     // this.tryApplyFold(0);
 
-    const test = this.#folds.reduce(
-      (acc, f) => {
-        //   debugger;
-        if (acc[acc.length - 1].length === 5) {
-          return acc.concat([[f]]);
-        }
-        console.log('acc[acc.length - 1]', acc[acc.length - 1]);
-        acc[acc.length - 1] = acc[acc.length - 1].concat(f);
-        return acc;
-      },
-      [['-']] as (Fold | '-')[][]
-    );
-    console.log(test);
-    const foldsStr = this.#folds.map((f) => (f === 0 ? '0' : f > 0 ? 'U' : 'D')).join(' ');
-    console.log('Generated Pattern. Count:', this.#count, 'clockwise:', clockwise, foldsStr, this.#layers);
+    console.log(this.patternDescription(this.#count, this.#folds, clockwise));
   }
 
   get gridSize() {
@@ -234,5 +220,32 @@ export class TrianglesGameLogic {
       case 'right':
         return { row: 0, column: 1 };
     }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                    Debug                                   */
+  /* -------------------------------------------------------------------------- */
+
+  private patternDescription(count: number, folds: Fold[], startClockwise: boolean) {
+    return (
+      `Generated a pattern!\nCount: ${count} \nStart clockwise: ${startClockwise}\n\n` + this.foldsDescription(folds)
+    );
+  }
+
+  private foldsDescription(folds: Fold[]) {
+    const groupedFolds = this.#folds
+      .map((f) => (f === 1 ? 'Up   ' : f === -1 ? 'Down ' : '-    '))
+      .reduce(
+        (acc, f) => {
+          const last = acc[acc.length - 1];
+          if (last.length === 5) {
+            return acc.concat([[f]]);
+          }
+          last.push(f);
+          return acc;
+        },
+        [['Start']]
+      );
+    return 'Folds:\n' + groupedFolds.map((folds) => folds.join(' -> ')).join('\n');
   }
 }
