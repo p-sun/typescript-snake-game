@@ -122,16 +122,13 @@ export class TrianglesGameLogic {
   private nextFoldResult(joint: Joint, fold: FoldDirection): FoldResult | undefined {
     const cell = this.getCell(joint.layer, joint.pos)!;
     const currTriangle = cell.triangle2 ?? cell.triangle1;
-    const { rotation, clockwise: clockwise } = currTriangle;
+    const { rotation, clockwise } = currTriangle;
     const { layer, pos } = joint;
     const index = this.#count;
     if (fold === 0) {
-      const newDirection = this.directionForFold0(currTriangle);
+      const newPos = GridPositionAdd(pos, this.directionForFold0(currTriangle));
       return {
-        joint: {
-          layer,
-          pos: GridPositionAdd(pos, this.toGridPos(newDirection)),
-        },
+        joint: { layer, pos: newPos },
         triangle: {
           rotation: oppositeRotation(rotation),
           clockwise: !clockwise,
@@ -150,30 +147,23 @@ export class TrianglesGameLogic {
     }
   }
 
-  private directionForFold0(triangle: Triangle): Direction {
+  private directionForFold0(triangle: Triangle): GridPosition {
     const { rotation, clockwise: clockwise } = triangle;
+
+    const up = { row: -1, column: 0 };
+    const down = { row: 1, column: 0 };
+    const left = { row: 0, column: -1 };
+    const right = { row: 0, column: 1 };
+
     switch (rotation) {
       case 1:
-        return clockwise ? 'right' : 'up';
+        return clockwise ? right : up;
       case 2:
-        return clockwise ? 'down' : 'right';
+        return clockwise ? down : right;
       case 3:
-        return clockwise ? 'left' : 'down';
+        return clockwise ? left : down;
       case 4:
-        return clockwise ? 'up' : 'left';
-    }
-  }
-
-  private toGridPos(dir: Direction): GridPosition {
-    switch (dir) {
-      case 'up':
-        return { row: -1, column: 0 };
-      case 'down':
-        return { row: 1, column: 0 };
-      case 'left':
-        return { row: 0, column: -1 };
-      case 'right':
-        return { row: 0, column: 1 };
+        return clockwise ? up : left;
     }
   }
 }
