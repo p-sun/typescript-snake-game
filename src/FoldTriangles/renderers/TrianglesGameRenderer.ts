@@ -32,15 +32,15 @@ export default class TrianglesGameRenderer {
   render(canvas: ICanvas, logic: TrianglesGameLogic) {
     this.#gridRenderer.render(canvas);
 
-    let i = 0;
-
     this.#gridRenderer.forEachCell((cellPos, rect) => {
       for (let layer = 0; layer < logic.layersCount; layer++) {
         const cell = logic.getCell(layer, cellPos);
         if (cell) {
-          this.drawTriangle(canvas, rect, cell.triangle1, this.color(i++, layer, logic.layersCount));
+          const color1 = this.color(cell.triangle1.index, layer, logic.layersCount);
+          this.drawTriangle(canvas, rect, cell.triangle1, logic.maxCount, color1);
           if (cell.triangle2) {
-            this.drawTriangle(canvas, rect, cell.triangle2, this.color(i++, layer, logic.layersCount));
+            const color2 = this.color(cell.triangle2.index, layer, logic.layersCount);
+            this.drawTriangle(canvas, rect, cell.triangle2, logic.maxCount, color2);
           }
         }
       }
@@ -53,7 +53,7 @@ export default class TrianglesGameRenderer {
     return this.#colors[i % this.#colors.length].mul(0.3 + (0.7 * layer) / layersCount);
   }
 
-  private drawTriangle(canvas: ICanvas, rect: Rect, triangle: Triangle, triangleColor: Color) {
+  private drawTriangle(canvas: ICanvas, rect: Rect, triangle: Triangle, trianglesCount: number, triangleColor: Color) {
     const verts = getTriangleVerts(triangle.rotation, rect);
     canvas.drawPolygon({
       points: verts,
@@ -64,11 +64,11 @@ export default class TrianglesGameRenderer {
       fillColor: triangleColor,
     });
 
-    const { clockwise: clockwise, drawStyle: style } = triangle;
-    if ((!clockwise && style !== 'first') || (clockwise && style !== 'last')) {
+    const { clockwise: clockwise, index } = triangle;
+    if ((!clockwise && index !== 0) || (clockwise && index !== trianglesCount - 1)) {
       this.drawTriangleJoint(canvas, verts[0], verts[1]);
     }
-    if ((!clockwise && style !== 'last') || (clockwise && style !== 'first')) {
+    if ((!clockwise && index !== trianglesCount - 1) || (clockwise && index !== 0)) {
       this.drawTriangleJoint(canvas, verts[1], verts[2]);
     }
   }

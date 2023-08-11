@@ -6,7 +6,7 @@ import { PatternData } from './PatternData';
 export type Triangle = {
   rotation: TriangleRotation;
   clockwise: boolean; // Whether next rotation is clockwise, if fold is -1 or 1.
-  drawStyle: 'first' | 'middle' | 'last';
+  index: number;
 };
 export type TriangleRotation = 1 | 2 | 3 | 4; // topRight, bottomRight, bottomLeft, topLeft
 
@@ -37,6 +37,10 @@ export class TrianglesGameLogic {
     this.#patternData = new PatternData(this.#gridSize);
 
     this.generatePattern();
+  }
+
+  get maxCount() {
+    return this.#maxCount;
   }
 
   get gridSize() {
@@ -73,7 +77,7 @@ export class TrianglesGameLogic {
     this.#patternData.reset();
     this.#patternData.addFoldResult({
       joint: this.#joint,
-      triangle: { rotation: 1, clockwise: this.#startClockwise, drawStyle: 'first' },
+      triangle: { rotation: 1, clockwise: this.#startClockwise, index: 0 },
     });
   }
 
@@ -100,8 +104,7 @@ export class TrianglesGameLogic {
       return false;
     }
 
-    const drawStyle = this.#count < this.#maxCount - 1 ? 'middle' : 'last';
-    let result = this.nextFoldResult(this.#joint, fold, drawStyle);
+    let result = this.nextFoldResult(this.#joint, fold);
     if (result && this.#patternData.canAddFoldResult(result)) {
       this.#patternData.addFoldResult(result);
       this.#joint = result.joint;
@@ -116,11 +119,12 @@ export class TrianglesGameLogic {
   /*                                   Folding                                  */
   /* -------------------------------------------------------------------------- */
 
-  private nextFoldResult(joint: Joint, fold: FoldDirection, drawStyle: Triangle['drawStyle']): FoldResult | undefined {
+  private nextFoldResult(joint: Joint, fold: FoldDirection): FoldResult | undefined {
     const cell = this.getCell(joint.layer, joint.pos)!;
     const currTriangle = cell.triangle2 ?? cell.triangle1;
     const { rotation, clockwise: clockwise } = currTriangle;
     const { layer, pos } = joint;
+    const index = this.#count;
     if (fold === 0) {
       const newDirection = this.directionForFold0(currTriangle);
       return {
@@ -131,7 +135,7 @@ export class TrianglesGameLogic {
         triangle: {
           rotation: oppositeRotation(rotation),
           clockwise: !clockwise,
-          drawStyle: drawStyle,
+          index,
         },
       };
     } else {
@@ -140,7 +144,7 @@ export class TrianglesGameLogic {
         triangle: {
           rotation: adjacentRotation(currTriangle),
           clockwise: clockwise,
-          drawStyle,
+          index,
         },
       };
     }
