@@ -4,10 +4,7 @@ import Color from '../../GenericModels/Color';
 import { GridSize } from '../../GenericModels/Grid';
 import Rect from '../../GenericModels/Rect';
 import Vec2 from '../../GenericModels/Vec2';
-import {
-  TriangleRotation,
-  TrianglesGameLogic,
-} from '../models/TrianglesGameLogic';
+import { Triangle, TrianglesGameLogic } from '../models/TrianglesGameLogic';
 import { getTriangleVerts } from './TriangleRenderHelpers';
 
 export default class TrianglesGameRenderer {
@@ -45,12 +42,8 @@ export default class TrianglesGameRenderer {
     });
   }
 
-  private drawTriangle(
-    canvas: ICanvas,
-    rect: Rect,
-    triangle: TriangleRotation
-  ) {
-    const verts = getTriangleVerts(triangle, rect);
+  private drawTriangle(canvas: ICanvas, rect: Rect, triangle: Triangle) {
+    const verts = getTriangleVerts(triangle.rotation, rect);
     canvas.drawPolygon({
       points: verts,
       stroke: {
@@ -60,8 +53,13 @@ export default class TrianglesGameRenderer {
       fillColor: Color.green,
     });
 
-    this.drawTriangleJoint(canvas, verts[0], verts[1]);
-    this.drawTriangleJoint(canvas, verts[1], verts[2]);
+    const { rotateClockwise: clockwise, drawStyle: style } = triangle;
+    if ((!clockwise && style !== 'first') || (clockwise && style !== 'last')) {
+      this.drawTriangleJoint(canvas, verts[0], verts[1]);
+    }
+    if ((!clockwise && style !== 'last') || (clockwise && style !== 'first')) {
+      this.drawTriangleJoint(canvas, verts[1], verts[2]);
+    }
   }
 
   private drawTriangleJoint(canvas: ICanvas, from: Vec2, to: Vec2) {

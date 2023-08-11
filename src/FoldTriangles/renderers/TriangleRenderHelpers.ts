@@ -35,6 +35,6 @@ function cornersInTriangle(rot: TriangleRotation): Corner[] {
   throw new Error(`Invalid corner: ${rot}`);
 }
 
-export function getTriangleVerts(triangleRot: TriangleRotation, rect: Rect) {
-  return cornersInTriangle(triangleRot).map((c) => vertForCorner(c, rect));
+export function getTriangleVerts(rot: TriangleRotation, rect: Rect) {
+  return cornersInTriangle(rot).map((c) => vertForCorner(c, rect));
 }

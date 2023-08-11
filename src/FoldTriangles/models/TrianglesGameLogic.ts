@@ -3,16 +3,19 @@ import { GridPosition, GridPositionAdd } from '../../GenericModels/Grid';
 
 type GridLayer = (Cell | null)[][];
 type Cell = {
-  triangle1: TriangleRotation;
-  triangle2?: TriangleRotation;
+  triangle1: Triangle;
+  triangle2?: Triangle;
 };
-
 export type TriangleRotation = 1 | 2 | 3 | 4; // topRight, bottomRight, bottomLeft, topLeft
+export type Triangle = {
+  rotation: TriangleRotation;
+  rotateClockwise: boolean;
+  drawStyle: 'first' | 'middle' | 'last';
+};
 
 type Joint = {
   layer: number;
   pos: GridPosition;
-  rotateClockwise: boolean;
 };
 
 type Fold = -1 | 0 | 1;
@@ -27,6 +30,8 @@ export class TrianglesGameLogic {
   #joint: Joint;
   #folds: Fold[] = []; // 5 triangles, 3 folds
 
+  #triangleCount = 1;
+
   constructor(config: { maxTriangles: number }) {
     const { maxTriangles } = config;
     this.#maxTriangles = maxTriangles;
@@ -34,21 +39,22 @@ export class TrianglesGameLogic {
 
     this.#layers = [this.createEmptyLayer(this.#gridSize)];
 
-    let m = Math.floor(this.#gridSize / 2);
-    this.#layers[0][m][m] = { triangle1: 1 };
-
-    this.#joint = {
-      layer: 0,
-      pos: { row: m, column: m },
-      rotateClockwise: false, //Math.random() < 0.5,
+    // First Triangle
+    const mid = Math.floor(this.#gridSize / 2);
+    const rotateClockwise = false; //Math.random() < 0.5,
+    const startPos = { row: mid, column: mid };
+    this.#layers[0][startPos.row][startPos.column] = {
+      triangle1: { rotation: 1, rotateClockwise, drawStyle: 'first' },
     };
+    this.#joint = { layer: 0, pos: startPos };
 
     this.applyFold(0);
     this.applyFold(0);
     this.applyFold(0);
+    this.applyFold(0);
 
-    this.#layers.push(this.createEmptyLayer(this.#gridSize));
-    this.#layers[1][m][m] = { triangle1: 2 };
+    // this.#layers.push(this.createEmptyLayer(this.#gridSize));
+    // this.#layers[1][m][m] = { triangle1: 2 };
   }
 
   get gridSize() {
@@ -69,29 +75,30 @@ export class TrianglesGameLogic {
     );
   }
 
-  addTriangleToCell(
-    layer: number,
-    gridPos: GridPosition,
-    rot: TriangleRotation
-  ) {
+  addTriangleToCell(layer: number, gridPos: GridPosition, triangle: Triangle) {
     const curr = this.#layers[layer][gridPos.row][gridPos.column];
     if (curr) {
-      curr.triangle2 = rot;
+      curr.triangle2 = triangle;
     } else {
-      this.#layers[layer][gridPos.row][gridPos.column] = { triangle1: rot };
+      this.#layers[layer][gridPos.row][gridPos.column] = {
+        triangle1: triangle,
+      };
     }
   }
 
   private applyFold(fold: Fold): boolean {
-    let result = this.foldNextTriangle(this.#joint, fold);
+    const drawStyle =
+      this.#triangleCount === this.#maxTriangles - 1 ? 'last' : 'middle';
+    let result = this.foldNextTriangle(this.#joint, fold, drawStyle);
     if (result) {
       this.#joint = result.newJoint;
       this.#folds.push(fold);
       this.addTriangleToCell(
         this.#joint.layer,
         this.#joint.pos,
-        result.newRotation
+        result.newTriangle
       );
+      this.#triangleCount += 1;
       return true;
     }
     return false;
@@ -99,20 +106,26 @@ export class TrianglesGameLogic {
 
   private foldNextTriangle(
     joint: Joint,
-    fold: Fold
-  ): { newJoint: Joint; newRotation: TriangleRotation } | undefined {
+    fold: Fold,
+    drawStyle: Triangle['drawStyle']
+  ): { newJoint: Joint; newTriangle: Triangle } | undefined {
     const cell = this.getCell(joint.layer, joint.pos)!;
-    const currRot = cell.triangle2 ?? cell.triangle1;
-    const { layer, pos, rotateClockwise } = joint;
+    const currTriangle = cell.triangle2 ?? cell.triangle1;
+    const { rotation, rotateClockwise } = currTriangle;
+    const { layer, pos } = joint;
     if (fold === 0) {
-      const newDirection = this.directionForFold0(currRot, rotateClockwise);
+      const newDirection = this.directionForFold0(rotation, rotateClockwise);
+
       return {
         newJoint: {
           layer,
           pos: GridPositionAdd(pos, this.toGridPos(newDirection)),
-          rotateClockwise: !rotateClockwise,
         },
-        newRotation: this.oppositeRotation(currRot),
+        newTriangle: {
+          rotation: this.oppositeRotation(rotation),
+          rotateClockwise: !rotateClockwise,
+          drawStyle: drawStyle,
+        },
       };
     }
   }
