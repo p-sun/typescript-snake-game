@@ -27,6 +27,7 @@ export class TrianglesGameLogic {
   // To Build FoldData
   #joint: Joint = { layer: -1, pos: { row: -1, column: -1 } };
   #folds: FoldDirection[] = []; // 5 triangles, 3 folds
+  #startClockwise: boolean = false;
   #count = 1; // Total number of triangles
 
   constructor(config: { maxTriangles: number; gridSize: number }) {
@@ -36,14 +37,6 @@ export class TrianglesGameLogic {
     this.#patternData = new PatternData(this.#gridSize);
 
     this.generatePattern();
-
-    // Debug
-    // this.#layers.push(this.createEmptyLayer(this.#gridSize));
-    // this.#layers[1][m][m] = { triangle1: 2 };
-    // this.tryApplyFold(0);
-    // this.tryApplyFold(-1);
-    // this.tryApplyFold(-1);
-    // this.tryApplyFold(1);
   }
 
   get gridSize() {
@@ -63,20 +56,28 @@ export class TrianglesGameLogic {
   /* -------------------------------------------------------------------------- */
 
   generatePattern() {
-    // First Triangle
+    do {
+      this.startNewPattern();
+      this.foldPatternUntilDone();
+    } while (this.#count !== this.#maxCount);
+  }
+
+  private startNewPattern() {
     this.#count = 1; // Total number of triangles
     this.#folds = [];
 
     const mid = Math.floor(this.#gridSize / 2);
     this.#joint = { layer: 0, pos: { row: mid, column: mid } };
 
-    const clockwise = Math.random() < 0.5;
+    this.#startClockwise = Math.random() < 0.5;
     this.#patternData.reset();
     this.#patternData.addFoldResult({
       joint: this.#joint,
-      triangle: { rotation: 1, clockwise, drawStyle: 'first' },
+      triangle: { rotation: 1, clockwise: this.#startClockwise, drawStyle: 'first' },
     });
+  }
 
+  private foldPatternUntilDone() {
     const allFolds: FoldDirection[] = [-1, 0, 1];
     while (this.#count < this.#maxCount) {
       const i = Math.floor(Math.random() * 3);
@@ -85,12 +86,13 @@ export class TrianglesGameLogic {
         !this.tryApplyFold(allFolds[(i + 1) % 3]) &&
         !this.tryApplyFold(allFolds[(i + 2) % 3])
       ) {
-        console.error('No more folds possible. Count so far:', this.#count);
+        // console.error('No more folds possible. Count so far:', this.#count);
         break;
       }
     }
-
-    console.log(patternDescription(this.#count, this.#folds, clockwise));
+    if (this.#count === this.#maxCount) {
+      console.log(patternDescription(this.#count, this.#folds, this.#startClockwise));
+    }
   }
 
   private tryApplyFold(fold: FoldDirection): boolean {
