@@ -7,6 +7,10 @@ type Cell = {
   triangle2?: Triangle;
 };
 
+export type PatternPos = {
+  layer: number;
+} & GridPosition;
+
 export class PatternData {
   #layers: GridLayer[] = [];
   #gridSize: number;
@@ -20,8 +24,8 @@ export class PatternData {
     return this.#layers.length;
   }
 
-  getCell(layer: number, gridPos: GridPosition) {
-    return this.#layers[layer][gridPos.row][gridPos.column];
+  getCell(pos: PatternPos) {
+    return this.#layers[pos.layer][pos.row][pos.column];
   }
 
   reset() {
@@ -29,13 +33,13 @@ export class PatternData {
   }
 
   canAddFoldResult(foldResult: FoldResult) {
-    const { joint, triangle } = foldResult;
-    const { layer, pos } = joint;
+    const { pos, triangle } = foldResult;
+    const { layer, row, column } = pos;
     if (layer >= 0 && layer < this.#layers.length) {
-      if (pos.row < 0 || pos.row >= this.#gridSize || pos.column < 0 || pos.column >= this.#gridSize) {
+      if (row < 0 || row >= this.#gridSize || column < 0 || column >= this.#gridSize) {
         return false;
       }
-      const cell = this.#layers[layer][pos.row][pos.column];
+      const cell = this.#layers[layer][row][column];
       if (!cell) {
         return true;
       } else if (!cell.triangle2) {
@@ -47,21 +51,21 @@ export class PatternData {
   }
 
   addFoldResult(foldResult: FoldResult) {
-    const { joint, triangle } = foldResult;
-    const { pos } = joint;
-    let l = joint.layer;
+    const { pos, triangle } = foldResult;
+    const { row, column } = pos;
+    let l = pos.layer;
 
     if (l === this.#layers.length) {
       this.#layers.push(this.createEmptyLayer(this.#gridSize));
     } else if (l === -1) {
       this.#layers.unshift(this.createEmptyLayer(this.#gridSize));
-      joint.layer = 0;
+      pos.layer = 0;
       l = 0;
     }
 
-    const cell = this.#layers[l][pos.row][pos.column];
+    const cell = this.#layers[l][row][column];
     if (!cell) {
-      this.#layers[l][pos.row][pos.column] = {
+      this.#layers[l][row][column] = {
         triangle1: triangle,
       };
     } else if (!cell.triangle2) {

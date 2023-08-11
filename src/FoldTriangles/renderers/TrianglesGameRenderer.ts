@@ -34,7 +34,7 @@ export default class TrianglesGameRenderer {
 
     this.#gridRenderer.forEachCell((cellPos, rect) => {
       for (let layer = 0; layer < logic.layersCount; layer++) {
-        const cell = logic.getCell(layer, cellPos);
+        const cell = logic.getCell({ layer, ...cellPos });
         if (cell) {
           const color1 = this.color(cell.triangle1.index, layer, logic.layersCount);
           this.drawTriangle(canvas, rect, cell.triangle1, logic.maxCount, color1);
@@ -66,14 +66,14 @@ export default class TrianglesGameRenderer {
 
     const { clockwise: clockwise, index } = triangle;
     if ((!clockwise && index !== 0) || (clockwise && index !== trianglesCount - 1)) {
-      this.drawTriangleJoint(canvas, verts[0], verts[1]);
+      this.drawJoint(canvas, verts[0], verts[1]);
     }
     if ((!clockwise && index !== trianglesCount - 1) || (clockwise && index !== 0)) {
-      this.drawTriangleJoint(canvas, verts[1], verts[2]);
+      this.drawJoint(canvas, verts[1], verts[2]);
     }
   }
 
-  private drawTriangleJoint(canvas: ICanvas, from: Vec2, to: Vec2) {
+  private drawJoint(canvas: ICanvas, from: Vec2, to: Vec2) {
     const dir = new Vec2(to.x - from.x, to.y - from.y).mul(0.28);
     const center = from.add(to).mul(0.5);
     canvas.drawLine({

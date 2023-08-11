@@ -1,7 +1,5 @@
-import { Direction } from '../../GenericModels/Direction';
-import { GridPosition, GridPositionAdd } from '../../GenericModels/Grid';
 import { patternDescription } from '../utils/patternDescription';
-import { PatternData } from './PatternData';
+import { PatternPos, PatternData } from './PatternData';
 
 export type Triangle = {
   rotation: TriangleRotation;
@@ -12,11 +10,7 @@ export type TriangleRotation = 1 | 2 | 3 | 4; // topRight, bottomRight, bottomLe
 
 export type FoldDirection = -1 | 0 | 1;
 
-export type FoldResult = { joint: Joint; triangle: Triangle };
-type Joint = {
-  layer: number;
-  pos: GridPosition;
-};
+export type FoldResult = { pos: PatternPos; triangle: Triangle };
 
 export class TrianglesGameLogic {
   #maxCount: number;
@@ -25,7 +19,7 @@ export class TrianglesGameLogic {
   #patternData: PatternData;
 
   // To Build FoldData
-  #joint: Joint = { layer: -1, pos: { row: -1, column: -1 } };
+  #pos: PatternPos = { layer: -1, row: -1, column: -1 };
   #folds: FoldDirection[] = []; // 5 triangles, 3 folds
   #startClockwise: boolean = false;
   #count = 1; // Total number of triangles
@@ -51,8 +45,8 @@ export class TrianglesGameLogic {
     return this.#patternData.layersCount;
   }
 
-  getCell(layer: number, gridPos: GridPosition) {
-    return this.#patternData.getCell(layer, gridPos);
+  getCell(pos: PatternPos) {
+    return this.#patternData.getCell(pos);
   }
 
   /* -------------------------------------------------------------------------- */
@@ -71,12 +65,12 @@ export class TrianglesGameLogic {
     this.#folds = [];
 
     const mid = Math.floor(this.#gridSize / 2);
-    this.#joint = { layer: 0, pos: { row: mid, column: mid } };
+    this.#pos = { layer: 0, row: mid, column: mid };
 
     this.#startClockwise = Math.random() < 0.5;
     this.#patternData.reset();
     this.#patternData.addFoldResult({
-      joint: this.#joint,
+      pos: this.#pos,
       triangle: { rotation: 1, clockwise: this.#startClockwise, index: 0 },
     });
   }
@@ -104,10 +98,10 @@ export class TrianglesGameLogic {
       return false;
     }
 
-    let result = this.nextFoldResult(this.#joint, fold);
+    let result = this.nextFoldResult(this.#pos, fold);
     if (result && this.#patternData.canAddFoldResult(result)) {
       this.#patternData.addFoldResult(result);
-      this.#joint = result.joint;
+      this.#pos = result.pos;
       this.#folds.push(fold);
       this.#count += 1;
       return true;
@@ -119,16 +113,16 @@ export class TrianglesGameLogic {
   /*                                   Folding                                  */
   /* -------------------------------------------------------------------------- */
 
-  private nextFoldResult(joint: Joint, fold: FoldDirection): FoldResult | undefined {
-    const cell = this.getCell(joint.layer, joint.pos)!;
+  private nextFoldResult(pos: PatternPos, fold: FoldDirection): FoldResult | undefined {
+    const cell = this.getCell(pos)!;
     const currTriangle = cell.triangle2 ?? cell.triangle1;
     const { rotation, clockwise } = currTriangle;
-    const { layer, pos } = joint;
+    const { layer, row, column } = pos;
     const index = this.#count;
     if (fold === 0) {
-      const newPos = GridPositionAdd(pos, this.directionForFold0(currTriangle));
+      const toAdd = this.directionForFold0(currTriangle);
       return {
-        joint: { layer, pos: newPos },
+        pos: { layer, row: row + toAdd[0], column: column + toAdd[1] },
         triangle: {
           rotation: oppositeRotation(rotation),
           clockwise: !clockwise,
@@ -137,7 +131,7 @@ export class TrianglesGameLogic {
       };
     } else {
       return {
-        joint: { layer: layer + fold, pos },
+        pos: { layer: layer + fold, row, column },
         triangle: {
           rotation: adjacentRotation(currTriangle),
           clockwise: clockwise,
@@ -147,13 +141,13 @@ export class TrianglesGameLogic {
     }
   }
 
-  private directionForFold0(triangle: Triangle): GridPosition {
+  private directionForFold0(triangle: Triangle) {
     const { rotation, clockwise: clockwise } = triangle;
 
-    const up = { row: -1, column: 0 };
-    const down = { row: 1, column: 0 };
-    const left = { row: 0, column: -1 };
-    const right = { row: 0, column: 1 };
+    const up = [-1, 0] as [number, number];
+    const down = [1, 0] as [number, number];
+    const left = [0, -1] as [number, number];
+    const right = [0, 1] as [number, number];
 
     switch (rotation) {
       case 1:
