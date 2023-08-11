@@ -67,7 +67,21 @@ export class TrianglesGameLogic {
     // this.#layers[1][m][m] = { triangle1: 2 };
     // this.tryApplyFold(0);
 
-    console.log('Generated Pattern. Count:', this.#count, this.#folds, this.#layers);
+    const test = this.#folds.reduce(
+      (acc, f) => {
+        //   debugger;
+        if (acc[acc.length - 1].length === 5) {
+          return acc.concat([[f]]);
+        }
+        console.log('acc[acc.length - 1]', acc[acc.length - 1]);
+        acc[acc.length - 1] = acc[acc.length - 1].concat(f);
+        return acc;
+      },
+      [['-']] as (Fold | '-')[][]
+    );
+    console.log(test);
+    const foldsStr = this.#folds.map((f) => (f === 0 ? '0' : f > 0 ? 'U' : 'D')).join(' ');
+    console.log('Generated Pattern. Count:', this.#count, 'clockwise:', clockwise, foldsStr, this.#layers);
   }
 
   get gridSize() {

@@ -38,17 +38,19 @@ export default class TrianglesGameRenderer {
       for (let layer = 0; layer < logic.layersCount; layer++) {
         const cell = logic.getCell(layer, cellPos);
         if (cell) {
-          this.drawTriangle(canvas, rect, cell.triangle1, this.color(i++));
+          this.drawTriangle(canvas, rect, cell.triangle1, this.color(i++, layer, logic.layersCount));
           if (cell.triangle2) {
-            this.drawTriangle(canvas, rect, cell.triangle2, this.color(i++));
+            this.drawTriangle(canvas, rect, cell.triangle2, this.color(i++, layer, logic.layersCount));
           }
         }
       }
     });
   }
 
-  private color(i: number) {
-    return this.#colors[i % this.#colors.length];
+  private color(i: number, layer: number, layersCount: number) {
+    // layer == layersCount --> multiply by 1
+    // layer < layersCount --> mulitply by 0.3...1
+    return this.#colors[i % this.#colors.length].mul(0.3 + (0.7 * layer) / layersCount);
   }
 
   private drawTriangle(canvas: ICanvas, rect: Rect, triangle: Triangle, triangleColor: Color) {
