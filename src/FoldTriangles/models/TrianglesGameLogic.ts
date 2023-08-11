@@ -30,7 +30,7 @@ export class TrianglesGameLogic {
   #joint: Joint;
   #folds: Fold[] = []; // 5 triangles, 3 folds
 
-  #triangleCount = 1;
+  #trianglesCount = 1;
 
   constructor(config: { maxTriangles: number }) {
     const { maxTriangles } = config;
@@ -87,8 +87,12 @@ export class TrianglesGameLogic {
   }
 
   private applyFold(fold: Fold): boolean {
+    if (this.#trianglesCount === this.#maxTriangles) {
+      return false;
+    }
+
     const drawStyle =
-      this.#triangleCount === this.#maxTriangles - 1 ? 'last' : 'middle';
+      this.#trianglesCount === this.#maxTriangles - 1 ? 'last' : 'middle';
     let result = this.foldNextTriangle(this.#joint, fold, drawStyle);
     if (result) {
       this.#joint = result.newJoint;
@@ -98,7 +102,7 @@ export class TrianglesGameLogic {
         this.#joint.pos,
         result.newTriangle
       );
-      this.#triangleCount += 1;
+      this.#trianglesCount += 1;
       return true;
     }
     return false;
