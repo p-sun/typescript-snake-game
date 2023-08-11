@@ -33,17 +33,13 @@ export default class TrianglesGameRenderer {
     this.#gridRenderer.render(canvas);
 
     this.#gridRenderer.forEachCell((cellPos, rect) => {
-      const cell = logic.getCell(0, cellPos);
-      if (cell) {
-        // console.log(`cell ${cellPos.row}, ${cellPos.column} is filled`);
-        // canvas.drawRect({
-        //   origin: rect.origin,
-        //   size: rect.size,
-        //   color: Color.green,
-        // });
-        this.drawTriangle(canvas, rect, cell.triangle1);
-        if (cell.triangle2) {
-          this.drawTriangle(canvas, rect, cell.triangle2);
+      for (let layer = 0; layer < logic.layersCount; layer++) {
+        const cell = logic.getCell(layer, cellPos);
+        if (cell) {
+          this.drawTriangle(canvas, rect, cell.triangle1);
+          if (cell.triangle2) {
+            this.drawTriangle(canvas, rect, cell.triangle2);
+          }
         }
       }
     });

@@ -1,8 +1,5 @@
 import { Direction } from '../../GenericModels/Direction';
 import { GridPosition, GridPositionAdd } from '../../GenericModels/Grid';
-import Vec2 from '../../GenericModels/Vec2';
-import { debug } from 'console';
-import { captureRejectionSymbol } from 'events';
 
 type GridLayer = (Cell | null)[][];
 type Cell = {
@@ -10,7 +7,7 @@ type Cell = {
   triangle2?: TriangleRotation;
 };
 
-export type TriangleRotation = 1 | 2 | 3 | 4;
+export type TriangleRotation = 1 | 2 | 3 | 4; // topRight, bottomRight, bottomLeft, topLeft
 
 type Joint = {
   layer: number;
@@ -35,11 +32,7 @@ export class TrianglesGameLogic {
     this.#trianglesCount = trianglesCount;
     this.#gridSize = Math.ceil(trianglesCount / 2) * 2 + 1;
 
-    this.#layers = [
-      Array.from({ length: this.#gridSize }, () =>
-        Array.from({ length: this.#gridSize }, () => null)
-      ),
-    ];
+    this.#layers = [this.createEmptyLayer(this.#gridSize)];
 
     let m = Math.floor(this.#gridSize / 2);
     this.#layers[0][m][m] = { triangle1: 1 };
@@ -53,14 +46,27 @@ export class TrianglesGameLogic {
     this.applyFold(0);
     this.applyFold(0);
     this.applyFold(0);
+
+    this.#layers.push(this.createEmptyLayer(this.#gridSize));
+    this.#layers[1][m][m] = { triangle1: 2 };
   }
 
   get gridSize() {
     return this.#gridSize;
   }
 
+  get layersCount() {
+    return this.#layers.length;
+  }
+
   getCell(layer: number, gridPos: GridPosition) {
     return this.#layers[layer][gridPos.row][gridPos.column];
+  }
+
+  createEmptyLayer(gridSize: number) {
+    return Array.from({ length: gridSize }, () =>
+      Array.from({ length: gridSize }, () => null)
+    );
   }
 
   addTriangleToCell(
@@ -77,9 +83,7 @@ export class TrianglesGameLogic {
   }
 
   private applyFold(fold: Fold): boolean {
-    const currJoint = this.#joint;
-    const cell = this.getCell(currJoint.layer, currJoint.pos);
-    let result = this.foldNextTriangle(cell!, this.#joint, fold);
+    let result = this.foldNextTriangle(this.#joint, fold);
     if (result) {
       this.#joint = result.newJoint;
       this.#folds.push(fold);
@@ -94,12 +98,12 @@ export class TrianglesGameLogic {
   }
 
   private foldNextTriangle(
-    cell: Cell,
-    currJoint: Joint,
+    joint: Joint,
     fold: Fold
   ): { newJoint: Joint; newRotation: TriangleRotation } | undefined {
+    const cell = this.getCell(joint.layer, joint.pos)!;
     const currRot = cell.triangle2 ?? cell.triangle1;
-    const { layer, pos, rotateClockwise } = currJoint;
+    const { layer, pos, rotateClockwise } = joint;
     if (fold === 0) {
       const newDirection = this.directionForFold0(currRot, rotateClockwise);
       return {
