@@ -68,12 +68,7 @@ export class TrianglesGameLogic {
     // this.tryApplyFold(0);
     // this.tryApplyFold(0);
 
-    console.log(
-      'Generated Pattern. Count:',
-      this.#count,
-      this.#folds,
-      this.#layers
-    );
+    console.log('Generated Pattern. Count:', this.#count, this.#folds, this.#layers);
 
     // this.#layers.push(this.createEmptyLayer(this.#gridSize));
     // this.#layers[1][m][m] = { triangle1: 2 };
@@ -92,9 +87,7 @@ export class TrianglesGameLogic {
   }
 
   createEmptyLayer(gridSize: number) {
-    return Array.from({ length: gridSize }, () =>
-      Array.from({ length: gridSize }, () => null)
-    );
+    return Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => null));
   }
 
   canAddTriangleToCell(joint: Joint, triangle: Triangle) {
@@ -104,9 +97,7 @@ export class TrianglesGameLogic {
       if (!cell) {
         return true;
       } else if (!cell.triangle2) {
-        return (
-          triangle.rotation === this.oppositeRotation(cell.triangle1.rotation)
-        );
+        return triangle.rotation === this.oppositeRotation(cell.triangle1.rotation);
       }
       return false;
     }
@@ -141,17 +132,13 @@ export class TrianglesGameLogic {
 
     const drawStyle = this.#count < this.#maxCount - 1 ? 'middle' : 'last';
     let result = this.nextFoldResult(this.#joint, fold, drawStyle);
-    if (
-      result &&
-      this.canAddTriangleToCell(result.newJoint, result.newTriangle)
-    ) {
+    if (result && this.canAddTriangleToCell(result.newJoint, result.newTriangle)) {
       this.addTriangleToCell(result.newJoint, result.newTriangle);
       this.#joint = result.newJoint;
       this.#folds.push(fold);
       this.#count += 1;
       return true;
     }
-    console.log(`Can't apply Fold`, fold);
     return false;
   }
 
