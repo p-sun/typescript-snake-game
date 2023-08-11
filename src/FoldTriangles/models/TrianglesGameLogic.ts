@@ -235,7 +235,7 @@ export class TrianglesGameLogic {
 
   private foldsDescription(folds: FoldDirection[]) {
     const groupedFolds = this.#folds
-      .map((f) => (f === 1 ? 'Up   ' : f === -1 ? 'Down ' : '-    '))
+      .map((f) => (f === 1 ? 'Up   ' : f === -1 ? 'Down ' : '0    '))
       .reduce(
         (acc, f) => {
           const last = acc[acc.length - 1];
@@ -247,6 +247,6 @@ export class TrianglesGameLogic {
         },
         [['Start']]
       );
-    return 'Folds:\n' + groupedFolds.map((folds) => folds.join(' -> ')).join('\n');
+    return 'Folds:\n' + groupedFolds.map((folds) => folds.join(' -> ').concat(' -> ')).join('\n');
   }
 }
