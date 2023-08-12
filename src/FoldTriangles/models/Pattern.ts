@@ -8,6 +8,7 @@ export type PatternPos = {
 } & GridPosition;
 
 type GridLayer = (Cell | null)[][];
+
 type Cell = {
   triangle1: Triangle;
   triangle2?: Triangle;
@@ -52,7 +53,7 @@ export class Pattern {
   }
 
   canAddFoldResult(foldResult: FoldResult) {
-    const { pos, triangle, fold } = foldResult;
+    const { pos, triangle: triangleToAdd, fold } = foldResult;
     const { layer, row, column } = pos;
     if (layer < 0 || layer >= this.#layers.length) {
       return true; // layer does not exist yet
@@ -60,13 +61,22 @@ export class Pattern {
     if (row < 0 || row >= this.gridSize || column < 0 || column >= this.gridSize) {
       return false; // row or column is out of bounds
     }
-    const cell = this.#layers[layer][row][column];
-    if (!cell) {
-      return true; // cell is empty
-    } else if (!cell.triangle2) {
-      return triangle.rotation === oppositeRotation(cell.triangle1.rotation);
+
+    // For every layer from current layer to the end in fold direction
+    for (let l = layer; l >= 0 && l < this.#layers.length; fold === 0 ? (l = -99) : (l += fold)) {
+      const cell = this.#layers[l][row][column];
+
+      if (!cell) {
+        continue; // cell is empty -> continue to test next layer
+      }
+      if (cell.triangle2) {
+        return false; // cell is full
+      }
+      if (triangleToAdd.rotation !== oppositeRotation(cell.triangle1.rotation)) {
+        return false;
+      }
     }
-    return false;
+    return true;
   }
 
   addFoldResult(foldResult: FoldResult) {
