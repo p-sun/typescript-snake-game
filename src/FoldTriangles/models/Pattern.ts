@@ -13,7 +13,7 @@ type Cell = {
   triangle2?: Triangle;
 };
 
-export class PatternData {
+export class Pattern {
   readonly gridSize: number;
 
   #layers: GridLayer[] = [];
@@ -27,7 +27,7 @@ export class PatternData {
     this.#layers = [this.createEmptyLayer(this.gridSize)];
   }
 
-  get trianglesCount() {
+  get length() {
     return this.#folds.length + 1;
   }
 
@@ -97,7 +97,7 @@ export class PatternData {
   }
 
   debugDescription() {
-    return patternDescription(this.trianglesCount, this.#folds, this.#startClockwise!);
+    return patternDescription(this.length, this.#folds, this.#startClockwise!);
   }
 
   private createEmptyLayer(gridSize: number) {
