@@ -94,8 +94,10 @@ export class TrianglesGameLogic {
       return false;
     }
 
-    let result = this.nextFoldResult(this.#pos, fold);
-    if (result && this.#patternData.canAddFoldResult(result)) {
+    const cell = this.getCell(this.#pos)!;
+    const currTriangle = cell.triangle2 ?? cell.triangle1;
+    let result = nextFoldResult(this.#pos, currTriangle, fold, this.#count);
+    if (this.#patternData.canAddFoldResult(result)) {
       this.#patternData.addFoldResult(result);
       this.#pos = result.pos;
       this.#folds.push(fold);
@@ -104,57 +106,54 @@ export class TrianglesGameLogic {
     }
     return false;
   }
+}
 
-  /* -------------------------------------------------------------------------- */
-  /*                                   Folding                                  */
-  /* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+/*                               Fold Triangles                               */
+/* -------------------------------------------------------------------------- */
 
-  private nextFoldResult(pos: PatternPos, fold: FoldDirection): FoldResult | undefined {
-    const cell = this.getCell(pos)!;
-    const currTriangle = cell.triangle2 ?? cell.triangle1;
-    const { rotation, clockwise } = currTriangle;
-    const { layer, row, column } = pos;
-    const index = this.#count;
-    if (fold === 0) {
-      const toAdd = this.directionForFold0(currTriangle);
-      return {
-        pos: { layer, row: row + toAdd[0], column: column + toAdd[1] },
-        triangle: {
-          rotation: oppositeRotation(rotation),
-          clockwise: !clockwise,
-          index,
-        },
-      };
-    } else {
-      return {
-        pos: { layer: layer + fold, row, column },
-        triangle: {
-          rotation: adjacentRotation(currTriangle),
-          clockwise: clockwise,
-          index,
-        },
-      };
-    }
+function nextFoldResult(pos: PatternPos, triangle: Triangle, fold: FoldDirection, index: number): FoldResult {
+  const { rotation, clockwise } = triangle;
+  const { layer, row, column } = pos;
+  if (fold === 0) {
+    const toAdd = gridDirectionWithNoFold(triangle);
+    return {
+      pos: { layer, row: row + toAdd[0], column: column + toAdd[1] },
+      triangle: {
+        rotation: oppositeRotation(rotation),
+        clockwise: !clockwise,
+        index,
+      },
+    };
+  } else {
+    return {
+      pos: { layer: layer + fold, row, column },
+      triangle: {
+        rotation: adjacentRotation(triangle),
+        clockwise: clockwise,
+        index,
+      },
+    };
   }
+}
 
-  private directionForFold0(triangle: Triangle) {
-    const { rotation, clockwise } = triangle;
+function gridDirectionWithNoFold(triangle: Triangle) {
+  const { rotation, clockwise } = triangle;
 
-    const up = [-1, 0] as [number, number];
-    const down = [1, 0] as [number, number];
-    const left = [0, -1] as [number, number];
-    const right = [0, 1] as [number, number];
+  const up = [-1, 0] as [number, number];
+  const down = [1, 0] as [number, number];
+  const left = [0, -1] as [number, number];
+  const right = [0, 1] as [number, number];
 
-    switch (rotation) {
-      case 1:
-        return clockwise ? right : up;
-      case 2:
-        return clockwise ? down : right;
-      case 3:
-        return clockwise ? left : down;
-      case 4:
-        return clockwise ? up : left;
-    }
+  switch (rotation) {
+    case 1:
+      return clockwise ? right : up;
+    case 2:
+      return clockwise ? down : right;
+    case 3:
+      return clockwise ? left : down;
+    case 4:
+      return clockwise ? up : left;
   }
 }
 
