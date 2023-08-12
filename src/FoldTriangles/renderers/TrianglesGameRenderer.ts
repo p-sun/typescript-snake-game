@@ -48,9 +48,17 @@ export default class TrianglesGameRenderer {
   }
 
   private color(i: number, layer: number, layersCount: number) {
-    // layer === layersCount - 1 --> multiply by 1
-    // layer < layersCount --> mulitply by 0.3...1
-    return this.#colors[i % this.#colors.length].mul(0.3 + (0.7 * layer) / (layersCount - 1));
+    // Multiplier is a value between 0.3 and 1. Top layer is the brightest.
+    // layersCount =  1   2   3
+    //    layer 0     1   .3  .3
+    //    layer 1         1
+    //    layer 2             1
+    const min = 0.3;
+    let multipler = 1;
+    if (layersCount !== 1) {
+      multipler = min + (layer * (1 - min)) / (layersCount - 1);
+    }
+    return this.#colors[i % this.#colors.length].mul(multipler);
   }
 
   private drawTriangle(canvas: ICanvas, rect: Rect, triangle: Triangle, trianglesCount: number, triangleColor: Color) {
