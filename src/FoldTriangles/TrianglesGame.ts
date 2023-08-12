@@ -7,8 +7,8 @@ import TrianglesGameRenderer from './renderers/TrianglesGameRenderer';
 
 const triangleColors = ([] as Color[])
   .concat(Array.from({ length: 5 }, () => Color.fromHex(0xf2798f))) // pink
-  .concat(Array.from({ length: 5 }, () => Color.fromHex(0xbb66ed))) // purple
   .concat(Array.from({ length: 5 }, () => Color.fromHex(0x00c1ed))) // blue
+  .concat(Array.from({ length: 5 }, () => Color.fromHex(0xbb66ed))) // purple
   .concat(Array.from({ length: 5 }, () => Color.fromHex(0xa7f205))); // green
 
 export default class TrianglesGame extends Game {

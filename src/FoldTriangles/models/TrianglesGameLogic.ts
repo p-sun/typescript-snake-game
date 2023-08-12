@@ -52,10 +52,13 @@ export class TrianglesGameLogic {
     const mid = Math.floor(this.gridSize / 2);
 
     this.#pattern.reset();
-    this.#pattern.addFoldResult({
-      pos: { layer: 0, row: mid, column: mid },
-      triangle: { rotation: 1, clockwise: Math.random() < 0.5, index: 0 },
-    });
+    this.#pattern.addFoldResult(
+      {
+        pos: { layer: 0, row: mid, column: mid },
+        triangle: { rotation: 1, clockwise: Math.random() < 0.5, index: 0 },
+      },
+      0
+    );
   }
 
   private foldPatternUntilDone() {

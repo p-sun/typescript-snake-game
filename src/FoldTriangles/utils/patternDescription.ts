@@ -1,11 +1,14 @@
 import { FoldDirection } from '../models/TrianglesGameLogic';
 
-export function patternDescription(count: number, folds: FoldDirection[], startClockwise: boolean) {
-  return `Generated a pattern!\nCount: ${count} \nStart clockwise: ${startClockwise}\n\n` + foldsDescription(folds);
+export function patternDescription(folds: FoldDirection[], startClockwise: boolean) {
+  return (
+    `Generated a pattern!\nCount: ${folds.length} \nStart clockwise: ${startClockwise}\n\n` + foldsDescription(folds)
+  );
 }
 
 function foldsDescription(folds: FoldDirection[]) {
   const groupedFolds = folds
+    .slice(1)
     .map((f) => (f === 1 ? 'Up   ' : f === -1 ? 'Down ' : '0    '))
     .reduce(
       (acc, f) => {

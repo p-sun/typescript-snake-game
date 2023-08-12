@@ -28,7 +28,7 @@ export class Pattern {
   }
 
   get length() {
-    return this.#folds.length + 1;
+    return this.#folds.length;
   }
 
   get layersCount() {
@@ -69,7 +69,7 @@ export class Pattern {
     return true;
   }
 
-  addFoldResult(foldResult: FoldResult, fold?: FoldDirection) {
+  addFoldResult(foldResult: FoldResult, fold: FoldDirection) {
     const { pos, triangle } = foldResult;
     const { row, column } = pos;
     let l = pos.layer;
@@ -91,13 +91,13 @@ export class Pattern {
       cell.triangle2 = triangle;
     }
 
-    if (fold !== undefined) this.#folds.push(fold);
+    this.#folds.push(fold);
     if (!this.#startClockwise) this.#startClockwise = triangle.clockwise;
     this.#prevResult = foldResult;
   }
 
   debugDescription() {
-    return patternDescription(this.length, this.#folds, this.#startClockwise!);
+    return patternDescription(this.#folds, this.#startClockwise!);
   }
 
   private createEmptyLayer(gridSize: number) {
