@@ -54,19 +54,19 @@ export class Pattern {
   canAddFoldResult(foldResult: FoldResult) {
     const { pos, triangle, fold } = foldResult;
     const { layer, row, column } = pos;
-    if (layer >= 0 && layer < this.#layers.length) {
-      if (row < 0 || row >= this.gridSize || column < 0 || column >= this.gridSize) {
-        return false;
-      }
-      const cell = this.#layers[layer][row][column];
-      if (!cell) {
-        return true;
-      } else if (!cell.triangle2) {
-        return triangle.rotation === oppositeRotation(cell.triangle1.rotation);
-      }
-      return false;
+    if (layer < 0 || layer >= this.#layers.length) {
+      return true; // layer does not exist yet
     }
-    return true;
+    if (row < 0 || row >= this.gridSize || column < 0 || column >= this.gridSize) {
+      return false; // row or column is out of bounds
+    }
+    const cell = this.#layers[layer][row][column];
+    if (!cell) {
+      return true; // cell is empty
+    } else if (!cell.triangle2) {
+      return triangle.rotation === oppositeRotation(cell.triangle1.rotation);
+    }
+    return false;
   }
 
   addFoldResult(foldResult: FoldResult) {
