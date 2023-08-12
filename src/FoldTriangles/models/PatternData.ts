@@ -1,5 +1,7 @@
 import { GridPosition } from '../../GenericModels/Grid';
-import { FoldResult, Triangle, oppositeRotation } from './TrianglesGameLogic';
+import { patternDescription } from '../utils/patternDescription';
+import { FoldDirection, FoldResult, Triangle, oppositeRotation } from './TrianglesGameLogic';
+import { assert } from 'console';
 
 export type PatternPos = {
   layer: number;
@@ -13,15 +15,29 @@ type Cell = {
 
 export class PatternData {
   readonly gridSize: number;
+
   #layers: GridLayer[] = [];
+  #folds: FoldDirection[] = []; // 5 triangles has 4 folds
+  #startClockwise?: boolean;
+  #prevResult?: FoldResult;
 
   constructor(gridSize: number) {
     this.gridSize = gridSize;
+    this.reset();
     this.#layers = [this.createEmptyLayer(this.gridSize)];
+  }
+
+  get trianglesCount() {
+    return this.#folds.length + 1;
   }
 
   get layersCount() {
     return this.#layers.length;
+  }
+
+  get prevResult() {
+    assert(this.#prevResult);
+    return this.#prevResult!;
   }
 
   getCell(pos: PatternPos) {
@@ -30,6 +46,9 @@ export class PatternData {
 
   reset() {
     this.#layers = [this.createEmptyLayer(this.gridSize)];
+    this.#folds = [];
+    this.#startClockwise = undefined;
+    this.#prevResult = undefined;
   }
 
   canAddFoldResult(foldResult: FoldResult) {
@@ -50,7 +69,7 @@ export class PatternData {
     return true;
   }
 
-  addFoldResult(foldResult: FoldResult) {
+  addFoldResult(foldResult: FoldResult, fold?: FoldDirection) {
     const { pos, triangle } = foldResult;
     const { row, column } = pos;
     let l = pos.layer;
@@ -71,6 +90,14 @@ export class PatternData {
     } else if (!cell.triangle2) {
       cell.triangle2 = triangle;
     }
+
+    if (fold !== undefined) this.#folds.push(fold);
+    if (!this.#startClockwise) this.#startClockwise = triangle.clockwise;
+    this.#prevResult = foldResult;
+  }
+
+  debugDescription() {
+    return patternDescription(this.trianglesCount, this.#folds, this.#startClockwise!);
   }
 
   private createEmptyLayer(gridSize: number) {

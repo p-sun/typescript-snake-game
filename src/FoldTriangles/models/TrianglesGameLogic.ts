@@ -1,4 +1,3 @@
-import { patternDescription } from '../utils/patternDescription';
 import { PatternPos, PatternData } from './PatternData';
 
 export type Triangle = {
@@ -14,14 +13,7 @@ export type FoldResult = { pos: PatternPos; triangle: Triangle };
 
 export class TrianglesGameLogic {
   readonly maxCount: number;
-
   #patternData: PatternData;
-
-  // To Build FoldData
-  #count = 1; // Total number of triangles
-  #startClockwise: boolean = false;
-  #folds: FoldDirection[] = []; // 5 triangles, 3 folds
-  #pos: PatternPos = { layer: -1, row: -1, column: -1 };
 
   constructor(config: { maxTriangles: number; gridSize: number }) {
     const { maxTriangles, gridSize } = config;
@@ -53,55 +45,45 @@ export class TrianglesGameLogic {
     do {
       this.startNewPattern();
       this.foldPatternUntilDone();
-    } while (this.#count !== this.maxCount);
+    } while (this.#patternData.trianglesCount !== this.maxCount);
   }
 
   private startNewPattern() {
-    this.#count = 1; // Total number of triangles
-    this.#folds = [];
-
     const mid = Math.floor(this.gridSize / 2);
-    this.#pos = { layer: 0, row: mid, column: mid };
 
-    this.#startClockwise = Math.random() < 0.5;
     this.#patternData.reset();
     this.#patternData.addFoldResult({
-      pos: this.#pos,
-      triangle: { rotation: 1, clockwise: this.#startClockwise, index: 0 },
+      pos: { layer: 0, row: mid, column: mid },
+      triangle: { rotation: 1, clockwise: Math.random() < 0.5, index: 0 },
     });
   }
 
   private foldPatternUntilDone() {
     const allFolds: FoldDirection[] = [-1, 0, 1];
-    while (this.#count < this.maxCount) {
+    while (this.#patternData.trianglesCount < this.maxCount) {
       const i = Math.floor(Math.random() * 3);
       if (
         !this.tryApplyFold(allFolds[i]) &&
         !this.tryApplyFold(allFolds[(i + 1) % 3]) &&
         !this.tryApplyFold(allFolds[(i + 2) % 3])
       ) {
-        // console.error('No more folds possible. Count so far:', this.#count);
         break;
       }
     }
-    if (this.#count === this.maxCount) {
-      console.log(patternDescription(this.#count, this.#folds, this.#startClockwise));
+    if (this.#patternData.trianglesCount === this.maxCount) {
+      console.log(this.#patternData.debugDescription());
     }
   }
 
   private tryApplyFold(fold: FoldDirection): boolean {
-    if (this.#count === this.maxCount) {
+    if (this.#patternData.trianglesCount === this.maxCount) {
       return false;
     }
 
-    const cell = this.getCell(this.#pos)!;
-    const currTriangle = cell.triangle2 ?? cell.triangle1;
-    let result = nextFoldResult(this.#pos, currTriangle, fold, this.#count);
+    let prevResult = this.#patternData.prevResult;
+    let result = nextFoldResult(prevResult, fold, this.#patternData.trianglesCount);
     if (this.#patternData.canAddFoldResult(result)) {
-      this.#patternData.addFoldResult(result);
-      this.#pos = result.pos;
-      this.#folds.push(fold);
-      this.#count += 1;
+      this.#patternData.addFoldResult(result, fold);
       return true;
     }
     return false;
@@ -112,9 +94,13 @@ export class TrianglesGameLogic {
 /*                               Fold Triangles                               */
 /* -------------------------------------------------------------------------- */
 
-function nextFoldResult(pos: PatternPos, triangle: Triangle, fold: FoldDirection, index: number): FoldResult {
+function nextFoldResult(prevResult: FoldResult, fold: FoldDirection, index: number): FoldResult {
+  const {
+    pos: { layer, row, column },
+    triangle,
+  } = prevResult;
   const { rotation, clockwise } = triangle;
-  const { layer, row, column } = pos;
+
   if (fold === 0) {
     const toAdd = gridDirectionWithNoFold(triangle);
     return {
