@@ -9,7 +9,7 @@ export type TriangleRotation = 1 | 2 | 3 | 4; // topRight, bottomRight, bottomLe
 
 export type FoldDirection = -1 | 0 | 1;
 
-export type FoldResult = { pos: PatternPos; triangle: Triangle };
+export type FoldResult = { pos: PatternPos; triangle: Triangle; fold: FoldDirection };
 
 export class TrianglesGameLogic {
   readonly maxCount: number;
@@ -52,13 +52,11 @@ export class TrianglesGameLogic {
     const mid = Math.floor(this.gridSize / 2);
 
     this.#pattern.reset();
-    this.#pattern.addFoldResult(
-      {
-        pos: { layer: 0, row: mid, column: mid },
-        triangle: { rotation: 1, clockwise: Math.random() < 0.5, index: 0 },
-      },
-      0
-    );
+    this.#pattern.addFoldResult({
+      pos: { layer: 0, row: mid, column: mid },
+      triangle: { rotation: 1, clockwise: Math.random() < 0.5, index: 0 },
+      fold: 0,
+    });
   }
 
   private foldPatternUntilDone() {
@@ -86,7 +84,7 @@ export class TrianglesGameLogic {
     let prevResult = this.#pattern.prevResult;
     let result = nextFoldResult(prevResult, fold, this.#pattern.length);
     if (this.#pattern.canAddFoldResult(result)) {
-      this.#pattern.addFoldResult(result, fold);
+      this.#pattern.addFoldResult(result);
       return true;
     }
     return false;
@@ -113,6 +111,7 @@ function nextFoldResult(prevResult: FoldResult, fold: FoldDirection, index: numb
         clockwise: !clockwise,
         index,
       },
+      fold,
     };
   } else {
     return {
@@ -122,6 +121,7 @@ function nextFoldResult(prevResult: FoldResult, fold: FoldDirection, index: numb
         clockwise: clockwise,
         index,
       },
+      fold,
     };
   }
 }

@@ -52,7 +52,7 @@ export class Pattern {
   }
 
   canAddFoldResult(foldResult: FoldResult) {
-    const { pos, triangle } = foldResult;
+    const { pos, triangle, fold } = foldResult;
     const { layer, row, column } = pos;
     if (layer >= 0 && layer < this.#layers.length) {
       if (row < 0 || row >= this.gridSize || column < 0 || column >= this.gridSize) {
@@ -69,8 +69,8 @@ export class Pattern {
     return true;
   }
 
-  addFoldResult(foldResult: FoldResult, fold: FoldDirection) {
-    const { pos, triangle } = foldResult;
+  addFoldResult(foldResult: FoldResult) {
+    const { pos, triangle, fold } = foldResult;
     const { row, column } = pos;
     let l = pos.layer;
 
