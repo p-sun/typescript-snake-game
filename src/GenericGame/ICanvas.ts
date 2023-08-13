@@ -11,7 +11,7 @@ export type CanvasKeyEvent =
   | { key: 'space' }
   | { key: 'backspace' }
   | { key: 'arrow'; direction: Direction }
-  | { key: 'letter'; letter: 'E' | 'M' | 'H' }
+  | { key: 'letter'; letter: 'E' | 'M' | 'H' | 'I' }
   | { key: 'digit'; digit: number };
 
 export type CanvasMouseEvent =

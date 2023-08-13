@@ -100,21 +100,25 @@ export default class TrianglesGameRenderer {
 
   private drawInstructions(canvas: ICanvas) {
     this.drawText(canvas, `-- Pattern Generator for U-Fidgit --`, new Vec2(0.3, 0.5));
-    this.drawText(canvas, `Press SPACE or click to generate new pattern.`, new Vec2(0.3, 1));
+    this.drawText(
+      canvas,
+      `The U-Fidgit toy is a chain of triangles that can be folded into patterns.`,
+      new Vec2(0.3, 1)
+    );
+
+    const start = 1.3;
+    const height = 0.36;
+    this.drawText(canvas, `Press 'SPACE' or click to generate new pattern.`, new Vec2(0.3, start + height));
     this.drawText(
       canvas,
       `Press 'h' to toggle hints -- which makes triangles in lower layers darker colors.`,
-      new Vec2(0.3, 1.4)
+      new Vec2(0.3, start + height * 2)
     );
+    this.drawText(canvas, `Press 'i' to toggle the instructions.`, new Vec2(0.3, start + height * 3));
     this.drawText(
       canvas,
-      `Open the console (⌘+Option+J) on Chrome for the folds to create the pattern.`,
-      new Vec2(0.3, 1.8)
-    );
-    this.drawText(
-      canvas,
-      `The U-Fidgit toy is made of a chain of triangles that can be folded into patterns.`,
-      new Vec2(0.3, 2.6)
+      `Open the console '⌘+Option+J' on Chrome for the folds to create the pattern.`,
+      new Vec2(0.3, start + height * 4)
     );
   }
 

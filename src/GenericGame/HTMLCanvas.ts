@@ -314,6 +314,8 @@ export default class HTMLCanvas implements ICanvas {
       listener({ key: 'letter', letter: 'M' });
     } else if (code === 'KeyH') {
       listener({ key: 'letter', letter: 'H' });
+    } else if (code === 'KeyI') {
+      listener({ key: 'letter', letter: 'I' });
     } else if (code === 'Backspace') {
       listener({ key: 'backspace' });
     } else if (code.startsWith('Digit')) {
