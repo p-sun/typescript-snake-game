@@ -145,7 +145,7 @@ export class Pattern {
   }
 
   debugDescription() {
-    return patternDescription(this.#folds, this.#startClockwise!);
+    return patternDescription(this.#folds, this.#startClockwise!, this.#layers.length);
   }
 
   private createEmptyLayer(gridSize: number) {

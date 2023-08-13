@@ -1,8 +1,12 @@
 import { FoldDirection } from '../models/TrianglesGameLogic';
 
-export function patternDescription(folds: FoldDirection[], startClockwise: boolean) {
+export function patternDescription(folds: FoldDirection[], startClockwise: boolean, layers: number) {
   return (
-    `Generated a pattern!\nCount: ${folds.length} \nStart clockwise: ${startClockwise}\n\n` + foldsDescription(folds)
+    `Generated a pattern!` +
+    `\nCount: ${folds.length}` +
+    `\nLayers: ${layers}` +
+    `\nStart clockwise: ${startClockwise}\n\n` +
+    foldsDescription(folds)
   );
 }
 
