@@ -19,7 +19,7 @@ export class Pattern {
 
   #layers: GridLayer[] = [];
   #folds: FoldDirection[] = []; // 5 triangles has 4 folds
-  #startClockwise?: boolean;
+  #startClockwise: boolean | null = null; // whether the first triangle is clockwise or not
   #prevResult?: FoldResult;
 
   constructor(gridSize: number) {
@@ -48,7 +48,7 @@ export class Pattern {
   reset() {
     this.#layers = [this.createEmptyLayer(this.gridSize)];
     this.#folds = [];
-    this.#startClockwise = undefined;
+    this.#startClockwise = null;
     this.#prevResult = undefined;
   }
 
@@ -102,7 +102,7 @@ export class Pattern {
     }
 
     this.#folds.push(fold);
-    if (!this.#startClockwise) this.#startClockwise = triangle.clockwise;
+    if (this.#startClockwise === null) this.#startClockwise = triangle.clockwise;
     this.#prevResult = foldResult;
   }
 
