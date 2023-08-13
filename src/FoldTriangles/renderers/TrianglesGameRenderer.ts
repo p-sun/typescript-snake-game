@@ -8,6 +8,8 @@ import { Triangle, TrianglesGameLogic } from '../models/TrianglesGameLogic';
 import { getTriangleVerts } from './TriangleRenderHelpers';
 
 export default class TrianglesGameRenderer {
+  shouldDisplayInstructions = true;
+
   #gridRenderer: GridRenderer;
   #colors: Color[];
 
@@ -45,6 +47,10 @@ export default class TrianglesGameRenderer {
         }
       }
     });
+
+    if (this.shouldDisplayInstructions) {
+      this.drawInstructions(canvas);
+    }
   }
 
   private color(i: number, layer: number, layersCount: number) {
@@ -89,6 +95,37 @@ export default class TrianglesGameRenderer {
       end: center.add(dir),
       color: Color.black,
       thickness: 8,
+    });
+  }
+
+  private drawInstructions(canvas: ICanvas) {
+    this.drawText(canvas, `-- Pattern Generator for U-Fidgit --`, new Vec2(0.3, 0.5));
+    this.drawText(canvas, `Press SPACE or click to generate new pattern.`, new Vec2(0.3, 1));
+    this.drawText(
+      canvas,
+      `Press 'h' to toggle hints -- which makes triangles in lower layers darker colors.`,
+      new Vec2(0.3, 1.4)
+    );
+    this.drawText(
+      canvas,
+      `Open the console (⌘+Option+J) on Chrome for the folds to create the pattern.`,
+      new Vec2(0.3, 1.8)
+    );
+    this.drawText(
+      canvas,
+      `The U-Fidgit toy is made of a chain of triangles that can be folded into patterns.`,
+      new Vec2(0.3, 2.6)
+    );
+  }
+
+  private drawText(canvas: ICanvas, text: string, pos: Vec2) {
+    canvas.drawText({
+      text,
+      position: pos.componentMul(this.#gridRenderer.cellSize),
+      attributes: {
+        color: Color.white,
+        fontSize: 19,
+      },
     });
   }
 }

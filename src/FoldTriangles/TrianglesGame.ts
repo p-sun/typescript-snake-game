@@ -14,6 +14,7 @@ const triangleColors = ([] as Color[])
 export default class TrianglesGame extends Game {
   #renderer: TrianglesGameRenderer;
   #logic: TrianglesGameLogic;
+  #patternsGenerated = 0;
 
   constructor(config: { canvas: ICanvas; cellSize: Vec2 }) {
     const { canvas, cellSize } = config;
@@ -54,5 +55,10 @@ export default class TrianglesGame extends Game {
   private generatePattern() {
     this.#logic.generatePattern();
     this.#renderer.render(this.canvas, this.#logic);
+
+    this.#patternsGenerated++;
+    if (this.#patternsGenerated === 3) {
+      this.#renderer.shouldDisplayInstructions = false;
+    }
   }
 }
