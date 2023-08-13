@@ -42,6 +42,9 @@ export default class TrianglesGame extends Game {
   onKeyDown(event: CanvasKeyEvent) {
     if (event.key === 'space') {
       this.generatePattern();
+    } else if (event.key === 'letter' && event.letter === 'H') {
+      this.#renderer.shouldDarkenLowerLayers = !this.#renderer.shouldDarkenLowerLayers;
+      this.#renderer.render(this.canvas, this.#logic);
     } else if (event.key === 'letter' && event.letter === 'I') {
       this.#renderer.shouldDisplayInstructions = !this.#renderer.shouldDisplayInstructions;
       this.#renderer.render(this.canvas, this.#logic);

@@ -9,6 +9,7 @@ import { getTriangleVerts } from './TriangleRenderHelpers';
 
 export default class TrianglesGameRenderer {
   shouldDisplayInstructions = true;
+  shouldDarkenLowerLayers = true;
 
   #gridRenderer: GridRenderer;
   #colors: Color[];
@@ -61,7 +62,7 @@ export default class TrianglesGameRenderer {
     //    layer 2             1
     const min = 0.3;
     let multipler = 1;
-    if (layersCount !== 1) {
+    if (this.shouldDarkenLowerLayers && layersCount !== 1) {
       multipler = min + (layer * (1 - min)) / (layersCount - 1);
     }
     return this.#colors[i % this.#colors.length].mul(multipler);
