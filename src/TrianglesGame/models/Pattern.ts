@@ -1,6 +1,6 @@
 import { GridPosition } from '../../GenericModels/Grid';
-import { Triangle, FoldDirection, FoldResult, oppositeRotation } from '../../TrianglesGame/models/TrianglesGameLogic';
-import { patternDescription } from '../../TrianglesGame/utils/patternDescription';
+import { patternDescription } from '../utils/patternDescription';
+import { FoldDirection, FoldResult, Triangle, oppositeRotation } from './TrianglesGameLogic';
 import { assert } from 'console';
 
 export type PatternPos = {

@@ -1,5 +1,4 @@
 import BombBroomerGame from './src/BombBroomer/BombBroomerGame';
-import TrianglesGame from './src/FoldTriangles/TrianglesGame';
 import Game from './src/GenericGame/Game';
 import HTMLCanvas from './src/GenericGame/HTMLCanvas';
 import { ICanvas } from './src/GenericGame/ICanvas';
@@ -7,6 +6,7 @@ import Vec2 from './src/GenericModels/Vec2';
 import EasingRenderer from './src/Playgrounds/EasingRenderer';
 import SnakeGame from './src/SnakeGame/SnakeGame';
 import SudokuGame from './src/Sudoku/SudokuGame';
+import TrianglesGame from './src/TrianglesGame/TrianglesGame';
 
 const Games: { [k: string]: (canvas: ICanvas) => Game } = {
   Snake: (canvas) => {
