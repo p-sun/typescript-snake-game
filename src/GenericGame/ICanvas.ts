@@ -72,10 +72,7 @@ export interface ICanvas {
   fromNormalizedCoordinate(coord: Vec2): Vec2;
   toNormalizedCoordinate(pos: Vec2): Vec2;
   toNormalizedCoordinate(pos: Vec2): Vec2;
-  measureText(
-    contents: string,
-    attributes: TextAttributes
-  ): { size: Vec2; baselineOffsetFromBottom: number };
+  measureText(contents: string, attributes: TextAttributes): { size: Vec2; baselineOffsetFromBottom: number };
 
   // Drawing
   clear(color: Color): void;

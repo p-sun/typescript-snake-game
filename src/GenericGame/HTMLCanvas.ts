@@ -40,10 +40,7 @@ export default class HTMLCanvas implements ICanvas {
     this.#context.scale(scale, scale);
   }
 
-  static createInRootElement(
-    rootElement: Element,
-    size: Vec2 = Vec2.zero
-  ): HTMLCanvas {
+  static createInRootElement(rootElement: Element, size: Vec2 = Vec2.zero): HTMLCanvas {
     const canvasElement = document.createElement('canvas') as HTMLCanvasElement;
     rootElement.appendChild(canvasElement);
 
@@ -66,10 +63,7 @@ export default class HTMLCanvas implements ICanvas {
     this.drawRect({ origin: Vec2.zero, size: this.size, color });
   }
 
-  measureText(
-    contents: string,
-    attributes: TextAttributes
-  ): { size: Vec2; baselineOffsetFromBottom: number } {
+  measureText(contents: string, attributes: TextAttributes): { size: Vec2; baselineOffsetFromBottom: number } {
     return this.#performCanvasTextOperation(attributes, () => {
       return this.#measureTextWithContextReady(contents);
     });
@@ -91,15 +85,7 @@ export default class HTMLCanvas implements ICanvas {
     const { color, origin, rx, ry, rotationAngle } = options;
     this.#context.fillStyle = color.asHexString();
     this.#context.beginPath();
-    this.#context.ellipse(
-      origin.x,
-      origin.y,
-      rx,
-      ry,
-      rotationAngle ?? 0,
-      2 * Math.PI,
-      0
-    );
+    this.#context.ellipse(origin.x, origin.y, rx, ry, rotationAngle ?? 0, 2 * Math.PI, 0);
     this.#context.fill();
   }
 
@@ -153,9 +139,7 @@ export default class HTMLCanvas implements ICanvas {
         if (offsetY === 'baseline') {
           y -= measure.baselineOffsetFromBottom;
         } else {
-          y +=
-            (measure.size.y / 2) * (1 - offsetY) -
-            measure.baselineOffsetFromBottom;
+          y += (measure.size.y / 2) * (1 - offsetY) - measure.baselineOffsetFromBottom;
         }
       }
 
@@ -202,18 +186,14 @@ export default class HTMLCanvas implements ICanvas {
 
       if (normalizedAnchorOffset) {
         if (normalizedAnchorOffset.normalizedOffsetX !== undefined) {
-          x +=
-            (-measure.size.x / 2) *
-            (1 + normalizedAnchorOffset.normalizedOffsetX);
+          x += (-measure.size.x / 2) * (1 + normalizedAnchorOffset.normalizedOffsetX);
         }
 
         if (normalizedAnchorOffset.normalizedOffsetY !== undefined) {
           if (normalizedAnchorOffset.normalizedOffsetY === 'baseline') {
             y += measure.baselineOffsetFromBottom;
           } else {
-            y +=
-              (measure.size.y / 2) *
-              (1 - normalizedAnchorOffset.normalizedOffsetY);
+            y += (measure.size.y / 2) * (1 - normalizedAnchorOffset.normalizedOffsetY);
           }
         }
       }
@@ -243,10 +223,7 @@ export default class HTMLCanvas implements ICanvas {
     });
   }
 
-  #performCanvasTextOperation<T = undefined>(
-    attributes: TextAttributes,
-    op: () => T
-  ) {
+  #performCanvasTextOperation<T = undefined>(attributes: TextAttributes, op: () => T) {
     this.#context.save();
     this.#context.font = `${attributes.fontSize}px Monoco`;
     this.#context.fillStyle = attributes.color.asHexString();
@@ -262,10 +239,7 @@ export default class HTMLCanvas implements ICanvas {
   } {
     const metrics = this.#context.measureText(contents);
     return {
-      size: new Vec2(
-        metrics.width,
-        metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
-      ),
+      size: new Vec2(metrics.width, metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent),
       baselineOffsetFromBottom: metrics.actualBoundingBoxDescent,
     };
   }
