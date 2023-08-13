@@ -109,17 +109,22 @@ export default class TrianglesGameRenderer {
 
     const start = 1.3;
     const height = 0.36;
-    this.drawText(canvas, `Press 'SPACE' or click to generate new pattern.`, new Vec2(0.3, start + height));
+    this.drawText(canvas, `Press 'SPACE' or click to generate new pattern.`, new Vec2(0.3, start + height * 2));
     this.drawText(
       canvas,
       `Press 'h' to toggle hints -- which makes triangles in lower layers darker colors.`,
-      new Vec2(0.3, start + height * 2)
+      new Vec2(0.3, start + height * 3)
     );
-    this.drawText(canvas, `Press 'i' to toggle the instructions.`, new Vec2(0.3, start + height * 3));
+    this.drawText(canvas, `Press 'i' to toggle the instructions.`, new Vec2(0.3, start + height * 1));
     this.drawText(
       canvas,
       `Open the console '⌘+Option+J' on Chrome for the folds to create the pattern.`,
-      new Vec2(0.3, start + height * 4)
+      new Vec2(0.3, start + height * 5)
+    );
+    this.drawText(
+      canvas,
+      `All patterns begin with a pink triangle pointing to the top-right.`,
+      new Vec2(0.3, start + height * 6)
     );
   }
 
