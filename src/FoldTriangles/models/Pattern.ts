@@ -106,6 +106,44 @@ export class Pattern {
     this.#prevResult = foldResult;
   }
 
+  // each triangle is supported when it has one of the following:
+  // * triangle is layer 0 (supported by the table)
+  // * said triangle is reseting on a triangle in the layer directly below.
+  //   i.e. In the cell below, we don't have just a single triangle exactly in the opposite rotation
+  isValid(): boolean {
+    for (let l = 1; l < this.#layers.length; l++) {
+      for (let r = 0; r < this.gridSize; r++) {
+        for (let c = 0; c < this.gridSize; c++) {
+          const cell = this.#layers[l][r][c];
+          if (cell) {
+            const { triangle1, triangle2 } = cell;
+            const pos = { layer: l, row: r, column: c };
+            const isSupported =
+              this.isTriangleSupported(triangle1, pos) && (!triangle2 || this.isTriangleSupported(triangle2, pos));
+            if (!isSupported) {
+              return false;
+            }
+          }
+        }
+      }
+    }
+
+    return true;
+  }
+
+  private isTriangleSupported(triangle: Triangle, pos: PatternPos): boolean {
+    const { layer, row, column } = pos;
+    assert(layer > 0);
+
+    const cellBelow = this.#layers[layer - 1][row][column];
+    if (cellBelow) {
+      const nonSupport = oppositeRotation(triangle.rotation);
+      if (cellBelow.triangle1.rotation !== nonSupport) return true;
+      if (cellBelow.triangle2) return cellBelow.triangle2.rotation !== nonSupport;
+    }
+    return false;
+  }
+
   debugDescription() {
     return patternDescription(this.#folds, this.#startClockwise!);
   }

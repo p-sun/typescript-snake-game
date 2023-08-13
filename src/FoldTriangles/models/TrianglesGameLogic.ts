@@ -45,7 +45,9 @@ export class TrianglesGameLogic {
     do {
       this.startNewPattern();
       this.foldPatternUntilDone();
-    } while (this.#pattern.length !== this.maxCount);
+    } while (this.#pattern.length !== this.maxCount || !this.#pattern.isValid());
+
+    console.log(this.#pattern.debugDescription());
   }
 
   private startNewPattern() {
@@ -68,11 +70,8 @@ export class TrianglesGameLogic {
         !this.tryApplyFold(allFolds[(i + 1) % 3]) &&
         !this.tryApplyFold(allFolds[(i + 2) % 3])
       ) {
-        break;
+        return;
       }
-    }
-    if (this.#pattern.length === this.maxCount) {
-      console.log(this.#pattern.debugDescription());
     }
   }
 
