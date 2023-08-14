@@ -41,7 +41,8 @@ export default class TrianglesGame extends Game {
 
   onKeyDown(event: CanvasKeyEvent) {
     if (event.key === 'space') {
-      this.generatePattern();
+      this.#logic.generatePattern();
+      this.#renderer.render(this.canvas, this.#logic);
     } else if (event.key === 'letter' && event.letter === 'H') {
       this.#renderer.shouldDarkenLowerLayers = !this.#renderer.shouldDarkenLowerLayers;
       this.#renderer.render(this.canvas, this.#logic);
@@ -51,14 +52,5 @@ export default class TrianglesGame extends Game {
     }
   }
 
-  onMouseEvent(event: CanvasMouseEvent) {
-    if (event.mode === 'button' && event.state === 'down' && event.button === 'primary') {
-      this.generatePattern();
-    }
-  }
-
-  private generatePattern() {
-    this.#logic.generatePattern();
-    this.#renderer.render(this.canvas, this.#logic);
-  }
+  onMouseEvent(event: CanvasMouseEvent) {}
 }

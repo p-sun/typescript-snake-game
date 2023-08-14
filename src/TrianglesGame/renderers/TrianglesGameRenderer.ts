@@ -109,7 +109,7 @@ export default class TrianglesGameRenderer {
 
     const start = 1.3;
     const height = 0.36;
-    this.drawText(canvas, `Press 'SPACE' or click to generate new pattern.`, new Vec2(0.3, start + height * 2));
+    this.drawText(canvas, `Press 'SPACE' to generate new pattern.`, new Vec2(0.3, start + height * 2));
     this.drawText(
       canvas,
       `Press 'h' to toggle hints -- which makes triangles in lower layers darker colors.`,
