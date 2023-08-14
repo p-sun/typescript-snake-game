@@ -43,8 +43,8 @@ const appRoot = document.getElementById('root');
 if (appRoot) {
   const canvas = HTMLCanvas.createInRootElement(appRoot!);
 
-  // const game = Games.Triangles(canvas);
-  const game = Games.Snake(canvas);
+  const game = Games.Triangles(canvas);
+  // const game = Games.Snake(canvas);
   // const game = Games.BombBroomer(canvas);
   // const game = Games.Sudoku(canvas);
   game.run(12);
