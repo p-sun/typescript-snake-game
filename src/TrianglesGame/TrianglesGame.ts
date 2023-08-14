@@ -6,22 +6,16 @@ import { TrianglesGameLogic } from './models/TrianglesGameLogic';
 import TrianglesGameRenderer from './renderers/TrianglesGameRenderer';
 import { printPatternDescription } from './utils/patternDescription';
 
-const triangleColors = ([] as Color[])
-  .concat(Array.from({ length: 5 }, () => Color.fromHex(0xf2798f))) // pink
-  .concat(Array.from({ length: 5 }, () => Color.fromHex(0x00c1ed))) // blue
-  .concat(Array.from({ length: 5 }, () => Color.fromHex(0xbb66ed))) // purple
-  .concat(Array.from({ length: 5 }, () => Color.fromHex(0xa7f205))); // green
-
 export default class TrianglesGame extends Game {
+  #triangleColors: Color[];
   #renderer: TrianglesGameRenderer;
   #logic: TrianglesGameLogic;
 
-  constructor(config: { canvas: ICanvas; cellSize: Vec2 }) {
-    const { canvas, cellSize } = config;
+  constructor(config: { canvas: ICanvas; cellSize: Vec2; gridSize: number; triangleColors: Color[] }) {
+    const { canvas, cellSize, gridSize, triangleColors } = config;
     super(canvas);
 
-    const gridSize = 8;
-
+    this.#triangleColors = triangleColors;
     this.#logic = new TrianglesGameLogic({
       maxTriangles: triangleColors.length,
       gridSize,
@@ -60,6 +54,6 @@ export default class TrianglesGame extends Game {
     this.#renderer.render(this.canvas, this.#logic);
 
     const { folds, startClockwise, layersCount } = this.#logic.pattern;
-    printPatternDescription(folds, startClockwise, layersCount, triangleColors);
+    printPatternDescription(folds, startClockwise, layersCount, this.#triangleColors);
   }
 }
