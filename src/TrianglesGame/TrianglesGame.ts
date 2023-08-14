@@ -4,27 +4,23 @@ import Color from '../GenericModels/Color';
 import Vec2 from '../GenericModels/Vec2';
 import { TrianglesGameLogic } from './models/TrianglesGameLogic';
 import TrianglesGameRenderer from './renderers/TrianglesGameRenderer';
-
-const triangleColors = ([] as Color[])
-  .concat(Array.from({ length: 5 }, () => Color.fromHex(0xf2798f))) // pink
-  .concat(Array.from({ length: 5 }, () => Color.fromHex(0x00c1ed))) // blue
-  .concat(Array.from({ length: 5 }, () => Color.fromHex(0xbb66ed))) // purple
-  .concat(Array.from({ length: 5 }, () => Color.fromHex(0xa7f205))); // green
+import { printPatternDescription } from './utils/patternDescription';
 
 export default class TrianglesGame extends Game {
+  #triangleColors: Color[];
   #renderer: TrianglesGameRenderer;
   #logic: TrianglesGameLogic;
 
-  constructor(config: { canvas: ICanvas; cellSize: Vec2 }) {
-    const { canvas, cellSize } = config;
+  constructor(config: { canvas: ICanvas; cellSize: Vec2; gridSize: number; triangleColors: Color[] }) {
+    const { canvas, cellSize, gridSize, triangleColors } = config;
     super(canvas);
 
+    this.#triangleColors = triangleColors;
     this.#logic = new TrianglesGameLogic({
       maxTriangles: triangleColors.length,
-      gridSize: 8,
+      gridSize,
     });
 
-    const gridSize = this.#logic.gridSize;
     this.#renderer = new TrianglesGameRenderer(
       canvas,
       { rowCount: gridSize, columnCount: gridSize },
@@ -32,7 +28,7 @@ export default class TrianglesGame extends Game {
       triangleColors
     );
 
-    this.#renderer.render(canvas, this.#logic);
+    this.generatePattern();
   }
 
   onUpdate() {}
@@ -51,14 +47,13 @@ export default class TrianglesGame extends Game {
     }
   }
 
-  onMouseEvent(event: CanvasMouseEvent) {
-    if (event.mode === 'button' && event.state === 'down' && event.button === 'primary') {
-      this.generatePattern();
-    }
-  }
+  onMouseEvent(event: CanvasMouseEvent) {}
 
   private generatePattern() {
     this.#logic.generatePattern();
     this.#renderer.render(this.canvas, this.#logic);
+
+    const { folds, startClockwise, layersCount } = this.#logic.pattern;
+    printPatternDescription(folds, startClockwise, layersCount, this.#triangleColors);
   }
 }

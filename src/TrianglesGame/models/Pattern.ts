@@ -1,5 +1,4 @@
 import { GridPosition } from '../../GenericModels/Grid';
-import { patternDescription } from '../utils/patternDescription';
 import { FoldDirection, FoldResult, Triangle, oppositeRotation } from './TrianglesGameLogic';
 import { assert } from 'console';
 
@@ -14,7 +13,13 @@ type Cell = {
   triangle2?: Triangle;
 };
 
-export class Pattern {
+export interface PatternAPI {
+  get startClockwise(): boolean;
+  get folds(): FoldDirection[];
+  get layersCount(): number;
+}
+
+export class Pattern implements PatternAPI {
   readonly gridSize: number;
 
   #layers: GridLayer[] = [];
@@ -41,6 +46,16 @@ export class Pattern {
     return this.#prevResult!;
   }
 
+  get startClockwise(): boolean {
+    assert(this.#startClockwise !== null);
+    return this.#startClockwise!;
+  }
+
+  get folds(): FoldDirection[] {
+    assert(this.#folds !== null);
+    return this.#folds!;
+  }
+
   getCell(pos: PatternPos) {
     return this.#layers[pos.layer][pos.row][pos.column];
   }
@@ -62,18 +77,22 @@ export class Pattern {
       return false; // row or column is out of bounds
     }
 
-    // For every layer from current layer to the end in fold direction
-    for (let l = layer; l >= 0 && l < this.#layers.length; fold === 0 ? (l = -99) : (l += fold)) {
+    // if EASY_MODE = true, for every layer from current layer to the end in fold direction.
+    // This makes folding easier, but limits possibilities for patterns
+    const EASY_MODE = true; // CAN CHANGE THIS
+    const minLayer = EASY_MODE ? 0 : layer;
+    const maxLayer = EASY_MODE ? this.#layers.length - 1 : layer;
+    for (let l = layer; l >= minLayer && l <= maxLayer; fold === 0 ? (l = -99) : (l += fold)) {
       const cell = this.#layers[l][row][column];
 
       if (!cell) {
         continue; // cell is empty -> continue to test next layer
       }
       if (cell.triangle2) {
-        return false; // cell is full
+        return false; // cell is full -> cannot add fold
       }
       if (triangleToAdd.rotation !== oppositeRotation(cell.triangle1.rotation)) {
-        return false;
+        return false; // cell has a triangle colliding with triangleToAdd -> cannot add fold
       }
     }
     return true;
@@ -106,10 +125,9 @@ export class Pattern {
     this.#prevResult = foldResult;
   }
 
-  // each triangle is supported when it has one of the following:
-  // * triangle is layer 0 (supported by the table)
-  // * said triangle is reseting on a triangle in the layer directly below.
-  //   i.e. In the cell below, we don't have just a single triangle exactly in the opposite rotation
+  // Each triangle is supported when it has one of the following:
+  // * That triangle is in the bottomost layer, 0. (supported by the table).
+  // * That triangle is resting on a triangle in the layer directly below.
   isValid(): boolean {
     for (let l = 1; l < this.#layers.length; l++) {
       for (let r = 0; r < this.gridSize; r++) {
@@ -142,10 +160,6 @@ export class Pattern {
       if (cellBelow.triangle2) return cellBelow.triangle2.rotation !== nonSupport;
     }
     return false;
-  }
-
-  debugDescription() {
-    return patternDescription(this.#folds, this.#startClockwise!, this.#layers.length);
   }
 
   private createEmptyLayer(gridSize: number) {

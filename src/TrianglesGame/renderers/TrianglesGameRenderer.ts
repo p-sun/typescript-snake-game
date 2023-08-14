@@ -35,14 +35,15 @@ export default class TrianglesGameRenderer {
   render(canvas: ICanvas, logic: TrianglesGameLogic) {
     this.#gridRenderer.render(canvas);
 
+    const layersCount = logic.pattern.layersCount;
     this.#gridRenderer.forEachCell((cellPos, rect) => {
-      for (let layer = 0; layer < logic.layersCount; layer++) {
+      for (let layer = 0; layer < layersCount; layer++) {
         const cell = logic.getCell({ layer, ...cellPos });
         if (cell) {
-          const color1 = this.color(cell.triangle1.index, layer, logic.layersCount);
+          const color1 = this.color(cell.triangle1.index, layer, layersCount);
           this.drawTriangle(canvas, rect, cell.triangle1, logic.maxCount, color1);
           if (cell.triangle2) {
-            const color2 = this.color(cell.triangle2.index, layer, logic.layersCount);
+            const color2 = this.color(cell.triangle2.index, layer, layersCount);
             this.drawTriangle(canvas, rect, cell.triangle2, logic.maxCount, color2);
           }
         }
@@ -109,7 +110,7 @@ export default class TrianglesGameRenderer {
 
     const start = 1.3;
     const height = 0.36;
-    this.drawText(canvas, `Press 'SPACE' or click to generate new pattern.`, new Vec2(0.3, start + height * 2));
+    this.drawText(canvas, `Press 'SPACE' to generate new pattern.`, new Vec2(0.3, start + height * 2));
     this.drawText(
       canvas,
       `Press 'h' to toggle hints -- which makes triangles in lower layers darker colors.`,

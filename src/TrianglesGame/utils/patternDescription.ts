@@ -1,16 +1,24 @@
+import Color from '../../GenericModels/Color';
 import { FoldDirection } from '../models/TrianglesGameLogic';
 
-export function patternDescription(folds: FoldDirection[], startClockwise: boolean, layers: number) {
-  return (
-    `Generated a pattern!` +
-    `\nCount: ${folds.length}` +
-    `\nLayers: ${layers}` +
-    `\nStart clockwise: ${startClockwise}\n\n` +
-    foldsDescription(folds)
+export function printPatternDescription(
+  folds: FoldDirection[],
+  startClockwise: boolean,
+  layers: number,
+  triangleColors: Color[]
+) {
+  const { text, args } = foldsDescription(folds, triangleColors);
+  console.log(
+    `============ Generated a pattern! ============` +
+      `\nCount: ${folds.length}` +
+      `\nLayers: ${layers}` +
+      `\nStart clockwise: ${startClockwise}\n` +
+      text,
+    ...args
   );
 }
 
-function foldsDescription(folds: FoldDirection[]) {
+function foldsDescription(folds: FoldDirection[], triangleColors: Color[]) {
   const groupedFolds = folds
     .slice(1)
     .map((f) => (f === 1 ? 'Up   ' : f === -1 ? 'Down ' : '0    '))
@@ -25,5 +33,19 @@ function foldsDescription(folds: FoldDirection[]) {
       },
       [['Start']]
     );
-  return 'Folds:\n' + groupedFolds.map((folds) => folds.join(' -> ').concat(' -> ')).join('\n');
+
+  let i = 0;
+  let text = '\nFolds:';
+  let args: string[] = [];
+  for (let folds of groupedFolds) {
+    text += '\n';
+    for (let fold of folds) {
+      text += `%c${fold} -> `;
+      const color = triangleColors[i % triangleColors.length];
+      args.push(`color: ${color.asHexString()}; background: #000; font-weight:bold;`);
+      i++;
+    }
+  }
+
+  return { text, args };
 }
