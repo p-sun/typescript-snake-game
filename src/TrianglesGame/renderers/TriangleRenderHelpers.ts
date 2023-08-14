@@ -18,6 +18,7 @@ function vertForCorner(c: Corner, rect: Rect) {
 }
 
 // Triangle Rotation
+// Vertices are listed counterclockwise. Triangle sides are at indices 0-1 and 1-2.
 function cornersInTriangle(rot: TriangleRotation): Corner[] {
   if (rot === 1) {
     // topRight
@@ -27,7 +28,7 @@ function cornersInTriangle(rot: TriangleRotation): Corner[] {
     return ['bottomLeft', 'bottomRight', 'topRight'];
   } else if (rot === 3) {
     // bottomLeft
-    return ['bottomRight', 'bottomLeft', 'topLeft'];
+    return ['topLeft', 'bottomLeft', 'bottomRight'];
   } else if (rot === 4) {
     // topLeft
     return ['topRight', 'topLeft', 'bottomLeft'];
