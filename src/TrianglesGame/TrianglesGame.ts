@@ -34,7 +34,7 @@ export default class TrianglesGame extends Game {
       triangleColors
     );
 
-    this.#renderer.render(canvas, this.#logic);
+    this.generatePattern();
   }
 
   onUpdate() {}
@@ -43,11 +43,7 @@ export default class TrianglesGame extends Game {
 
   onKeyDown(event: CanvasKeyEvent) {
     if (event.key === 'space') {
-      this.#logic.generatePattern();
-      this.#renderer.render(this.canvas, this.#logic);
-
-      const { folds, startClockwise, layersCount } = this.#logic.pattern;
-      printPatternDescription(folds, startClockwise, layersCount, triangleColors);
+      this.generatePattern();
     } else if (event.key === 'letter' && event.letter === 'H') {
       this.#renderer.shouldDarkenLowerLayers = !this.#renderer.shouldDarkenLowerLayers;
       this.#renderer.render(this.canvas, this.#logic);
@@ -58,4 +54,12 @@ export default class TrianglesGame extends Game {
   }
 
   onMouseEvent(event: CanvasMouseEvent) {}
+
+  private generatePattern() {
+    this.#logic.generatePattern();
+    this.#renderer.render(this.canvas, this.#logic);
+
+    const { folds, startClockwise, layersCount } = this.#logic.pattern;
+    printPatternDescription(folds, startClockwise, layersCount, triangleColors);
+  }
 }

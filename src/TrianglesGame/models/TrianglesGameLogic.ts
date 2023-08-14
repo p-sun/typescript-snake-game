@@ -21,8 +21,6 @@ export class TrianglesGameLogic {
 
     const newGridSize = gridSize <= 0 ? Math.ceil(this.maxCount / 2) * 2 + 1 : gridSize;
     this.#pattern = new Pattern(newGridSize);
-
-    this.generatePattern();
   }
 
   get pattern(): PatternAPI {
