@@ -21,7 +21,7 @@ export function printPatternDescription(
 function foldsDescription(folds: FoldDirection[], triangleColors: Color[]) {
   const groupedFolds = folds
     .slice(1)
-    .map((f) => (f === 1 ? 'Up   ' : f === -1 ? 'Down ' : '0    '))
+    .map((f) => (f === 1 ? 'Up   ' : f === -1 ? 'Down ' : 'Flat '))
     .reduce(
       (acc, f) => {
         const last = acc[acc.length - 1];

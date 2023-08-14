@@ -147,12 +147,12 @@ export default class TrianglesGameRenderer {
         `Patterns begin with a triangle pointing to the top-right. First triangle starts: `,
         `                                                    Clockwise                         CounterCW`,
         `First triangle starts Clockwise:`,
-        `     Start -> Up     Start -> Down    Start -> 0`,
+        `     Start -> Up     Start -> Down    Start -> Flat`,
         ``,
         ``,
         ``,
         ` First triangle starts Counterclockwise:`,
-        `     Start -> Up     Start -> Down                          Start -> 0`
+        `     Start -> Up     Start -> Down                     Start -> Flat`
       );
     }
     this.drawTexts(canvas, texts, start, lineHeight);
@@ -181,7 +181,7 @@ export default class TrianglesGameRenderer {
       const rectcw2 = this.#gridRenderer.cellContentRectAtPosition({ row: cwRow, column: indent + spacing });
       this.drawTriangle(canvas, rectcw2, { rotation: 2, clockwise: false, index: 1 }, 3, green);
       this.drawTriangle(canvas, rectcw2, { rotation: 1, clockwise: true, index: 0 }, 3, this.#colors[0]);
-      // Start clockwise -> fold 0
+      // Start clockwise -> fold Flat
       const rectcw3 = this.#gridRenderer.cellContentRectAtPosition({ row: cwRow, column: indent + spacing * 2 });
       this.drawTriangle(canvas, rectcw3, { rotation: 1, clockwise: true, index: 0 }, 3, this.#colors[0]);
       const rectcw3_fold0 = this.#gridRenderer.cellContentRectAtPosition({
@@ -199,7 +199,7 @@ export default class TrianglesGameRenderer {
       const rectccw2 = this.#gridRenderer.cellContentRectAtPosition({ row: ccwRow, column: indent + spacing });
       this.drawTriangle(canvas, rectccw2, { rotation: 4, clockwise: true, index: 1 }, 3, green);
       this.drawTriangle(canvas, rectccw2, { rotation: 1, clockwise: false, index: 0 }, 3, this.#colors[0]);
-      // Start ccw -> fold 0
+      // Start ccw -> fold Flat
       const rectccw3 = this.#gridRenderer.cellContentRectAtPosition({ row: ccwRow, column: 5.6 });
       this.drawTriangle(canvas, rectccw3, { rotation: 1, clockwise: false, index: 0 }, 3, this.#colors[0]);
       const rectccw3_fold0 = this.#gridRenderer.cellContentRectAtPosition({
