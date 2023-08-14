@@ -6,6 +6,8 @@ To install, install npm and Node.js, then `npm install`.
 To play the snake game, `npm start`.
 To run the Jest tests for snake game, `npm test`.
 
+[Play Online on Stackblitz](https://stackblitz.com/edit/typescript-egh5d2?file=README.md,index.ts)
+
 My Facebook Post: [bit.ly/unravelwinter_snake](https://www.facebook.com/groups/horizonwaffles/permalink/2382339205252918/)
 
 ![umlDiagram](./images/SnakeUML.png)
