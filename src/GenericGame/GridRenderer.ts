@@ -45,14 +45,10 @@ export type PositionInCell = {
 
 export default class GridRenderer {
   #gridSize: GridSize;
-  #config: GridRenderConfig;
+  config: GridRenderConfig;
 
-  constructor(
-    gridSize: GridSize,
-    canvas: ICanvas,
-    config: Partial<GridRenderConfig>
-  ) {
-    this.#config = { ...defaultConfig, ...config };
+  constructor(gridSize: GridSize, canvas: ICanvas, config: Partial<GridRenderConfig>) {
+    this.config = { ...defaultConfig, ...config };
     this.#gridSize = gridSize;
     canvas.size = this.totalSize();
   }
@@ -66,7 +62,7 @@ export default class GridRenderer {
   }
 
   get cellSize(): Vec2 {
-    return Object.assign({}, this.#config.cellSize);
+    return Object.assign({}, this.config.cellSize);
   }
 
   get midpoint() {
@@ -74,25 +70,24 @@ export default class GridRenderer {
   }
 
   set midpoint(m: Vec2) {
-    this.#config.origin = m.sub(this.totalSize().mul(0.5));
+    this.config.origin = m.sub(this.totalSize().mul(0.5));
   }
 
   public get rect(): Rect {
-    return new Rect(this.#config.origin, this.totalSize());
+    return new Rect(this.config.origin, this.totalSize());
   }
 
   totalSize(): Vec2 {
-    const { cellSize } = this.#config;
-    const lineWidth = this.#config.border.lineWidth;
-    const width =
-      cellSize.x * this.columnCount + lineWidth * (this.columnCount + 1);
+    const { cellSize } = this.config;
+    const lineWidth = this.config.border.lineWidth;
+    const width = cellSize.x * this.columnCount + lineWidth * (this.columnCount + 1);
     const height = cellSize.y * this.rowCount + lineWidth * (this.rowCount + 1);
 
     return new Vec2(width, height);
   }
 
   render(canvas: ICanvas) {
-    const { background, border, origin } = this.#config;
+    const { background, border, origin } = this.config;
     const totalSize = this.totalSize();
 
     if (background) {
@@ -151,11 +146,7 @@ export default class GridRenderer {
     for (let column = 0; column < this.columnCount; column++) {
       for (let row = 0; row < this.rowCount; row++) {
         const cellPos = { row, column };
-        fn(
-          cellPos,
-          this.cellContentRectAtPosition(cellPos),
-          row * this.columnCount + column
-        );
+        fn(cellPos, this.cellContentRectAtPosition(cellPos), row * this.columnCount + column);
       }
     }
   }
@@ -181,13 +172,7 @@ export default class GridRenderer {
     canvas.drawText({ text, position, attributes, normalizedAnchorOffset });
   }
 
-  drawLine(
-    canvas: ICanvas,
-    start: PositionInCell,
-    end: PositionInCell,
-    color: Color,
-    thickness: number = 1
-  ) {
+  drawLine(canvas: ICanvas, start: PositionInCell, end: PositionInCell, color: Color, thickness: number = 1) {
     canvas.drawLine({
       start: this.#screenPositionAtPositionInCell(start),
       end: this.#screenPositionAtPositionInCell(end),
@@ -216,8 +201,8 @@ export default class GridRenderer {
   // GridPosition Convertions -------------------------------------
 
   cellAtPosition(pos: Vec2): GridPosition {
-    const { origin, cellSize } = this.#config;
-    const lineWidth = this.#config.border.lineWidth;
+    const { origin, cellSize } = this.config;
+    const lineWidth = this.config.border.lineWidth;
     const { x, y } = pos.sub(origin);
 
     const c = x / (cellSize.x + lineWidth);
@@ -235,19 +220,16 @@ export default class GridRenderer {
   }
 
   cellContentRectAtPosition(cellPos: GridPosition): Rect {
-    const { cellSize } = this.#config;
-    const lineWidth = this.#config.border.lineWidth;
+    const { cellSize } = this.config;
+    const lineWidth = this.config.border.lineWidth;
 
-    const offset = new Vec2(
-      (cellSize.x + lineWidth) * cellPos.column,
-      (cellSize.y + lineWidth) * cellPos.row
-    );
+    const offset = new Vec2((cellSize.x + lineWidth) * cellPos.column, (cellSize.y + lineWidth) * cellPos.row);
     const cellOrigin = this.#cellContentOrigin();
     return new Rect(cellOrigin.add(offset), cellSize);
   }
 
   #cellContentOrigin(): Vec2 {
-    const { border, origin } = this.#config;
+    const { border, origin } = this.config;
 
     const d = border.lineWidth;
     return origin.add(new Vec2(d, d));
@@ -258,11 +240,6 @@ export default class GridRenderer {
     const rect = this.cellContentRectAtPosition(cellPos);
     const { size } = rect;
 
-    return rect.midpoint.add(
-      new Vec2(
-        (normalizedOffset.x * size.x) / 2,
-        (normalizedOffset.y * size.y) / 2
-      )
-    );
+    return rect.midpoint.add(new Vec2((normalizedOffset.x * size.x) / 2, (normalizedOffset.y * size.y) / 2));
   }
 }

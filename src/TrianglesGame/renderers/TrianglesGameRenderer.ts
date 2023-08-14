@@ -8,11 +8,14 @@ import { Triangle, TrianglesGameLogic } from '../models/TrianglesGameLogic';
 import { getTriangleVerts } from './TriangleRenderHelpers';
 
 export default class TrianglesGameRenderer {
-  shouldDisplayInstructions = true;
-  shouldDarkenLowerLayers = false;
+  #showInstructions = true;
+  darkenLowerLayers = false;
 
   #gridRenderer: GridRenderer;
   #colors: Color[];
+
+  private readonly bgColor = Color.fromHex(0x1f2129);
+  private readonly lineColor = Color.fromHex(0x9ac1af);
 
   constructor(canvas: ICanvas, gridSize: GridSize, cellSize: Vec2, colors: Color[]) {
     this.#colors = colors;
@@ -22,37 +25,44 @@ export default class TrianglesGameRenderer {
       cellSize: cellSize,
       background: {
         mode: 'fill',
-        color: Color.fromHex(0x81b29a),
+        color: this.bgColor,
       },
       border: {
-        lineColor: Color.fromHex(0x9ac1af),
+        lineColor: this.lineColor,
         lineWidth: 3,
       },
     };
     this.#gridRenderer = new GridRenderer(gridSize, canvas, gridConfig);
+
+    this.toggleInstructions();
+  }
+
+  toggleInstructions() {
+    this.#showInstructions = !this.#showInstructions;
+    this.#gridRenderer.config.border.lineColor = this.#showInstructions ? this.bgColor : this.lineColor;
   }
 
   render(canvas: ICanvas, logic: TrianglesGameLogic) {
     this.#gridRenderer.render(canvas);
 
-    const layersCount = logic.pattern.layersCount;
-    this.#gridRenderer.forEachCell((cellPos, rect) => {
-      for (let layer = 0; layer < layersCount; layer++) {
-        const cell = logic.getCell({ layer, ...cellPos });
-        if (cell) {
-          const color1 = this.color(cell.triangle1.index, layer, layersCount);
-          this.drawTriangle(canvas, rect, cell.triangle1, logic.maxCount, color1);
-          if (cell.triangle2) {
-            const color2 = this.color(cell.triangle2.index, layer, layersCount);
-            this.drawTriangle(canvas, rect, cell.triangle2, logic.maxCount, color2);
+    if (!this.#showInstructions) {
+      const layersCount = logic.pattern.layersCount;
+      this.#gridRenderer.forEachCell((cellPos, rect) => {
+        for (let layer = 0; layer < layersCount; layer++) {
+          const cell = logic.getCell({ layer, ...cellPos });
+          if (cell) {
+            const color1 = this.color(cell.triangle1.index, layer, layersCount);
+            this.drawTriangle(canvas, rect, cell.triangle1, logic.maxCount, color1);
+            if (cell.triangle2) {
+              const color2 = this.color(cell.triangle2.index, layer, layersCount);
+              this.drawTriangle(canvas, rect, cell.triangle2, logic.maxCount, color2);
+            }
           }
         }
-      }
-    });
-
-    if (this.shouldDisplayInstructions) {
-      this.drawInstructions(canvas);
+      });
     }
+
+    this.drawInstructions(canvas);
   }
 
   private color(i: number, layer: number, layersCount: number) {
@@ -63,7 +73,7 @@ export default class TrianglesGameRenderer {
     //    layer 2             1
     const min = 0.3;
     let multipler = 1;
-    if (this.shouldDarkenLowerLayers && layersCount !== 1) {
+    if (this.darkenLowerLayers && layersCount !== 1) {
       multipler = min + (layer * (1 - min)) / (layersCount - 1);
     }
     return this.#colors[i % this.#colors.length].mul(multipler);
@@ -100,43 +110,103 @@ export default class TrianglesGameRenderer {
     });
   }
 
-  private drawInstructions(canvas: ICanvas) {
-    this.drawText(canvas, `-- Pattern Generator for U-Fidgit --`, new Vec2(0.3, 0.5));
-    this.drawText(
-      canvas,
-      `The U-Fidgit toy is a chain of triangles that can be folded into patterns.`,
-      new Vec2(0.3, 1)
-    );
-
-    const start = 1.3;
-    const height = 0.36;
-    this.drawText(canvas, `Press 'SPACE' to generate new pattern.`, new Vec2(0.3, start + height * 2));
-    this.drawText(
-      canvas,
-      `Press 'h' to toggle hints -- which makes triangles in lower layers darker colors.`,
-      new Vec2(0.3, start + height * 3)
-    );
-    this.drawText(canvas, `Press 'i' to toggle the instructions.`, new Vec2(0.3, start + height * 1));
-    this.drawText(
-      canvas,
-      `Open the console '⌘+Option+J' on Chrome for the folds to create the pattern.`,
-      new Vec2(0.3, start + height * 5)
-    );
-    this.drawText(
-      canvas,
-      `All patterns begin with a pink triangle pointing to the top-right.`,
-      new Vec2(0.3, start + height * 6)
-    );
+  private drawTexts(canvas: ICanvas, texts: string[], start: number, lineHeight: number) {
+    for (const [i, text] of texts.entries()) {
+      this.drawText(canvas, text, new Vec2(0.3, start + lineHeight * i));
+    }
   }
 
   private drawText(canvas: ICanvas, text: string, pos: Vec2) {
     canvas.drawText({
       text,
       position: pos.componentMul(this.#gridRenderer.cellSize),
+      background: { color: this.bgColor },
       attributes: {
         color: Color.white,
         fontSize: 19,
       },
     });
+  }
+
+  private drawInstructions(canvas: ICanvas) {
+    const start = 0.5;
+    const lineHeight = 0.34;
+
+    let texts = [`* Press 'i' to toggle instructions.`, `* Press 'SPACE' to generate new pattern.`];
+    if (this.#showInstructions) {
+      texts.push(
+        `* Press 'h' to make triangles in lower layers darker colors.`,
+        ``,
+        `--- The Puzzle Game ---`,
+        `The U-Fidget toy is a chain of foldable triangles.`,
+        `This app turns that toy into a puzzle -- can you recreate the generated pattern?`,
+        '',
+        `--- The Puzzle Solution ---`,
+        `Open the browser console to see the folds to re-create the pattern in real life.`,
+        `(On Chrome: Right click -> Inspect -> Console).`,
+        `Patterns begin with a triangle pointing to the top-right. First triangle starts: `,
+        `                                                    Clockwise                         CounterCW`,
+        `First triangle starts Clockwise:`,
+        `     Start -> Up     Start -> Down    Start -> 0`,
+        ``,
+        ``,
+        ``,
+        ` First triangle starts Counterclockwise:`,
+        `     Start -> Up     Start -> Down                          Start -> 0`
+      );
+    }
+    this.drawTexts(canvas, texts, start, lineHeight);
+    if (this.#showInstructions) {
+      this.drawTrianglesForInstructions(canvas);
+    }
+  }
+
+  private drawTrianglesForInstructions(canvas: ICanvas) {
+    if (this.#showInstructions) {
+      // Clockwise vs CounterClockwise
+      const rectcw0 = this.#gridRenderer.cellContentRectAtPosition({ row: 4.2, column: 4.2 });
+      this.drawTriangle(canvas, rectcw0, { rotation: 1, clockwise: true, index: 0 }, 3, this.#colors[0]);
+      const rectccw0 = this.#gridRenderer.cellContentRectAtPosition({ row: 4.2, column: 6.8 });
+      this.drawTriangle(canvas, rectccw0, { rotation: 1, clockwise: false, index: 0 }, 3, this.#colors[0]);
+
+      const cwRow = 5.1;
+      const indent = 0.6;
+      const spacing = 1.3;
+      const green = Color.fromHex(0xa7f205);
+      // Start clockwise -> fold Up
+      const rectcw1 = this.#gridRenderer.cellContentRectAtPosition({ row: cwRow, column: indent });
+      this.drawTriangle(canvas, rectcw1, { rotation: 1, clockwise: true, index: 0 }, 3, this.#colors[0]);
+      this.drawTriangle(canvas, rectcw1, { rotation: 2, clockwise: false, index: 1 }, 3, green);
+      // Start clockwise -> fold Down
+      const rectcw2 = this.#gridRenderer.cellContentRectAtPosition({ row: cwRow, column: indent + spacing });
+      this.drawTriangle(canvas, rectcw2, { rotation: 2, clockwise: false, index: 1 }, 3, green);
+      this.drawTriangle(canvas, rectcw2, { rotation: 1, clockwise: true, index: 0 }, 3, this.#colors[0]);
+      // Start clockwise -> fold 0
+      const rectcw3 = this.#gridRenderer.cellContentRectAtPosition({ row: cwRow, column: indent + spacing * 2 });
+      this.drawTriangle(canvas, rectcw3, { rotation: 1, clockwise: true, index: 0 }, 3, this.#colors[0]);
+      const rectcw3_fold0 = this.#gridRenderer.cellContentRectAtPosition({
+        row: cwRow,
+        column: indent + spacing * 2 + 1,
+      });
+      this.drawTriangle(canvas, rectcw3_fold0, { rotation: 3, clockwise: true, index: 1 }, 3, green);
+
+      const ccwRow = 6.8;
+      // Start ccw -> fold Up
+      const rectccw1 = this.#gridRenderer.cellContentRectAtPosition({ row: ccwRow, column: indent });
+      this.drawTriangle(canvas, rectccw1, { rotation: 1, clockwise: false, index: 0 }, 3, this.#colors[0]);
+      this.drawTriangle(canvas, rectccw1, { rotation: 4, clockwise: true, index: 1 }, 3, green);
+      // Start ccw -> fold Down
+      const rectccw2 = this.#gridRenderer.cellContentRectAtPosition({ row: ccwRow, column: indent + spacing });
+      this.drawTriangle(canvas, rectccw2, { rotation: 4, clockwise: true, index: 1 }, 3, green);
+      this.drawTriangle(canvas, rectccw2, { rotation: 1, clockwise: false, index: 0 }, 3, this.#colors[0]);
+      // Start ccw -> fold 0
+      const rectccw3 = this.#gridRenderer.cellContentRectAtPosition({ row: ccwRow, column: 5.6 });
+      this.drawTriangle(canvas, rectccw3, { rotation: 1, clockwise: false, index: 0 }, 3, this.#colors[0]);
+      const rectccw3_fold0 = this.#gridRenderer.cellContentRectAtPosition({
+        row: ccwRow - 1,
+        column: 5.6,
+      });
+      this.drawTriangle(canvas, rectccw3_fold0, { rotation: 3, clockwise: false, index: 1 }, 3, green);
+    }
   }
 }

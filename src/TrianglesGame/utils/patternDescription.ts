@@ -10,9 +10,9 @@ export function printPatternDescription(
   const { text, args } = foldsDescription(folds, triangleColors);
   console.log(
     `============ Generated a pattern! ============` +
-      `\nCount: ${folds.length}` +
-      `\nLayers: ${layers}` +
-      `\nStart clockwise: ${startClockwise}\n` +
+      `\nTotal triangles: ${folds.length}` +
+      `\nTotal layers: ${layers}` +
+      `\nFirst triangle starts: ${startClockwise ? 'Clockwise' : 'Counterclockwise'}\n` +
       text,
     ...args
   );
