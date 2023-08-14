@@ -9,7 +9,7 @@ import { getTriangleVerts } from './TriangleRenderHelpers';
 
 export default class TrianglesGameRenderer {
   shouldDisplayInstructions = true;
-  shouldDarkenLowerLayers = true;
+  shouldDarkenLowerLayers = false;
 
   #gridRenderer: GridRenderer;
   #colors: Color[];
