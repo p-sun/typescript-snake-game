@@ -35,14 +35,15 @@ export default class TrianglesGameRenderer {
   render(canvas: ICanvas, logic: TrianglesGameLogic) {
     this.#gridRenderer.render(canvas);
 
+    const layersCount = logic.pattern.layersCount;
     this.#gridRenderer.forEachCell((cellPos, rect) => {
-      for (let layer = 0; layer < logic.layersCount; layer++) {
+      for (let layer = 0; layer < layersCount; layer++) {
         const cell = logic.getCell({ layer, ...cellPos });
         if (cell) {
-          const color1 = this.color(cell.triangle1.index, layer, logic.layersCount);
+          const color1 = this.color(cell.triangle1.index, layer, layersCount);
           this.drawTriangle(canvas, rect, cell.triangle1, logic.maxCount, color1);
           if (cell.triangle2) {
-            const color2 = this.color(cell.triangle2.index, layer, logic.layersCount);
+            const color2 = this.color(cell.triangle2.index, layer, layersCount);
             this.drawTriangle(canvas, rect, cell.triangle2, logic.maxCount, color2);
           }
         }

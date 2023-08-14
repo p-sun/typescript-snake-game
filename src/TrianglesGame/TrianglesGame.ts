@@ -4,6 +4,7 @@ import Color from '../GenericModels/Color';
 import Vec2 from '../GenericModels/Vec2';
 import { TrianglesGameLogic } from './models/TrianglesGameLogic';
 import TrianglesGameRenderer from './renderers/TrianglesGameRenderer';
+import { printPatternDescription } from './utils/patternDescription';
 
 const triangleColors = ([] as Color[])
   .concat(Array.from({ length: 5 }, () => Color.fromHex(0xf2798f))) // pink
@@ -19,12 +20,13 @@ export default class TrianglesGame extends Game {
     const { canvas, cellSize } = config;
     super(canvas);
 
+    const gridSize = 8;
+
     this.#logic = new TrianglesGameLogic({
       maxTriangles: triangleColors.length,
-      gridSize: 8,
+      gridSize,
     });
 
-    const gridSize = this.#logic.gridSize;
     this.#renderer = new TrianglesGameRenderer(
       canvas,
       { rowCount: gridSize, columnCount: gridSize },
@@ -43,6 +45,9 @@ export default class TrianglesGame extends Game {
     if (event.key === 'space') {
       this.#logic.generatePattern();
       this.#renderer.render(this.canvas, this.#logic);
+
+      const { folds, startClockwise, layersCount } = this.#logic.pattern;
+      printPatternDescription(folds, startClockwise, layersCount, triangleColors);
     } else if (event.key === 'letter' && event.letter === 'H') {
       this.#renderer.shouldDarkenLowerLayers = !this.#renderer.shouldDarkenLowerLayers;
       this.#renderer.render(this.canvas, this.#logic);

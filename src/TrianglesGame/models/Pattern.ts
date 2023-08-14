@@ -1,5 +1,4 @@
 import { GridPosition } from '../../GenericModels/Grid';
-import { patternDescription } from '../utils/patternDescription';
 import { FoldDirection, FoldResult, Triangle, oppositeRotation } from './TrianglesGameLogic';
 import { assert } from 'console';
 
@@ -14,7 +13,13 @@ type Cell = {
   triangle2?: Triangle;
 };
 
-export class Pattern {
+export interface PatternAPI {
+  get startClockwise(): boolean;
+  get folds(): FoldDirection[];
+  get layersCount(): number;
+}
+
+export class Pattern implements PatternAPI {
   readonly gridSize: number;
 
   #layers: GridLayer[] = [];
@@ -39,6 +44,16 @@ export class Pattern {
   get prevResult() {
     assert(this.#prevResult);
     return this.#prevResult!;
+  }
+
+  get startClockwise(): boolean {
+    assert(this.#startClockwise !== null);
+    return this.#startClockwise!;
+  }
+
+  get folds(): FoldDirection[] {
+    assert(this.#folds !== null);
+    return this.#folds!;
   }
 
   getCell(pos: PatternPos) {
@@ -142,10 +157,6 @@ export class Pattern {
       if (cellBelow.triangle2) return cellBelow.triangle2.rotation !== nonSupport;
     }
     return false;
-  }
-
-  debugDescription() {
-    return patternDescription(this.#folds, this.#startClockwise!, this.#layers.length);
   }
 
   private createEmptyLayer(gridSize: number) {

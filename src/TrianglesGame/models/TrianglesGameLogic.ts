@@ -1,4 +1,4 @@
-import { PatternPos, Pattern } from './Pattern';
+import { PatternPos, Pattern, PatternAPI } from './Pattern';
 
 export type Triangle = {
   rotation: TriangleRotation;
@@ -25,12 +25,8 @@ export class TrianglesGameLogic {
     this.generatePattern();
   }
 
-  get gridSize() {
-    return this.#pattern.gridSize;
-  }
-
-  get layersCount() {
-    return this.#pattern.layersCount;
+  get pattern(): PatternAPI {
+    return this.#pattern;
   }
 
   getCell(pos: PatternPos) {
@@ -46,12 +42,10 @@ export class TrianglesGameLogic {
       this.startNewPattern();
       this.foldPatternUntilDone();
     } while (this.#pattern.length !== this.maxCount || !this.#pattern.isValid());
-
-    console.log(this.#pattern.debugDescription());
   }
 
   private startNewPattern() {
-    const mid = Math.floor(this.gridSize / 2);
+    const mid = Math.floor(this.#pattern.gridSize / 2);
 
     this.#pattern.reset();
     this.#pattern.addFoldResult({
